@@ -1,6 +1,6 @@
 namespace Sst.Plaid.Endpoints.SyncTransactions;
 
-public record SyncTransactionsResponse
+public record SyncTransactionsResponse : PlaidResponse
 {
     public required AccountResponse[] Accounts { get; set; }
     public required TransactionResponse[] Added { get; set; }
@@ -8,7 +8,6 @@ public record SyncTransactionsResponse
     public required RemovedTransactionResponse[] Removed { get; set; }
     public required string NextCursor { get; set; }
     public required bool HasMore { get; set; }
-    public required string RequestId { get; set; }
     public required string TransactionsUpdateStatus { get; set; }
 }
 

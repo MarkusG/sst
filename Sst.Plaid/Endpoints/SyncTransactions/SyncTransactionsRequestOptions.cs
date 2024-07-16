@@ -1,6 +1,6 @@
 namespace Sst.Plaid.Endpoints.SyncTransactions;
 
-public class SyncTransactionsRequestOptions
+public record SyncTransactionsRequestOptions
 {
     public required bool IncludeOriginalDescription { get; set; }
 }

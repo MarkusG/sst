@@ -26,5 +26,4 @@
       <ProjectReference Include="..\Sst.Database\Sst.Database.csproj" />
       <ProjectReference Include="..\Sst.Plaid\Sst.Plaid.csproj" />
     </ItemGroup>
-
 </Project>
