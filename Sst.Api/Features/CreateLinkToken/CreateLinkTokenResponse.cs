@@ -1,6 +1,6 @@
 namespace Sst.Api.Features.CreateLinkToken;
 
-public class CreateLinkTokenResponse
+public record CreateLinkTokenResponse
 {
     public required string LinkToken { get; set; }
 }

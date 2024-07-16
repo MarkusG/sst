@@ -1,6 +1,6 @@
 namespace Sst.Api.Features.CreateItem;
 
-public class CreateItemResponse
+public record CreateItemResponse
 {
     public int Id { get; set; }
 }
