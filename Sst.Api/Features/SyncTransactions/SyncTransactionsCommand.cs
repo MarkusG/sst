@@ -29,43 +29,52 @@ public static partial class SyncTransactionsCommand
             // TODO proper error handling
             throw new ApplicationException("Item was not found");
         }
-        
-        var response = await client.SyncTransactionsAsync(new Plaid.Endpoints.SyncTransactions.SyncTransactionsRequest
+
+        var cursor = item.NextCursor;
+        bool hasMore;
+        do
         {
-            ClientId = options.Value.ClientId,
-            Secret = options.Value.Secret,
-            AccessToken = item.AccessToken,
-            Cursor = null,
-            Options = new SyncTransactionsRequestOptions
+            var response = await client.SyncTransactionsAsync(
+                new Plaid.Endpoints.SyncTransactions.SyncTransactionsRequest
+                {
+                    ClientId = options.Value.ClientId,
+                    Secret = options.Value.Secret,
+                    AccessToken = item.AccessToken,
+                    Cursor = cursor,
+                    Options = new SyncTransactionsRequestOptions
+                    {
+                        IncludeOriginalDescription = true
+                    }
+                });
+            hasMore = response.HasMore;
+            cursor = response.NextCursor;
+
+            var accounts = response.Accounts.ToDictionary(a => a.AccountId, a => a);
+
+            foreach (var t in response.Added)
             {
-                IncludeOriginalDescription = true
+                var timestamp = t switch
+                {
+                    { AuthorizedDatetime: { } dt } => dt,
+                    { AuthorizedDate: { } d } => new DateTimeOffset(d, TimeOnly.MinValue, TimeSpan.Zero),
+                    { Datetime: { } dt } => dt,
+                    { Date: var d } => new DateTimeOffset(d, TimeOnly.MinValue, TimeSpan.Zero)
+                };
+
+                ctx.Transactions.Add(new Transaction
+                {
+                    PlaidId = t.TransactionId,
+                    AccountName = accounts[t.AccountId].Name,
+                    AccountMask = accounts[t.AccountId].Mask,
+                    Amount = -(decimal)t.Amount,
+                    Currency = t.IsoCurrencyCode ?? t.UnofficialCurrencyCode!,
+                    Timestamp = timestamp,
+                    Description = t.OriginalDescription ?? t.Name
+                });
             }
-        });
+        } while (hasMore);
 
-        var accounts = response.Accounts.ToDictionary(a => a.AccountId, a => a);
-
-        foreach (var t in response.Added)
-        {
-            var timestamp = t switch
-            {
-                { AuthorizedDatetime: { } dt } => dt,
-                { AuthorizedDate: { } d } => new DateTimeOffset(d, TimeOnly.MinValue, TimeSpan.Zero),
-                { Datetime: { } dt } => dt,
-                { Date: var d } => new DateTimeOffset(d, TimeOnly.MinValue, TimeSpan.Zero)
-            };
-
-            ctx.Transactions.Add(new Transaction
-            {
-                PlaidId = t.TransactionId,
-                AccountName = accounts[t.AccountId].Name,
-                AccountMask = accounts[t.AccountId].Mask,
-                Amount = -(decimal)t.Amount,
-                Currency = t.IsoCurrencyCode ?? t.UnofficialCurrencyCode!,
-                Timestamp = timestamp,
-                Description = t.OriginalDescription ?? t.Name
-            });
-        }
-
-        await ctx.SaveChangesAsync(cancellationToken: ct);
+        item.NextCursor = cursor;
+        await ctx.SaveChangesAsync(ct);
     }
 }

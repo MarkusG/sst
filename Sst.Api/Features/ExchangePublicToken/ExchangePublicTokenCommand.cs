@@ -31,7 +31,8 @@ public partial class ExchangePublicTokenCommand
 
         ctx.Items.Add(new Item
         {
-            AccessToken = response.AccessToken
+            AccessToken = response.AccessToken,
+            NextCursor = null
         });
 
         await ctx.SaveChangesAsync();

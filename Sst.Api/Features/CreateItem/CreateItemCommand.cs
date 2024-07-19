@@ -16,7 +16,8 @@ public static partial class CreateItemCommand
     {
         var account = ctx.Items.Add(new Item
         {
-            AccessToken = req.AccessToken
+            AccessToken = req.AccessToken,
+            NextCursor = null
         }).Entity;
 
         await ctx.SaveChangesAsync(token);
