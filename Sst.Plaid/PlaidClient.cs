@@ -24,11 +24,20 @@ public class PlaidClient(HttpClient httpClient)
         }
 
         var responseStream = await rawResponse.Content.ReadAsStreamAsync(ct);
-        var response = await JsonSerializer.DeserializeAsync<TResponse>(responseStream, PlaidJsonOptions.Options, ct);
-        if (response is null)
-            throw new ApplicationException("Failed to deserialize the response from Plaid");
+        try
+        {
+            var response = await JsonSerializer.DeserializeAsync<TResponse>(responseStream, PlaidJsonOptions.Options, ct);
+            if (response is null)
+                throw new ApplicationException("Failed to deserialize the response from Plaid");
 
-        return response;
+            return response;
+        }
+        catch (Exception e)
+        {
+            // for some reason DeserializeAsync swallows exceptions here, so we just do this
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<SyncTransactionsResponse> SyncTransactionsAsync(SyncTransactionsRequest request, CancellationToken ct = default) =>
@@ -36,7 +45,7 @@ public class PlaidClient(HttpClient httpClient)
 
     public async Task<LinkTokenCreateResponse> LinkTokenCreate(LinkTokenCreateRequest request, CancellationToken ct = default) =>
         await PostAsync<LinkTokenCreateRequest, LinkTokenCreateResponse>("link/token/create", request, ct);
-    
+
     public async Task<ItemPublicTokenExchangeResponse> ItemPublicTokenExchange(ItemPublicTokenExchangeRequest request, CancellationToken ct = default) =>
         await PostAsync<ItemPublicTokenExchangeRequest, ItemPublicTokenExchangeResponse>("item/public_token/exchange", request, ct);
 
