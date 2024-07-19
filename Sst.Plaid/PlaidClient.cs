@@ -23,10 +23,9 @@ public class PlaidClient(HttpClient httpClient)
             throw;
         }
 
-        var responseStream = await rawResponse.Content.ReadAsStreamAsync(ct);
         try
         {
-            var response = await JsonSerializer.DeserializeAsync<TResponse>(responseStream, PlaidJsonOptions.Options, ct);
+            var response = await rawResponse.Content.ReadFromJsonAsync<TResponse>(PlaidJsonOptions.Options, ct);
             if (response is null)
                 throw new ApplicationException("Failed to deserialize the response from Plaid");
 
@@ -34,7 +33,7 @@ public class PlaidClient(HttpClient httpClient)
         }
         catch (Exception e)
         {
-            // for some reason DeserializeAsync swallows exceptions here, so we just do this
+            // for some reason JSON deserialization swallows exceptions here, so we just do this
             Console.WriteLine(e);
             throw;
         }
