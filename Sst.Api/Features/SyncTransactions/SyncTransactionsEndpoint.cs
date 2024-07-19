@@ -17,7 +17,7 @@ public class SyncTransactionsEndpoint : Endpoint<SyncTransactionsRequest>
         await Handler.HandleAsync(new SyncTransactionsCommand.Command
         {
             ItemId = req.ItemId
-        });
+        }, ct);
         await SendOkAsync();
     }
 }

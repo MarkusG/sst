@@ -17,7 +17,7 @@ public class CreateItemEndpoint : Endpoint<CreateItemRequest, CreateItemResponse
         var itemId = await Handler.HandleAsync(new CreateItemCommand.Command
         {
             AccessToken = req.AccessToken
-        });
+        }, ct);
 
         await SendAsync(new CreateItemResponse
         {

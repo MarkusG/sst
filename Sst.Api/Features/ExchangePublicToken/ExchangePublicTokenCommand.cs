@@ -20,14 +20,14 @@ public partial class ExchangePublicTokenCommand
         SstDbContext ctx,
         PlaidClient client,
         IOptions<PlaidClientOptions> options,
-        CancellationToken token)
+        CancellationToken ct)
     {
         var response = await client.ItemPublicTokenExchange(new ItemPublicTokenExchangeRequest
         {
             ClientId = options.Value.ClientId,
             Secret = options.Value.Secret,
             PublicToken = request.PublicToken
-        });
+        }, ct);
 
         ctx.Items.Add(new Item
         {
@@ -35,6 +35,6 @@ public partial class ExchangePublicTokenCommand
             NextCursor = null
         });
 
-        await ctx.SaveChangesAsync();
+        await ctx.SaveChangesAsync(ct);
     }
 }

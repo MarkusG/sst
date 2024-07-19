@@ -17,7 +17,7 @@ public class ExchangePublicTokenEndpoint : Endpoint<ExchangePublicTokenRequest>
         await Handler.HandleAsync(new ExchangePublicTokenCommand.Command
         {
             PublicToken = req.PublicToken
-        });
+        }, ct);
 
         await SendOkAsync();
     }

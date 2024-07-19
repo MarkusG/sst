@@ -14,14 +14,14 @@ public static partial class CreateLinkTokenCommand
         Command _,
         PlaidClient client,
         IOptions<PlaidClientOptions> options,
-        CancellationToken token)
+        CancellationToken ct)
     {
         var response = await client.LinkTokenCreate(new LinkTokenCreateRequest
         {
             ClientId = options.Value.ClientId,
             Secret = options.Value.Secret,
             Products = ["transactions"]
-        });
+        }, ct);
 
         return response.LinkToken;
     }

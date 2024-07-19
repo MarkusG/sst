@@ -23,7 +23,7 @@ public static partial class SyncTransactionsCommand
         IOptions<PlaidClientOptions> options,
         CancellationToken ct)
     {
-        var item = await ctx.Items.FirstOrDefaultAsync(i => i.Id == req.ItemId);
+        var item = await ctx.Items.FirstOrDefaultAsync(i => i.Id == req.ItemId, ct);
         if (item is null)
         {
             // TODO proper error handling
@@ -45,7 +45,7 @@ public static partial class SyncTransactionsCommand
                     {
                         IncludeOriginalDescription = true
                     }
-                });
+                }, ct);
             hasMore = response.HasMore;
             cursor = response.NextCursor;
 
