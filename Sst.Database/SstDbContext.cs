@@ -9,6 +9,8 @@ public class SstDbContext(DbContextOptions<SstDbContext> options) : DbContext(op
     
     public DbSet<Item> Items { get; set; }
     
+    public DbSet<Account> Accounts { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SstDbContext).Assembly);
