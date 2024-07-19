@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Sst.Database;
 using Sst.Database.Entities;
 using Sst.Plaid;
+using Sst.Plaid.Endpoints.AccountsBalanceGet;
 using Sst.Plaid.Endpoints.ItemPublicTokenExchange;
 
 namespace Sst.Api.Features.ExchangePublicToken;
@@ -14,7 +15,7 @@ public partial class ExchangePublicTokenCommand
     {
         public required string PublicToken { get; set; }
     }
-    
+
     private static async ValueTask HandleAsync(
         Command request,
         SstDbContext ctx,
@@ -29,11 +30,30 @@ public partial class ExchangePublicTokenCommand
             PublicToken = request.PublicToken
         }, ct);
 
-        ctx.Items.Add(new Item
+        var item = new Item
         {
             AccessToken = response.AccessToken,
             NextCursor = null
-        });
+        };
+
+        ctx.Items.Add(item);
+
+        var accountsResponse = await client.GetAccountBalances(new AccountsBalanceGetRequest
+        {
+            ClientId = options.Value.ClientId,
+            Secret = options.Value.Secret,
+            AccessToken = response.AccessToken
+        }, ct);
+
+        foreach (var a in accountsResponse.Accounts)
+        {
+            ctx.Accounts.Add(new Account
+            {
+                PlaidId = a.AccountId,
+                Name = a.OfficialName ?? a.Name,
+                Item = item
+            });
+        }
 
         await ctx.SaveChangesAsync(ct);
     }

@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using Sst.Plaid.Contracts.AccountsBalanceGet;
+using Sst.Plaid.Endpoints.AccountsBalanceGet;
 using Sst.Plaid.Endpoints.ItemPublicTokenExchange;
 using Sst.Plaid.Endpoints.LinkTokenCreate;
 using Sst.Plaid.Endpoints.SyncTransactions;
@@ -37,4 +39,7 @@ public class PlaidClient(HttpClient httpClient)
     
     public async Task<ItemPublicTokenExchangeResponse> ItemPublicTokenExchange(ItemPublicTokenExchangeRequest request, CancellationToken ct = default) =>
         await PostAsync<ItemPublicTokenExchangeRequest, ItemPublicTokenExchangeResponse>("item/public_token/exchange", request, ct);
+
+    public async Task<AccountsBalanceGetResponse> GetAccountBalances(AccountsBalanceGetRequest request, CancellationToken ct = default) =>
+        await PostAsync<AccountsBalanceGetRequest, AccountsBalanceGetResponse>("/accounts/balance/get", request, ct);
 }

@@ -11,7 +11,7 @@ using Sst.Database;
 namespace Sst.Database.Migrations
 {
     [DbContext(typeof(SstDbContext))]
-    [Migration("20240719031903_AddAccounts")]
+    [Migration("20240719032255_AddAccounts")]
     partial class AddAccounts
     {
         /// <inheritdoc />
@@ -26,6 +26,9 @@ namespace Sst.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -35,6 +38,8 @@ namespace Sst.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("PlaidId")
                         .IsUnique();
@@ -101,6 +106,17 @@ namespace Sst.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Account", b =>
+                {
+                    b.HasOne("Sst.Database.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
                 });
 #pragma warning restore 612, 618
         }
