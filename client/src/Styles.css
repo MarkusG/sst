@@ -1,0 +1,22 @@
+@import "@fortawesome/fontawesome-free/css/all.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f8f8;
+}
+
+.check::after {
+    content: "✓";
+}
+
+.x::after {
+    content: "🞨";
+}
+
+.plus::after {
+    content: "+";
+}
