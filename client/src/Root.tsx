@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 import './Styles.css';
 import SidebarAccounts from './Sidebar/SidebarAccounts';
+import Nav from './Sidebar/Nav';
 
 function Root() {
     useEffect(() => {
@@ -15,9 +16,10 @@ function Root() {
                 <div className="text-3xl flex justify-between items-baseline mb-2">
                     sst <span className="text-base">v0.0.1</span>
                 </div>
+                <Nav/>
                 <SidebarAccounts/>
             </header>
-            <div className="max-w-[90vw] mx-auto">
+            <div className="grow">
                 <Outlet/>
             </div>
         </div>

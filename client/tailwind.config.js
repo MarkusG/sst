@@ -43,7 +43,7 @@ module.exports = {
                 900: '#0d002a',
                 1000: '#030013'
             },
-            success: {
+            green: {
                 100: '#ddf7d8',
                 200: '#c6eabe',
                 300: '#94d186',
@@ -55,7 +55,7 @@ module.exports = {
                 900: '#000800',
                 1000: '#000100'
             },
-            warning: {
+            yellow: {
                 100: '#f6f0ca',
                 200: '#e8e0aa',
                 300: '#d0bf5e',
@@ -67,7 +67,7 @@ module.exports = {
                 900: '#0d0000',
                 1000: '#020000'
             },
-            danger: {
+            red: {
                 100: '#ffe3db',
                 200: '#ffcdc3',
                 300: '#ffa08f',

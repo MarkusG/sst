@@ -9,14 +9,6 @@ body {
     background-color: #f8f8f8;
 }
 
-.check::after {
-    content: "✓";
-}
-
-.x::after {
-    content: "🞨";
-}
-
-.plus::after {
-    content: "+";
+input[type=number] {
+  -moz-appearance: textfield;
 }
