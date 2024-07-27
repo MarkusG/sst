@@ -10,7 +10,11 @@ var builder = WebApplication.CreateBuilder();
 builder.Services.AddFastEndpoints();
 
 builder.Services.AddDbContext<SstDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("Database")));
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("Database"));
+    if (!builder.Environment.IsProduction())
+        options.EnableSensitiveDataLogging();
+});
 
 builder.Services.Configure<PlaidClientOptions>(builder.Configuration.GetSection(nameof(PlaidClientOptions)));
 builder.Services.AddScoped<PlaidClient>();
