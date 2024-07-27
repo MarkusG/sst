@@ -25,9 +25,18 @@ builder.Services.AddHttpClient<PlaidClient>((sp, c) =>
 
 builder.Services.AddHandlers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("localhost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000");
+    });
+});
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseCors("localhost");
 
 app.UseFastEndpoints();
 app.Run();
