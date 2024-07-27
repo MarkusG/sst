@@ -19,7 +19,7 @@ function Root() {
                 <Nav/>
                 <SidebarAccounts/>
             </header>
-            <div className="grow">
+            <div className="grow overflow-hidden">
                 <Outlet/>
             </div>
         </div>

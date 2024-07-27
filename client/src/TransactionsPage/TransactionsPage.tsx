@@ -38,21 +38,23 @@ function TransactionsPage() {
                 <h1 className="text-3xl">Transactions</h1>
                 <p className="mt-2">Showing {transactions?.pageCount} out of {transactions?.totalCount} transactions</p>
             </div>
-            <SortableTable className="w-full table-auto border-collapse whitespace-nowrap">
-                <thead>
-                    <tr className="border-b border-gray-300">
-                        <SortableHeaderCell field="timestamp" className="px-1 pl-4 border-r border-gray-300">Timestamp</SortableHeaderCell>
-                        <SortableHeaderCell field="amount" className="px-1 border-r border-gray-300">Amount</SortableHeaderCell>
-                        <SortableHeaderCell field="description" className="px-1 border-r border-gray-300">Description</SortableHeaderCell>
-                        <SortableHeaderCell field="account" className="px-1 border-r border-gray-300">Account</SortableHeaderCell>
-                        <SortableHeaderCell field="category" className="px-1 border-r border-gray-300">Category</SortableHeaderCell>
-                    </tr>
-                </thead>
-                <tbody>
-                    {transactions?.transactions.map(t => <TransactionRow transaction={t}/>)}
-                </tbody>
-            </SortableTable>
-            <div className="flex justify-around items-baseline m-4 mt-auto">
+            <div className="overflow-auto">
+                <SortableTable className="w-full table-auto border-separate border-gray-300 whitespace-nowrap">
+                    <thead className="sticky top-0 bg-gray-50 border-b">
+                        <tr>
+                            <SortableHeaderCell field="timestamp" className="px-1 pl-4 border-r border-b">Timestamp</SortableHeaderCell>
+                            <SortableHeaderCell field="amount" className="px-1 border-r border-b">Amount</SortableHeaderCell>
+                            <SortableHeaderCell field="description" className="px-1 border-r border-b">Description</SortableHeaderCell>
+                            <SortableHeaderCell field="account" className="px-1 border-r border-b">Account</SortableHeaderCell>
+                            <SortableHeaderCell field="category" className="px-1 border-r border-b">Category</SortableHeaderCell>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {transactions?.transactions.map(t => <TransactionRow transaction={t}/>)}
+                    </tbody>
+                </SortableTable>
+            </div>
+            <div className="flex justify-around items-baseline m-4 mt-[max(1rem,_auto)]">
                 <button className="bg-white hover:bg-gray-50 transition duration-300 p-2 rounded shadow"><i className="fa-solid fa-chevron-left"></i></button>
                 <div><input type="number" value="1" className="w-12 text-center appearance-none border shadow rounded"/> / 10</div>
                 <button className="bg-white hover:bg-gray-50 transition duration-300 p-2 rounded shadow"><i className="fa-solid fa-chevron-right"></i></button>
