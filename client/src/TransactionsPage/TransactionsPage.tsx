@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 import SortableHeaderCell from "../SortableHeaderCell";
 import SortableTable from "../SortableTable/SortableTable";
 import TransactionRow from "./TransactionRow";
+import { useQuery } from "@tanstack/react-query";
+import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
 export interface Transaction {
     timestamp: Date,
@@ -19,24 +20,39 @@ interface TransactionsResponse {
     transactions: Transaction[]
 }
 
+async function query() : Promise<TransactionsResponse> {
+    return await fetch("https://localhost:5001/transactions")
+        .then((res) => res.json())
+}
+
 function TransactionsPage() {
-    const [transactions, setTransactions] = useState<TransactionsResponse | null>(null);
+    const { data, error, isLoading } = useQuery<TransactionsResponse>({
+        queryKey: ['transactions'],
+        queryFn: query
+    });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const t = await fetch("https://localhost:5001/transactions")
-                .then((res) => res.json() as Promise<TransactionsResponse>);
-            setTransactions(t);
-        }
 
-        fetchData().catch(console.error);
-    }, []);
+    if (isLoading) {
+        return (
+            <div className="mt-16 w-min mx-auto">
+                <LoadingIcon/>
+            </div>
+        );
+    }
+
+    if (!!error) {
+        return (
+            <div className="p-2">
+                <p className="text-xl">{error.toString()}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-screen">
             <div className="px-4 pt-2">
                 <h1 className="text-3xl">Transactions</h1>
-                <p className="mt-2">Showing {transactions?.pageCount} out of {transactions?.totalCount} transactions</p>
+                <p className="mt-2">Showing {data.pageCount} out of {data.totalCount} transactions</p>
             </div>
             <div className="overflow-auto">
                 <SortableTable className="w-full table-auto border-separate border-gray-300 whitespace-nowrap">
@@ -50,7 +66,7 @@ function TransactionsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions?.transactions.map(t => <TransactionRow transaction={t}/>)}
+                        {data.transactions.map(t => <TransactionRow transaction={t}/>)}
                     </tbody>
                 </SortableTable>
             </div>
