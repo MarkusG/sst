@@ -4,7 +4,7 @@ import TransactionRow from "./TransactionRow";
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
-import { useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useState } from "react";
 
 export interface Transaction {
     timestamp: Date,
@@ -59,8 +59,15 @@ function TransactionsPage() {
     }
 
     function nextPage() {
-        if (params.page !== data?.totalPages) {
+        if (params.page !== data!.totalPages) {
             setParams(new QueryParameters({ ...params, page: params.page! + 1 }));
+        }
+    }
+
+    function seekPage(e: ChangeEvent<HTMLInputElement>) {
+        var page = Number(e.target.value);
+        if (page > 0 && page <= data!.totalPages) {
+            setParams(new QueryParameters({ ...params, page }));
         }
     }
 
@@ -97,7 +104,9 @@ function TransactionsPage() {
                     disabled={data?.page === 1}>
                     <i className="fa-solid fa-chevron-left"></i>
                 </button>
-                <div><input type="number" value={params.page} className="w-12 text-center appearance-none border shadow rounded"/> / {data?.totalPages}</div>
+                <div>
+                    <input type="number" value={params.page} onChange={seekPage} className="w-12 text-center appearance-none border shadow rounded"/> / {data?.totalPages}
+                </div>
                 <button className="bg-white hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 transition duration-300 p-2 rounded shadow"
                     onClick={nextPage}
                     disabled={data?.page === data?.totalPages}>
