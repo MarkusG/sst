@@ -1,8 +1,10 @@
 import SortableHeaderCell from "../SortableHeaderCell";
 import SortableTable from "../SortableTable/SortableTable";
 import TransactionRow from "./TransactionRow";
-import { useQuery } from "@tanstack/react-query";
+import { QueryFunctionContext, useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
+import { QueryParameters } from "../QueryParameters";
+import { useState } from "react";
 
 export interface Transaction {
     timestamp: Date,
@@ -20,17 +22,19 @@ interface TransactionsResponse {
     transactions: Transaction[]
 }
 
-async function query() : Promise<TransactionsResponse> {
-    return await fetch("https://localhost:5001/transactions")
+async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsResponse> {
+    const params = queryKey[1] as QueryParameters;
+    return await fetch(`https://localhost:5001/transactions${params.toString()}`)
         .then((res) => res.json())
 }
 
 function TransactionsPage() {
+    const [params, setParams] = useState(new QueryParameters({ pageSize: 20 }));
+    const client = useQueryClient();
     const { data, error, isLoading } = useQuery<TransactionsResponse>({
-        queryKey: ['transactions'],
+        queryKey: ['transactions', params],
         queryFn: query
     });
-
 
     if (isLoading) {
         return (
@@ -48,11 +52,22 @@ function TransactionsPage() {
         );
     }
 
+    function previousPage() {
+        if (params.page !== 1) {
+            setParams(new QueryParameters({ ...params, page: params.page! - 1 }));
+        }
+    }
+
+    function nextPage() {
+        if (params.page !== data?.totalPages) {
+            setParams(new QueryParameters({ ...params, page: params.page! + 1 }));
+        }
+    }
+
     return (
         <div className="flex flex-col h-screen">
             <div className="px-4 pt-2">
                 <h1 className="text-3xl">Transactions</h1>
-                <p className="mt-2">Showing {data.pageCount} out of {data.totalCount} transactions</p>
             </div>
             <div className="overflow-auto">
                 <SortableTable className="w-full table-auto border-separate border-gray-300 whitespace-nowrap">
@@ -70,10 +85,18 @@ function TransactionsPage() {
                     </tbody>
                 </SortableTable>
             </div>
-            <div className="flex justify-around items-baseline m-4 mt-[max(1rem,_auto)]">
-                <button className="bg-white hover:bg-gray-50 transition duration-300 p-2 rounded shadow"><i className="fa-solid fa-chevron-left"></i></button>
-                <div><input type="number" value="1" className="w-12 text-center appearance-none border shadow rounded"/> / 10</div>
-                <button className="bg-white hover:bg-gray-50 transition duration-300 p-2 rounded shadow"><i className="fa-solid fa-chevron-right"></i></button>
+            <div className="flex justify-around items-baseline p-4 mt-auto">
+                <button className="bg-white hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 transition duration-300 p-2 rounded shadow"
+                    onClick={previousPage}
+                    disabled={data?.page === 1}>
+                    <i className="fa-solid fa-chevron-left"></i>
+                </button>
+                <div><input type="number" value={params.page} className="w-12 text-center appearance-none border shadow rounded"/> / {data?.totalPages}</div>
+                <button className="bg-white hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 transition duration-300 p-2 rounded shadow"
+                    onClick={nextPage}
+                    disabled={data?.page === data?.totalPages}>
+                    <i className="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     );
