@@ -23,7 +23,7 @@ function SortableHeaderCell(props: PropsWithChildren<SortableHeaderCellProps>) {
                 ctx?.setOptions({ field: props.field, direction: "down" });
                 break;
             case "down":
-                ctx?.setOptions({ field: null, direction: null });
+                ctx?.setOptions({});
                 break;
         }
     }
@@ -34,7 +34,7 @@ function SortableHeaderCell(props: PropsWithChildren<SortableHeaderCellProps>) {
                 {props.children}
                 <div className="w-4">
                     {ctx?.options.field === props.field && ctx?.options.direction === "up" && <i className="fa-solid fa-sort-up"></i>}
-                    {ctx?.options.field !== props.field && ctx?.options.field !== null || ctx?.options.direction === null && <i className="fa-solid fa-sort text-gray-400"></i>}
+                    {ctx?.options.field !== props.field && <i className="fa-solid fa-sort text-gray-400"></i>}
                     {ctx?.options.field === props.field && ctx?.options.direction === "down" && <i className="fa-solid fa-sort-down"></i>}
                 </div>
             </button>

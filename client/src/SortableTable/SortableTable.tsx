@@ -1,12 +1,14 @@
 import { createContext, PropsWithChildren, useState } from "react";
 
 interface SortableTableProps {
-    className?: string
+    className?: string,
+    options: SortOptions,
+    onSortUpdated: (options: SortOptions) => void
 }
 
-interface SortOptions {
-    field: string | null,
-    direction: "up" | "down" | null,
+export interface SortOptions {
+    field?: string,
+    direction?: "up" | "down",
 }
 
 interface SortContext {
@@ -17,10 +19,11 @@ interface SortContext {
 export const TableContext = createContext<SortContext | null>(null);
 
 function SortableTable(props: PropsWithChildren<SortableTableProps>) {
-    const [options, setOptions] = useState<SortOptions>({ field: null, direction: null });
+    const [options, setOptions] = useState<SortOptions>(props.options);
 
     async function onSetOptions(options: SortOptions) {
         setOptions(options);
+        props.onSortUpdated(options);
     }
 
     return (

@@ -2,7 +2,7 @@ export class QueryParameters {
     pageSize?: number;
     page?: number = 1;
     sortField?: string;
-    sortDirection?: string;
+    sortDirection?: "up" | "down";
     
     constructor(init?: Partial<QueryParameters>) {
         Object.assign(this, init);
@@ -22,12 +22,12 @@ export class QueryParameters {
 
         if (this.sortField) {
             const paramCharacter = builder.length === 0 ? '?' : '&';
-            builder.push(`${paramCharacter}sortFieldSize=${this.sortField}`);
+            builder.push(`${paramCharacter}sortField=${this.sortField}`);
         }
 
         if (this.sortDirection) {
             const paramCharacter = builder.length === 0 ? '?' : '&';
-            builder.push(`${paramCharacter}sortDirectionSize=${this.sortDirection}`);
+            builder.push(`${paramCharacter}sortDirection=${this.sortDirection}`);
         }
 
         return builder.join('');

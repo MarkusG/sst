@@ -1,7 +1,7 @@
 import SortableHeaderCell from "../SortableHeaderCell";
-import SortableTable from "../SortableTable/SortableTable";
+import SortableTable, { SortOptions } from "../SortableTable/SortableTable";
 import TransactionRow from "./TransactionRow";
-import { QueryFunctionContext, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
 import { useState } from "react";
@@ -29,10 +29,10 @@ async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsR
 }
 
 function TransactionsPage() {
-    const [params, setParams] = useState(new QueryParameters({ pageSize: 20 }));
-    const client = useQueryClient();
+    const [params, setParams] = useState(new QueryParameters({ pageSize: 20, sortField: "timestamp", sortDirection: "up" }));
     const { data, error, isLoading } = useQuery<TransactionsResponse>({
         queryKey: ['transactions', params],
+        keepPreviousData: true,
         queryFn: query
     });
 
@@ -64,13 +64,19 @@ function TransactionsPage() {
         }
     }
 
+    function sortUpdated({ field, direction }: SortOptions) {
+        setParams(new QueryParameters({ ...params, sortField: field, sortDirection: direction }));
+    }
+
     return (
         <div className="flex flex-col h-screen">
             <div className="px-4 pt-2">
                 <h1 className="text-3xl">Transactions</h1>
             </div>
             <div className="overflow-auto">
-                <SortableTable className="w-full table-auto border-separate border-gray-300 whitespace-nowrap">
+                <SortableTable className="w-full table-auto border-separate border-gray-300 whitespace-nowrap"
+                    options={{ field: params.sortField, direction: params.sortDirection }}
+                    onSortUpdated={sortUpdated}>
                     <thead className="sticky top-0 bg-gray-50 border-b">
                         <tr>
                             <SortableHeaderCell field="timestamp" className="px-1 pl-4 border-r border-b">Timestamp</SortableHeaderCell>
@@ -81,7 +87,7 @@ function TransactionsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.transactions.map(t => <TransactionRow transaction={t}/>)}
+                        {data?.transactions.map(t => <TransactionRow transaction={t}/>)}
                     </tbody>
                 </SortableTable>
             </div>
