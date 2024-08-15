@@ -1,7 +1,7 @@
 import SortableHeaderCell from "../SortableHeaderCell";
 import SortableTable, { SortOptions } from "../SortableTable/SortableTable";
 import TransactionRow from "./TransactionRow";
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
+import { QueryFunctionContext, useMutation, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
@@ -30,11 +30,20 @@ async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsR
 
 function TransactionsPage() {
     const [params, setParams] = useState(new QueryParameters({ pageSize: 20, sortField: "timestamp", sortDirection: "up" }));
+
     const { data, error, isLoading } = useQuery<TransactionsResponse>({
         queryKey: ['transactions', params],
         keepPreviousData: true,
         queryFn: query
     });
+
+    const mutation = useMutation<TransactionsResponse | null>({
+        mutationFn: () => Promise.resolve(null)
+    });
+
+    async function transactionUpdated(t: Transaction) {
+        // TODO
+    }
 
     if (isLoading) {
         return (
@@ -81,20 +90,20 @@ function TransactionsPage() {
                 <h1 className="text-3xl">Transactions</h1>
             </div>
             <div className="overflow-auto">
-                <SortableTable className="w-full table-auto border-separate border-spacing-0 whitespace-nowrap"
+                <SortableTable className="w-full table-fixed border-separate border-spacing-0 whitespace-nowrap"
                     options={{ field: params.sortField, direction: params.sortDirection }}
                     onSortUpdated={sortUpdated}>
                     <thead className="sticky top-0 bg-gray-50 border-b">
                         <tr>
-                            <SortableHeaderCell field="timestamp" className="px-1 pl-4 border-gray-300 border-r border-b">Timestamp</SortableHeaderCell>
-                            <SortableHeaderCell field="amount" className="px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
+                            <SortableHeaderCell field="timestamp" className="w-[240px] px-1 pl-4 border-gray-300 border-r border-b">Timestamp</SortableHeaderCell>
+                            <SortableHeaderCell field="amount" className="w-[100px] px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
                             <SortableHeaderCell field="description" className="px-1 border-gray-300 border-r border-b">Description</SortableHeaderCell>
-                            <SortableHeaderCell field="account" className="px-1 border-gray-300 border-r border-b">Account</SortableHeaderCell>
-                            <SortableHeaderCell field="category" className="px-1 border-gray-300 border-r border-b">Category</SortableHeaderCell>
+                            <SortableHeaderCell field="account" className="w-[200px] px-1 border-gray-300 border-r border-b">Account</SortableHeaderCell>
+                            <SortableHeaderCell field="category" className="w-[200px] px-1 border-gray-300 border-r border-b">Category</SortableHeaderCell>
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.transactions.map(t => <TransactionRow transaction={t}/>)}
+                        {data?.transactions.map(t => <TransactionRow transaction={t} onUpdated={transactionUpdated}/>)}
                     </tbody>
                 </SortableTable>
             </div>
