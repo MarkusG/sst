@@ -4,7 +4,7 @@ import TransactionRow from "./TransactionRow";
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export interface Transaction {
     timestamp: Date,
