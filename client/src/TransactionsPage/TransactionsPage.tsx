@@ -81,16 +81,16 @@ function TransactionsPage() {
                 <h1 className="text-3xl">Transactions</h1>
             </div>
             <div className="overflow-auto">
-                <SortableTable className="w-full table-auto border-separate border-gray-300 whitespace-nowrap"
+                <SortableTable className="w-full table-auto border-separate border-spacing-0 whitespace-nowrap"
                     options={{ field: params.sortField, direction: params.sortDirection }}
                     onSortUpdated={sortUpdated}>
                     <thead className="sticky top-0 bg-gray-50 border-b">
                         <tr>
-                            <SortableHeaderCell field="timestamp" className="px-1 pl-4 border-r border-b">Timestamp</SortableHeaderCell>
-                            <SortableHeaderCell field="amount" className="px-1 border-r border-b">Amount</SortableHeaderCell>
-                            <SortableHeaderCell field="description" className="px-1 border-r border-b">Description</SortableHeaderCell>
-                            <SortableHeaderCell field="account" className="px-1 border-r border-b">Account</SortableHeaderCell>
-                            <SortableHeaderCell field="category" className="px-1 border-r border-b">Category</SortableHeaderCell>
+                            <SortableHeaderCell field="timestamp" className="px-1 pl-4 border-gray-300 border-r border-b">Timestamp</SortableHeaderCell>
+                            <SortableHeaderCell field="amount" className="px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
+                            <SortableHeaderCell field="description" className="px-1 border-gray-300 border-r border-b">Description</SortableHeaderCell>
+                            <SortableHeaderCell field="account" className="px-1 border-gray-300 border-r border-b">Account</SortableHeaderCell>
+                            <SortableHeaderCell field="category" className="px-1 border-gray-300 border-r border-b">Category</SortableHeaderCell>
                         </tr>
                     </thead>
                     <tbody>
