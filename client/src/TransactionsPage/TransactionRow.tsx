@@ -66,7 +66,7 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
             <td className="px-1">{transaction.description}</td>
             <td className="px-1">{transaction.account}</td>
             <td className="px-1">
-                {!categorizing ? <button className={transaction.category ? "" : "text-gray-400"} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
+                {!categorizing ? <button className={`w-full text-left ${transaction.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
                     : (
                         <input className="bg-[inherit] focus:bg-gray-200 w-full h-full"
                             value={category ?? undefined}
