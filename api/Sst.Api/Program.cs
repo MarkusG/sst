@@ -11,7 +11,7 @@ builder.Services.AddFastEndpoints();
 
 builder.Services.AddDbContext<SstDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("Database"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
     if (!builder.Environment.IsProduction())
         options.EnableSensitiveDataLogging();
 });
