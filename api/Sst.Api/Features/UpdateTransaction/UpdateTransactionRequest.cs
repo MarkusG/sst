@@ -1,8 +1,8 @@
-namespace Sst.Api.Contracts;
+namespace Sst.Api.Features.UpdateTransaction;
 
-public class TransactionResponse
+public class UpdateTransactionRequest
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     
     public required DateTimeOffset? Timestamp { get; set; }
     

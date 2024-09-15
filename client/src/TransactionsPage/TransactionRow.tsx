@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Transaction } from "./TransactionsPage";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface TransactionRowProps {
     transaction: Transaction
@@ -8,7 +9,7 @@ interface TransactionRowProps {
 
 function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
     const [categorizing, setCategorizing] = useState(false);
-    const [category, setCategory] = useState(transaction.category ?? undefined);
+    const [category, setCategory] = useState<string | null>(transaction.category ?? null);
 
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
@@ -17,19 +18,44 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
         maximumFractionDigits: 2
     });
 
-    async function blur(e: React.FocusEvent<HTMLInputElement>) {
+    const queryClient = useQueryClient();
+
+    const updateMutation = useMutation({
+        mutationFn: async (category: string | null) => {
+            await fetch(`https://localhost:5001/transactions/${transaction.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ ...transaction, category: category })
+            });
+        },
+        onSuccess: () => queryClient.invalidateQueries(['transactions'])
+    });
+
+    async function categorize() {
+        transaction.category = category ?? undefined;
         await onUpdated(transaction);
+        await updateMutation.mutateAsync(category);
         setCategorizing(false);
     }
 
-    function input(e: React.ChangeEvent<HTMLInputElement>) {
-        setCategory(e.target.value.trim());
-        transaction.category = e.target.value.trim();
+    async function blur() {
+        await categorize();
     }
 
-    function keyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    function input(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.value.trim()) {
+            setCategory(e.target.value.trim());
+        }
+        else {
+            setCategory(null);
+        }
+    }
+
+    async function keyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
-            setCategorizing(false);
+            await categorize();
         }
     }
 
@@ -43,7 +69,7 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
                 {!categorizing ? <button className={transaction.category ? "" : "text-gray-400"} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
                     : (
                         <input className="bg-[inherit] focus:bg-gray-200 w-full h-full"
-                            value={category}
+                            value={category ?? undefined}
                             autoFocus
                             onKeyDown={keyDown}
                             onInput={input}

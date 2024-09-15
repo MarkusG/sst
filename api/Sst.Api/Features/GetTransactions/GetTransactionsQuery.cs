@@ -72,6 +72,7 @@ public partial class GetTransactionsQuery
             TotalPages = totalCount / request.PageSize + 1,
             Transactions = transactions.Select(t => new TransactionResponse
             {
+                Id = t.Id,
                 Timestamp = t.Timestamp,
                 Account = t.AccountName,
                 Amount = t.Amount,

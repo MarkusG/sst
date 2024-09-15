@@ -7,11 +7,12 @@ import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
 
 export interface Transaction {
+    id: number,
     timestamp: Date,
     amount: number,
     description: string,
     account: string,
-    category: string | null
+    category?: string
 }
 
 interface TransactionsResponse {
