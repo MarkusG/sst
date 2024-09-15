@@ -25,16 +25,16 @@ public partial class GetTransactionsQuery
         SstDbContext ctx,
         CancellationToken token)
     {
-        IQueryable<Transaction> query = ctx.Transactions;
+        IOrderedQueryable<Transaction> query;
         if (request is { SortField: not null, SortDirection: "up" })
         {
             query = request.SortField switch
             {
-                "timestamp" => query.OrderByDescending(t => t.Timestamp),
-                "amount" => query.OrderByDescending(t => t.Amount),
-                "description" => query.OrderByDescending(t => t.Description),
-                "account" => query.OrderByDescending(t => t.AccountName),
-                "category" => query.OrderByDescending(t => t.Category),
+                "timestamp" => ctx.Transactions.OrderByDescending(t => t.Timestamp),
+                "amount" => ctx.Transactions.OrderByDescending(t => t.Amount),
+                "description" => ctx.Transactions.OrderByDescending(t => t.Description),
+                "account" => ctx.Transactions.OrderByDescending(t => t.AccountName),
+                "category" => ctx.Transactions.OrderByDescending(t => t.Category),
                 // TODO validation
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -43,21 +43,22 @@ public partial class GetTransactionsQuery
         {
             query = request.SortField switch
             {
-                "timestamp" => query.OrderBy(t => t.Timestamp),
-                "amount" => query.OrderBy(t => t.Amount),
-                "description" => query.OrderBy(t => t.Description),
-                "account" => query.OrderBy(t => t.AccountName),
-                "category" => query.OrderBy(t => t.Category),
+                "timestamp" => ctx.Transactions.OrderBy(t => t.Timestamp),
+                "amount" => ctx.Transactions.OrderBy(t => t.Amount),
+                "description" => ctx.Transactions.OrderBy(t => t.Description),
+                "account" => ctx.Transactions.OrderBy(t => t.AccountName),
+                "category" => ctx.Transactions.OrderBy(t => t.Category),
                 // TODO validation
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
         else
         {
-            query = query.OrderByDescending(t => t.Timestamp);
+            query = ctx.Transactions.OrderByDescending(t => t.Timestamp);
         }
 
         var transactions = await query
+            .ThenBy(t => t.Id)
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(token);
