@@ -1,5 +1,5 @@
-import SortableHeaderCell from "../SortableHeaderCell";
 import SortableTable, { SortOptions } from "../SortableTable/SortableTable";
+import SortableHeaderCell from "../SortableTable/SortableHeaderCell";
 import TransactionRow from "./TransactionRow";
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";

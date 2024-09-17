@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext } from "react";
-import { TableContext } from "./SortableTable/SortableTable";
+import { TableContext } from "./SortableTable";
 
 interface SortableHeaderCellProps {
     className?: string,
