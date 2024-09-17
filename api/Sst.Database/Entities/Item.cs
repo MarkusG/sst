@@ -7,4 +7,6 @@ public class Item
     public required string AccessToken { get; set; }
     
     public required string? NextCursor { get; set; }
+
+    public List<Account> Accounts { get; set; } = [];
 }
