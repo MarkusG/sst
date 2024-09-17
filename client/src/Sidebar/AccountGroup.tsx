@@ -13,7 +13,10 @@ function AccountGroup({ group }: AccountGroupProps) {
         mutationFn: async () => await fetch(`https://localhost:5001/items/${group.itemId}/sync`, {
             method: "POST"
         }),
-        onSuccess: () => queryClient.invalidateQueries(['accounts'])
+        onSuccess: () => {
+            queryClient.invalidateQueries(['accounts']);
+            queryClient.invalidateQueries(['transactions']);
+        }
     });
 
     return (
