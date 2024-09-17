@@ -1,14 +1,19 @@
+import { AccountGroupResonse } from "../Contracts/Responses";
 import AccountListing from "./AccountListing";
 import SyncButton from "./SyncButton";
 
-function AccountGroup() {
+export interface AccountGroupProps {
+    group: AccountGroupResonse
+}
 
+function AccountGroup({ group }: AccountGroupProps) {
     return (
         <div>
             <SyncButton text="Sync" textSize="sm" iconSize="sm"/>
             <ul className="flex flex-col gap-1">
-                <AccountListing/>
-                <AccountListing/>
+                {group.accounts.map(a =>
+                    <AccountListing account={a}/>)
+                }
             </ul>
         </div>
     );

@@ -18,3 +18,18 @@ export interface TransactionsResponse {
 export interface CategoriesResponse {
     categories: string[]
 }
+
+export interface AccountResponse {
+    name: string,
+    availableBalance?: number,
+    currentBalance?: number
+}
+
+export interface AccountGroupResonse {
+    itemId: number,
+    accounts: AccountResponse[]
+}
+
+export interface AccountsResponse {
+    groups: AccountGroupResonse[]
+}

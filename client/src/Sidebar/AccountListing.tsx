@@ -1,8 +1,15 @@
-function AccountListing() {
+import { AccountResponse } from "../Contracts/Responses";
+import { currencyFormatter } from "../Utils";
+
+export interface AccountListingProps {
+    account: AccountResponse
+}
+
+function AccountListing({ account }: AccountListingProps) {
     return (
-        <li>
-            <p>Chase Checking</p>
-            <p className="text-xs">$12,345.67</p>
+        <li className="mb-2">
+            <p className="truncate text-ellipsis" title={account.name}>{account.name}</p>
+            {account.currentBalance && <p className="text-xs">{currencyFormatter.format(account.currentBalance)}</p>}
         </li>
     );
 }
