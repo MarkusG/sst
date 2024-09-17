@@ -30,7 +30,7 @@ public partial class UpdateTransactionCommand
                 .SetProperty(tt => tt.Timestamp, req.Timestamp)
                 .SetProperty(tt => tt.Amount, req.Amount)
                 .SetProperty(tt => tt.Description, req.Description)
-                .SetProperty(tt => tt.AccountMask, req.Account)
+                .SetProperty(tt => tt.AccountName, req.Account)
                 .SetProperty(tt => tt.Category, req.Category));
 
         return affected > 0;
