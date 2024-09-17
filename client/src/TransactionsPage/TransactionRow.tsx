@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Transaction } from "./TransactionsPage";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CategoriesResponse } from "../Contracts/Responses";
 
 interface TransactionRowProps {
     transaction: Transaction
@@ -20,6 +21,12 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
 
     const queryClient = useQueryClient();
 
+    const { data } = useQuery<CategoriesResponse>({
+        queryKey: ['categories'],
+        queryFn: async () => await fetch('https://localhost:5001/categories')
+            .then((res) => res.json())
+    });
+
     const updateMutation = useMutation({
         mutationFn: async (category: string | null) => {
             await fetch(`https://localhost:5001/transactions/${transaction.id}`, {
@@ -37,6 +44,7 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
         transaction.category = category ?? undefined;
         await onUpdated(transaction);
         await updateMutation.mutateAsync(category);
+        queryClient.invalidateQueries(['categories']);
         setCategorizing(false);
     }
 
@@ -68,12 +76,19 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
             <td className="px-1">
                 {!categorizing ? <button className={`w-full text-left ${transaction.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
                     : (
-                        <input className="bg-[inherit] focus:bg-gray-200 w-full h-full"
-                            value={category ?? undefined}
-                            autoFocus
-                            onKeyDown={keyDown}
-                            onInput={input}
-                            onBlur={blur}/>
+                        <>
+                            <input className="bg-[inherit] focus:bg-gray-200 w-full h-full" list="categoryList"
+                                value={category ?? undefined}
+                                autoFocus
+                                onKeyDown={keyDown}
+                                onInput={input}
+                                onBlur={blur}/>
+                            {!!data &&
+                            <datalist id="categoryList">
+                                {data.categories.map(c => <option value={c}></option>)}
+                            </datalist>
+                            }
+                        </>
                     )}
             </td>
         </tr>
