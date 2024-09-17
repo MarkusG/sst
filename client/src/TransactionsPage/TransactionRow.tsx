@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Transaction } from "./TransactionsPage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CategoriesResponse } from "../Contracts/Responses";
+import { CategoriesResponse, TransactionResponse } from "../Contracts/Responses";
 
 interface TransactionRowProps {
-    transaction: Transaction
-    onUpdated: (transaction: Transaction) => Promise<void>
+    transaction: TransactionResponse
+    onUpdated: (transaction: TransactionResponse) => Promise<void>
 }
 
 function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {

@@ -5,23 +5,7 @@ import { QueryFunctionContext, useMutation, useQuery } from "@tanstack/react-que
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
-
-export interface Transaction {
-    id: number,
-    timestamp: Date,
-    amount: number,
-    description: string,
-    account: string,
-    category?: string
-}
-
-interface TransactionsResponse {
-    page: number,
-    pageCount: number,
-    totalPages: number,
-    totalCount: number,
-    transactions: Transaction[]
-}
+import { TransactionResponse, TransactionsResponse } from "../Contracts/Responses";
 
 async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsResponse> {
     const params = queryKey[1] as QueryParameters;
@@ -42,7 +26,7 @@ function TransactionsPage() {
         mutationFn: () => Promise.resolve(null)
     });
 
-    async function transactionUpdated(t: Transaction) {
+    async function transactionUpdated(t: TransactionResponse) {
         // TODO
     }
 
