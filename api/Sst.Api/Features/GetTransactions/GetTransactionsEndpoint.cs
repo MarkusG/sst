@@ -1,4 +1,5 @@
 using FastEndpoints;
+using FluentValidation;
 using Sst.Contracts.Requests;
 
 namespace Sst.Api.Features.GetTransactions;
@@ -24,5 +25,23 @@ public class GetTransactionsEndpoint : Endpoint<GetTransactionsRequest>
         });
 
         await SendOkAsync(response);
+    }
+}
+
+public class GetTransactionsRequestValidator : Validator<GetTransactionsRequest>
+{
+    public GetTransactionsRequestValidator()
+    {
+        RuleFor(r => r.PageSize)
+            .GreaterThan(0)
+            .WithMessage("Page size must be positive");
+
+        RuleFor(r => r.SortDirection)
+            .Must(r => r is "up" or "down")
+            .WithMessage("Sort direction must be 'up' or 'down'");
+
+        RuleFor(r => r.SortField)
+            .Must(r => r is "timestamp" or "amount" or "description" or "account" or "category")
+            .WithMessage("Sort field must be one of 'timestamp', 'amount', 'description', 'account', or 'category'");
     }
 }

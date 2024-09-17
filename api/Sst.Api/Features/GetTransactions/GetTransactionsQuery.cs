@@ -36,7 +36,6 @@ public partial class GetTransactionsQuery
                 "description" => ctx.Transactions.OrderByDescending(t => t.Description),
                 "account" => ctx.Transactions.OrderByDescending(t => t.AccountName),
                 "category" => ctx.Transactions.OrderByDescending(t => t.Category),
-                // TODO validation
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -49,7 +48,6 @@ public partial class GetTransactionsQuery
                 "description" => ctx.Transactions.OrderBy(t => t.Description),
                 "account" => ctx.Transactions.OrderBy(t => t.AccountName),
                 "category" => ctx.Transactions.OrderBy(t => t.Category),
-                // TODO validation
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
