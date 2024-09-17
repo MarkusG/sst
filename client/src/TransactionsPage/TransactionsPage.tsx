@@ -80,7 +80,7 @@ function TransactionsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.transactions.map(t => <TransactionRow transaction={t}/>)}
+                        {data?.transactions.map(t => <TransactionRow transaction={t} key={t.id}/>)}
                     </tbody>
                 </SortableTable>
             </div>
