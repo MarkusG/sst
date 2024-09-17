@@ -4,14 +4,16 @@ interface SyncButtonProps {
     text: String
     textSize: String
     iconSize: String
+    onClick: () => Promise<void>
 }
 
 function SyncButton(props: SyncButtonProps) {
     const [syncing, setSyncing] = useState(false);
 
-    function sync() {
+    async function sync() {
         setSyncing(true);
-        setTimeout(() => setSyncing(false), 1000);
+        await props.onClick();
+        setSyncing(false);
     }
 
     return (
