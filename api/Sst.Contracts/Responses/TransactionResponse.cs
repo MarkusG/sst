@@ -1,4 +1,4 @@
-namespace Sst.Api.Contracts;
+namespace Sst.Contracts.Responses;
 
 public class TransactionResponse
 {

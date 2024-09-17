@@ -1,8 +1,11 @@
 using FastEndpoints;
+using Sst.Contracts;
+using Sst.Contracts.Requests;
+using Sst.Contracts.Responses;
 
 namespace Sst.Api.Features.CreateItem;
 
-public class CreateItemEndpoint : Endpoint<CreateItemRequest, CreateItemResponse>
+public class CreateItemEndpoint : Endpoint<CreateItemRequest, ItemResponse>
 {
     public required CreateItemCommand.Handler Handler { get; set; }
     
@@ -19,7 +22,7 @@ public class CreateItemEndpoint : Endpoint<CreateItemRequest, CreateItemResponse
             AccessToken = req.AccessToken
         }, ct);
 
-        await SendAsync(new CreateItemResponse
+        await SendAsync(new ItemResponse
         {
             Id = itemId
         }, 201);

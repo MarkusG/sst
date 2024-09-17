@@ -1,4 +1,4 @@
-namespace Sst.Api.Features.CreateItem;
+namespace Sst.Contracts.Requests;
 
 public record CreateItemRequest
 {

@@ -1,4 +1,4 @@
-namespace Sst.Api.Features.SyncTransactions;
+namespace Sst.Contracts.Requests;
 
 public record SyncTransactionsRequest
 {

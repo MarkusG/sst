@@ -1,4 +1,5 @@
 using FastEndpoints;
+using Sst.Contracts.Requests;
 
 namespace Sst.Api.Features.UpdateTransaction;
 

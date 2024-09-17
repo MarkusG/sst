@@ -1,4 +1,4 @@
-namespace Sst.Api.Features.ExchangePublicToken;
+namespace Sst.Contracts.Requests;
 
 public record ExchangePublicTokenRequest
 {

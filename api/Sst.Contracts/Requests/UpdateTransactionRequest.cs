@@ -1,4 +1,4 @@
-namespace Sst.Api.Features.UpdateTransaction;
+namespace Sst.Contracts.Requests;
 
 public class UpdateTransactionRequest
 {

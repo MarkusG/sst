@@ -1,4 +1,4 @@
-namespace Sst.Api.Features.GetTransactions;
+namespace Sst.Contracts.Requests;
 
 public class GetTransactionsRequest
 {

@@ -1,6 +1,7 @@
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
-using Sst.Api.Contracts;
+using Sst.Contracts;
+using Sst.Contracts.Responses;
 using Sst.Database;
 using Sst.Database.Entities;
 
@@ -20,7 +21,7 @@ public partial class GetTransactionsQuery
         public required string? SortDirection { get; set; }
     }
 
-    private static async ValueTask<GetTransactionsResponse> HandleAsync(
+    private static async ValueTask<TransactionsResponse> HandleAsync(
         Query request,
         SstDbContext ctx,
         CancellationToken token)
@@ -65,7 +66,7 @@ public partial class GetTransactionsQuery
 
         var totalCount = await ctx.Transactions.CountAsync(token);
 
-        return new GetTransactionsResponse
+        return new TransactionsResponse
         {
             Page = request.Page,
             PageCount = transactions.Count,
