@@ -51,6 +51,8 @@ public partial class ExchangePublicTokenCommand
             {
                 PlaidId = a.AccountId,
                 Name = a.OfficialName ?? a.Name,
+                AvailableBalance = a.Balances.Available,
+                CurrentBalance = a.Balances.Current,
                 Item = item
             });
         }
