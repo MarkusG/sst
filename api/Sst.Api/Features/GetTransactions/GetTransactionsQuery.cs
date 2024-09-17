@@ -80,7 +80,7 @@ public partial class GetTransactionsQuery
                 Amount = t.Amount,
                 Description = t.Description,
                 Category = t.Category
-            }).ToArray()
+            })
         };
     }
 }
