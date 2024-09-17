@@ -12,6 +12,7 @@ public partial class GetAccountsQuery
     {
         var groups = await ctx.Accounts
             .GroupBy(a => a.ItemId)
+            .OrderBy(g => g.Key)
             .Select(g => new AccountGroupResponse
             {
                 ItemId = g.Key,
@@ -20,7 +21,7 @@ public partial class GetAccountsQuery
                     Name = a.Name,
                     AvailableBalance = a.AvailableBalance,
                     CurrentBalance = a.CurrentBalance
-                })
+                }).OrderBy(a => a.Name).AsEnumerable()
             })
             .ToListAsync(token);
 
