@@ -4,10 +4,9 @@ import { CategoriesResponse, TransactionResponse } from "../Contracts/Responses"
 
 interface TransactionRowProps {
     transaction: TransactionResponse
-    onUpdated: (transaction: TransactionResponse) => Promise<void>
 }
 
-function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
+function TransactionRow({ transaction }: TransactionRowProps) {
     const [categorizing, setCategorizing] = useState(false);
     const [category, setCategory] = useState<string | null>(transaction.category ?? null);
 
@@ -41,7 +40,6 @@ function TransactionRow({ transaction, onUpdated }: TransactionRowProps) {
 
     async function categorize() {
         transaction.category = category ?? undefined;
-        await onUpdated(transaction);
         await updateMutation.mutateAsync(category);
         queryClient.invalidateQueries(['categories']);
         setCategorizing(false);

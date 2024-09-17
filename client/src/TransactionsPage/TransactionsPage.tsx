@@ -1,11 +1,11 @@
 import SortableHeaderCell from "../SortableHeaderCell";
 import SortableTable, { SortOptions } from "../SortableTable/SortableTable";
 import TransactionRow from "./TransactionRow";
-import { QueryFunctionContext, useMutation, useQuery } from "@tanstack/react-query";
+import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
-import { TransactionResponse, TransactionsResponse } from "../Contracts/Responses";
+import { TransactionsResponse } from "../Contracts/Responses";
 
 async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsResponse> {
     const params = queryKey[1] as QueryParameters;
@@ -21,14 +21,6 @@ function TransactionsPage() {
         keepPreviousData: true,
         queryFn: query
     });
-
-    const mutation = useMutation<TransactionsResponse | null>({
-        mutationFn: () => Promise.resolve(null)
-    });
-
-    async function transactionUpdated(t: TransactionResponse) {
-        // TODO
-    }
 
     if (isLoading) {
         return (
@@ -88,7 +80,7 @@ function TransactionsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.transactions.map(t => <TransactionRow transaction={t} onUpdated={transactionUpdated}/>)}
+                        {data?.transactions.map(t => <TransactionRow transaction={t}/>)}
                     </tbody>
                 </SortableTable>
             </div>
