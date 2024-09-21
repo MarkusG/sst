@@ -35,7 +35,7 @@ function CashflowPage() {
                     <div className="border-b border-gray-300 px-2">Mar</div>
                     <div className="border-b border-gray-300 px-2">Apr</div>
                     <div className="border-b border-gray-300 px-2">May</div>
-                    <div className="border-b border-gray-300 px-2">Jul</div>
+                    <div className="border-b border-gray-300 px-2">Jun</div>
                     <div className="border-b border-gray-300 px-2">Jul</div>
                     <div className="border-b border-gray-300 px-2">Aug</div>
                     <div className="border-b border-gray-300 px-2">Sep</div>
@@ -50,7 +50,7 @@ function CashflowPage() {
                             <div className="px-2"><Amount amount={c.march}/></div>
                             <div className="px-2"><Amount amount={c.april}/></div>
                             <div className="px-2"><Amount amount={c.may}/></div>
-                            <div className="px-2"><Amount amount={c.july}/></div>
+                            <div className="px-2"><Amount amount={c.june}/></div>
                             <div className="px-2"><Amount amount={c.july}/></div>
                             <div className="px-2"><Amount amount={c.august}/></div>
                             <div className="px-2"><Amount amount={c.september}/></div>
