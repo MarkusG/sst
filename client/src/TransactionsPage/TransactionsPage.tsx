@@ -14,7 +14,7 @@ async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsR
 }
 
 function TransactionsPage() {
-    const [params, setParams] = useState(new QueryParameters({ pageSize: 20, sortField: "timestamp", sortDirection: "up" }));
+    const [params, setParams] = useState(new QueryParameters({ pageSize: 100, sortField: "timestamp", sortDirection: "up" }));
     const [categorizingTransactionId, setCategorizingTransactionId] = useState<number | null>(null);
 
     const { data, error, isLoading } = useQuery<TransactionsResponse>({
