@@ -15,6 +15,7 @@ async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsR
 
 function TransactionsPage() {
     const [params, setParams] = useState(new QueryParameters({ pageSize: 20, sortField: "timestamp", sortDirection: "up" }));
+    const [categorizingTransactionId, setCategorizingTransactionId] = useState<number | null>(null);
 
     const { data, error, isLoading } = useQuery<TransactionsResponse>({
         queryKey: ['transactions', params],
@@ -61,6 +62,19 @@ function TransactionsPage() {
         setParams(new QueryParameters({ ...params, sortField: field, sortDirection: direction }));
     }
 
+    function categorized(id: number, moveNext: boolean) {
+        if (!moveNext) {
+            setCategorizingTransactionId(null);
+            return;
+        }
+
+        const idx = data?.transactions.findIndex((t) => t.id === id) ?? -1;
+        if (idx === -1)
+            return;
+        const next = data?.transactions[idx + 1];
+        setCategorizingTransactionId(next?.id ?? null);
+    }
+
     return (
         <div className="flex flex-col h-screen">
             <div className="px-4 pt-2">
@@ -80,7 +94,13 @@ function TransactionsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.transactions.map(t => <TransactionRow transaction={t} key={t.id}/>)}
+                        {data?.transactions.map(t =>
+                            <TransactionRow
+                                transaction={t}
+                                isCategorizing={t.id === categorizingTransactionId}
+                                onCategorized={categorized}
+                                key={t.id}/>
+                        )}
                     </tbody>
                 </SortableTable>
             </div>

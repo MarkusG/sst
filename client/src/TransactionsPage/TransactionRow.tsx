@@ -4,10 +4,12 @@ import { CategoriesResponse, TransactionResponse } from "../Contracts/Responses"
 import Amount from "../Amount";
 
 interface TransactionRowProps {
-    transaction: TransactionResponse
+    transaction: TransactionResponse,
+    isCategorizing: boolean,
+    onCategorized: (id: number, moveNext: boolean) => void
 }
 
-function TransactionRow({ transaction }: TransactionRowProps) {
+function TransactionRow({ transaction, isCategorizing, onCategorized }: TransactionRowProps) {
     const [categorizing, setCategorizing] = useState(false);
     const [category, setCategory] = useState<string | null>(transaction.category ?? null);
 
@@ -32,24 +34,25 @@ function TransactionRow({ transaction }: TransactionRowProps) {
         onSuccess: () => queryClient.invalidateQueries(['transactions'])
     });
 
-    async function categorize(category: string | null) {
+    async function categorize(category: string | null, moveNext: boolean) {
         transaction.category = category ?? undefined;
         await updateMutation.mutateAsync(category);
         queryClient.invalidateQueries(['categories']);
         setCategorizing(false);
+        onCategorized(transaction.id, moveNext);
     }
 
-    async function finishInput() {
+    async function finishInput(moveNext: boolean) {
         if (!!category?.trim()) {
-            await categorize(category.trim());
+            await categorize(category.trim(), moveNext);
         }
         else {
-            await categorize(null);
+            await categorize(null, moveNext);
         }
     }
 
     async function blur() {
-        await finishInput();
+        await finishInput(false);
     }
 
     function input(e: React.ChangeEvent<HTMLInputElement>) {
@@ -58,7 +61,7 @@ function TransactionRow({ transaction }: TransactionRowProps) {
 
     async function keyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
-            await finishInput();
+            await finishInput(true);
         }
     }
 
@@ -69,7 +72,7 @@ function TransactionRow({ transaction }: TransactionRowProps) {
             <td className="px-1">{transaction.description}</td>
             <td className="px-1">{transaction.account}</td>
             <td className="px-1">
-                {!categorizing ? <button className={`w-full text-left ${transaction.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
+                {!(categorizing || isCategorizing) ? <button className={`w-full text-left ${transaction.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
                     : (
                         <>
                             <input className="bg-[inherit] focus:bg-gray-200 w-full h-full" list="categoryList"
