@@ -39,7 +39,24 @@ public partial class GetCashFlowQuery
                 October = g.FirstOrDefault(t => t.Month == 10)?.Total ?? 0,
                 November = g.FirstOrDefault(t => t.Month == 11)?.Total ?? 0,
                 December = g.FirstOrDefault(t => t.Month == 12)?.Total ?? 0,
-            })
+                Total = g.Select(t => t.Total).Sum()
+            }),
+            Totals = new CashFlowTotalsResponse
+            {
+                January = totals.Where(t => t.Month == 1).Sum(t => t.Total),
+                February = totals.Where(t => t.Month == 2).Sum(t => t.Total),
+                March = totals.Where(t => t.Month == 3).Sum(t => t.Total),
+                April = totals.Where(t => t.Month == 4).Sum(t => t.Total),
+                May = totals.Where(t => t.Month == 5).Sum(t => t.Total),
+                June = totals.Where(t => t.Month == 6).Sum(t => t.Total),
+                July = totals.Where(t => t.Month == 7).Sum(t => t.Total),
+                August = totals.Where(t => t.Month == 8).Sum(t => t.Total),
+                September = totals.Where(t => t.Month == 9).Sum(t => t.Total),
+                October = totals.Where(t => t.Month == 10).Sum(t => t.Total),
+                November = totals.Where(t => t.Month == 11).Sum(t => t.Total),
+                December = totals.Where(t => t.Month == 12).Sum(t => t.Total),
+                Total = totals.Sum(t => t.Total)
+            }
         };
     }
 }

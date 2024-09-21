@@ -1,9 +1,7 @@
 namespace Sst.Contracts.Responses;
 
-public class CategoryCashFlowResponse
+public class CashFlowTotalsResponse
 {
-    public required string Category { get; set; }
-
     public required decimal January { get; set; }
     
     public required decimal February { get; set; }
