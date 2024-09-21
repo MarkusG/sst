@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CategoriesResponse, TransactionResponse } from "../Contracts/Responses";
-import { currencyFormatter } from "../Utils";
+import Amount from "../Amount";
 
 interface TransactionRowProps {
     transaction: TransactionResponse
@@ -61,7 +61,7 @@ function TransactionRow({ transaction }: TransactionRowProps) {
     return (
         <tr className="odd:bg-gray-100">
             <td className="px-1 pl-4">{transaction.timestamp.toLocaleString()}</td>
-            <td className={`px-1 text-right ${transaction.amount < 0 ? "text-red-500" : ""}`}>{currencyFormatter.format(transaction.amount)}</td>
+            <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
             <td className="px-1">{transaction.description}</td>
             <td className="px-1">{transaction.account}</td>
             <td className="px-1">

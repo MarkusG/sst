@@ -10,7 +10,7 @@ function Nav() {
                 <SstNavLink to="/targets">
                     <i className="fa-solid fa-fw fa-bullseye fa-lg"></i> Targets
                 </SstNavLink>
-                <SstNavLink to="/cash-flow">
+                <SstNavLink to="/cashflow">
                     <i className="fa-solid fa-fw fa-dollar-sign fa-lg"></i> Cash Flow
                 </SstNavLink>
             </ul>
