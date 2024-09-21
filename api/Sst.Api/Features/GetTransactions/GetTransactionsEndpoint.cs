@@ -37,11 +37,11 @@ public class GetTransactionsRequestValidator : Validator<GetTransactionsRequest>
             .WithMessage("Page size must be positive");
 
         RuleFor(r => r.SortDirection)
-            .Must(r => r is "up" or "down")
+            .Must(r => r is "up" or "down" or null)
             .WithMessage("Sort direction must be 'up' or 'down'");
 
         RuleFor(r => r.SortField)
-            .Must(r => r is "timestamp" or "amount" or "description" or "account" or "category")
+            .Must(r => r is "timestamp" or "amount" or "description" or "account" or "category" or null)
             .WithMessage("Sort field must be one of 'timestamp', 'amount', 'description', 'account', or 'category'");
     }
 }
