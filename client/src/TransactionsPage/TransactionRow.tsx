@@ -32,29 +32,33 @@ function TransactionRow({ transaction }: TransactionRowProps) {
         onSuccess: () => queryClient.invalidateQueries(['transactions'])
     });
 
-    async function categorize() {
+    async function categorize(category: string | null) {
         transaction.category = category ?? undefined;
         await updateMutation.mutateAsync(category);
         queryClient.invalidateQueries(['categories']);
         setCategorizing(false);
     }
 
+    async function finishInput() {
+        if (!!category?.trim()) {
+            await categorize(category.trim());
+        }
+        else {
+            await categorize(null);
+        }
+    }
+
     async function blur() {
-        await categorize();
+        await finishInput();
     }
 
     function input(e: React.ChangeEvent<HTMLInputElement>) {
-        if (e.target.value.trim()) {
-            setCategory(e.target.value.trim());
-        }
-        else {
-            setCategory(null);
-        }
+        setCategory(e.target.value);
     }
 
     async function keyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
-            await categorize();
+            await finishInput();
         }
     }
 
