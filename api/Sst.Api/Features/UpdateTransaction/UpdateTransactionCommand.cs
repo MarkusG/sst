@@ -1,6 +1,7 @@
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
 using Sst.Database;
+using Sst.Database.Entities;
 
 namespace Sst.Api.Features.UpdateTransaction;
 
@@ -24,15 +25,59 @@ public partial class UpdateTransactionCommand
     
     private static async ValueTask<bool> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
-        var affected = await ctx.Transactions
-            .Where(t => t.Id == req.Id)
-            .ExecuteUpdateAsync(t => t
-                .SetProperty(tt => tt.Timestamp, req.Timestamp)
-                .SetProperty(tt => tt.Amount, req.Amount)
-                .SetProperty(tt => tt.Description, req.Description)
-                .SetProperty(tt => tt.AccountName, req.Account)
-                .SetProperty(tt => tt.Category, req.Category));
+        var transaction = await ctx.Transactions
+            .FirstOrDefaultAsync(t => t.Id == req.Id, token);
 
-        return affected > 0;
+        if (transaction is null)
+            return false;
+
+        if (req.Category is not null)
+        {
+            // get requested category
+            var category = await ctx.Categories
+                .FirstOrDefaultAsync(c => c.Name == req.Category, token);
+            
+            // if category exists, put the transaction into it
+            if (category is { Id: var id })
+            {
+                transaction.CategoryId = id;
+            }
+            // else, create the category and put the transaction into it
+            else
+            {
+                transaction.Category = new Category
+                {
+                    Name = req.Category,
+                    SuperCategoryId = null
+                };
+            }
+        }
+        else if (transaction.CategoryId is not null)
+        {
+            // if category has no more transactions, delete it
+            var category = await ctx.Categories
+                .Where(c => c.Id == transaction.CategoryId)
+                .Select(c => new
+                {
+                    Category = c,
+                    TransactionCount = c.Transactions.Count
+                })
+                .FirstOrDefaultAsync(token);
+            
+            if (category?.TransactionCount == 1)
+            {
+                ctx.Categories.Remove(category.Category);
+            }
+            
+            transaction.CategoryId = null;
+        }
+
+        transaction.Timestamp = req.Timestamp;
+        transaction.Amount = req.Amount;
+        transaction.Description = req.Description;
+        transaction.AccountName = req.Account;
+
+        await ctx.SaveChangesAsync(token);
+        return true;
     }
 }

@@ -17,7 +17,9 @@ public class Transaction
 
     public required string Currency { get; set; }
 
-    public string? Category { get; set; }
+    public int? CategoryId { get; set; }
+    
+    public Category? Category { get; set; }
 
     public DateTimeOffset? Timestamp { get; set; }
 

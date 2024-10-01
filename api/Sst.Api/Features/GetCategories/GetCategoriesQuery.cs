@@ -10,10 +10,8 @@ public partial class GetCategoriesQuery
 {
     private static async ValueTask<CategoriesResponse> HandleAsync(object _, SstDbContext ctx, CancellationToken token)
     {
-        var categories = await ctx.Transactions
-            .Where(t => t.Category != null)
-            .Select(t => t.Category!)
-            .Distinct()
+        var categories = await ctx.Categories
+            .Select(t => t.Name)
             .ToListAsync(token);
 
         return new CategoriesResponse

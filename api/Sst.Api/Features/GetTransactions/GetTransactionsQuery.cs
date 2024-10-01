@@ -26,37 +26,38 @@ public partial class GetTransactionsQuery
         SstDbContext ctx,
         CancellationToken token)
     {
-        IOrderedQueryable<Transaction> query;
+        var query = ctx.Transactions.Include(t => t.Category);
+        IOrderedQueryable<Transaction> sortedQuery;
         if (request is { SortField: not null, SortDirection: "up" })
         {
-            query = request.SortField switch
+            sortedQuery = request.SortField switch
             {
-                "timestamp" => ctx.Transactions.OrderByDescending(t => t.Timestamp),
-                "amount" => ctx.Transactions.OrderByDescending(t => t.Amount),
-                "description" => ctx.Transactions.OrderByDescending(t => t.Description),
-                "account" => ctx.Transactions.OrderByDescending(t => t.AccountName),
-                "category" => ctx.Transactions.OrderByDescending(t => t.Category),
+                "timestamp" => query.OrderByDescending(t => t.Timestamp),
+                "amount" => query.OrderByDescending(t => t.Amount),
+                "description" => query.OrderByDescending(t => t.Description),
+                "account" => query.OrderByDescending(t => t.AccountName),
+                "category" => query.OrderByDescending(t => t.Category),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
         else if (request.SortField is not null)
         {
-            query = request.SortField switch
+            sortedQuery = request.SortField switch
             {
-                "timestamp" => ctx.Transactions.OrderBy(t => t.Timestamp),
-                "amount" => ctx.Transactions.OrderBy(t => t.Amount),
-                "description" => ctx.Transactions.OrderBy(t => t.Description),
-                "account" => ctx.Transactions.OrderBy(t => t.AccountName),
-                "category" => ctx.Transactions.OrderBy(t => t.Category),
+                "timestamp" => query.OrderBy(t => t.Timestamp),
+                "amount" => query.OrderBy(t => t.Amount),
+                "description" => query.OrderBy(t => t.Description),
+                "account" => query.OrderBy(t => t.AccountName),
+                "category" => query.OrderBy(t => t.Category),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
         else
         {
-            query = ctx.Transactions.OrderByDescending(t => t.Timestamp);
+            sortedQuery = ctx.Transactions.OrderByDescending(t => t.Timestamp);
         }
 
-        var transactions = await query
+        var transactions = await sortedQuery
             .ThenBy(t => t.Id)
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
@@ -77,7 +78,7 @@ public partial class GetTransactionsQuery
                 Account = t.AccountName,
                 Amount = t.Amount,
                 Description = t.Description,
-                Category = t.Category
+                Category = t.Category?.Name
             })
         };
     }
