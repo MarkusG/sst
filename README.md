@@ -1,3 +1,7 @@
+# Screenshots
+![Transactions page](https://i.imgur.com/ZVG3QPo.png)
+![Cash flow page](https://i.imgur.com/YksOzmq.png)
+
 # Setting Up the API
 
 1. Create your PostgreSQL instance however you want, and run
