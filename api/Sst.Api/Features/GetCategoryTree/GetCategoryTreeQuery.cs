@@ -13,12 +13,13 @@ public partial class GetCategoryTreeQuery
     {
         return new CategoryTreeEntryResponse
         {
-            Name = entry.Category,
+            Id = entry.Category.Id,
+            Name = entry.Category.Name,
             Subcategories = entry.Children.Select(Map)
         };
     }
     
-    private record TreeEntry(string Category, List<TreeEntry> Children);
+    private record TreeEntry(CategoryTreeEntry Category, List<TreeEntry> Children);
 
     private static (TreeEntry, int) GetEntryTree(int idx, List<CategoryTreeEntry> entries)
     {
@@ -27,7 +28,7 @@ public partial class GetCategoryTreeQuery
         
         // end of entries; no children
         if (entries.Count == idx + 1)
-            return (new TreeEntry(entry.Name, []), -1);
+            return (new TreeEntry(entry, []), -1);
         
         // get next entry
         var next = entries[++idx];
@@ -43,7 +44,7 @@ public partial class GetCategoryTreeQuery
             next = entries[idx];
         }
         
-        return (new TreeEntry(entry.Name, children), idx);
+        return (new TreeEntry(entry, children), idx);
     }
 
     private static async ValueTask<CategoryTreeResponse> HandleAsync(object _, SstDbContext ctx, CancellationToken token)
