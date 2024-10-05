@@ -23,6 +23,7 @@ public partial class UpdateCategoryCommand
     
     private static async ValueTask<bool> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
+        var validationCtx = ValidationContext<UpdateCategoryRequest>.Instance;
         await using var transaction = await ctx.Database.BeginTransactionAsync(IsolationLevel.Serializable, token);
 
         var category = await ctx.Categories
@@ -31,18 +32,19 @@ public partial class UpdateCategoryCommand
 
         if (category is null)
             return false;
+        
 
         if (req.SuperCategoryId is not null)
         {
+            if (req.SuperCategoryId == req.Id)
+                validationCtx.ThrowError("Cannot make a category its own subcategory");
+                
             var superCategory = await ctx.Categories
                 .Include(c => c.Subcategories)
                 .FirstOrDefaultAsync(c => c.Id == req.SuperCategoryId, token);
             
             if (superCategory is null)
-            {
-                var validationCtx = ValidationContext<UpdateCategoryRequest>.Instance;
                 validationCtx.ThrowError("Invalid supercategory");
-            }
 
             if (superCategory.Id != category.SuperCategoryId)
             {
