@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sst.Database.Entities;
 
-public record CategoryTreeEntry(int Id, string Name, int Level, int? SuperCategoryId, string Path);
+public record CategoryTreeEntry(int Id, string Name, int Level, int Position, int? SuperCategoryId, string Path);
 
 public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration<CategoryTreeEntry>
 {
@@ -12,17 +12,17 @@ public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration
         builder
             .ToSqlQuery($"""
                             select * from (with recursive categories as (
-                                select "Id", "Name", 0 as "Level", "SuperCategoryId", cast("Id" as text) as "Path"
+                                select "Id", "Name", 0 as "Level", "Position", "SuperCategoryId", cast("Id" as text) as "Path"
                                 from "Categories"
                                 where "SuperCategoryId" is null
-                                
+                            
                                 union all
-                                
-                                select c."Id", c."Name", "Level" + 1, c."SuperCategoryId", cast("Path" || '.' || cast(c."Id" as text) as text) as Path
+                            
+                                select c."Id", c."Name", "Level" + 1, c."Position", c."SuperCategoryId", cast("Path" || '.' || cast(c."Id" as text) as text) as Path
                                 from "Categories" c
-                                inner join categories cats on cats."Id" = c."SuperCategoryId"
+                                         inner join categories cats on cats."Id" = c."SuperCategoryId"
                             )
-                            select * from categories order by "Path") as CategoryTreeEntries;
+                            select * from categories order by "Path", "Position") as CategoryTreeEntries;
                          """);
     }
 }

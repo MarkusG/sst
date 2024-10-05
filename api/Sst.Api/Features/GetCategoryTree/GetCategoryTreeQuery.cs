@@ -15,6 +15,8 @@ public partial class GetCategoryTreeQuery
         {
             Id = entry.Category.Id,
             Name = entry.Category.Name,
+            Position = entry.Category.Position,
+            SuperCategoryId = entry.Category.SuperCategoryId,
             Subcategories = entry.Children.Select(Map)
         };
     }
