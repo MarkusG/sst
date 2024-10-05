@@ -90,6 +90,7 @@ function CategoriesPage() {
             <h1 className="text-3xl text-center mt-2">Categories</h1>
             <Dropzone onDragLeave={clearDragOver}>
                 {data?.categories.map(c => <Category
+                                      key={c.id}
                                       entry={c}
                                       last={data.categories.indexOf(c) === data.categories.length - 1}
                                       level={0}

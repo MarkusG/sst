@@ -85,6 +85,7 @@ function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDr
                 {entry.subcategories.length > 0 &&
                     <div className={!open ? 'hidden' : ''}>
                         {entry.subcategories.map(c => <Category
+                                                 key={c.id}
                                                  entry={c}
                                                  last={c.position === entry.subcategories.length}
                                                  level={level + 1}
