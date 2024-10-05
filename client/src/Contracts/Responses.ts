@@ -71,3 +71,15 @@ export interface CashFlowResponse {
     categories: CategoryCashFlowResponse[],
     totals: CashFlowTotalsResponse
 }
+
+export interface CategoryTreeEntryResponse {
+    id: number,
+    name: string,
+    position: number,
+    superCategoryId: number,
+    subcategories: CategoryTreeEntryResponse[]
+}
+
+export interface CategoryTreeResponse {
+    categories: CategoryTreeEntryResponse[]
+}

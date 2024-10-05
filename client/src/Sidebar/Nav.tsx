@@ -7,6 +7,9 @@ function Nav() {
                 <SstNavLink to="/transactions">
                     <i className="fa-solid fa-fw fa-arrow-right-arrow-left fa-lg"></i> Transactions
                 </SstNavLink>
+                <SstNavLink to="/categories">
+                    <i className="fa-solid fa-fw fa-list fa-lg"></i> Categories
+                </SstNavLink>
                 <SstNavLink to="/targets">
                     <i className="fa-solid fa-fw fa-bullseye fa-lg"></i> Targets
                 </SstNavLink>
