@@ -12,13 +12,13 @@ public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration
         builder
             .ToSqlQuery($"""
                             select * from (with recursive categories as (
-                                select "Id", "Name", 0 as "Level", "Position", "SuperCategoryId", cast("Id" as text) as "Path"
+                                select "Id", "Name", 0 as "Level", "Position", "SuperCategoryId", cast("Position" as text) as "Path"
                                 from "Categories"
                                 where "SuperCategoryId" is null
                             
                                 union all
                             
-                                select c."Id", c."Name", "Level" + 1, c."Position", c."SuperCategoryId", cast("Path" || '.' || cast(c."Id" as text) as text) as Path
+                                select c."Id", c."Name", "Level" + 1, c."Position", c."SuperCategoryId", cast("Path" || '.' || cast(c."Position" as text) as text) as Path
                                 from "Categories" c
                                          inner join categories cats on cats."Id" = c."SuperCategoryId"
                             )
