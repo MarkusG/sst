@@ -68,6 +68,9 @@ function CategoriesPage() {
         if (!dragOverCategory || !dragOverPosition)
             return;
 
+        if (dragOverCategory.id == c.id)
+            return;
+
         switch (dragOverPosition) {
             case 'top':
                 c.superCategoryId = dragOverCategory.superCategoryId;
