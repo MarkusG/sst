@@ -1,4 +1,3 @@
-using System.Data;
 using FastEndpoints;
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -24,57 +23,63 @@ public partial class UpdateCategoryCommand
     private static async ValueTask<bool> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
         var validationCtx = ValidationContext<UpdateCategoryRequest>.Instance;
-        await using var transaction = await ctx.Database.BeginTransactionAsync(IsolationLevel.Serializable, token);
+        
+        if (req.SuperCategoryId == req.Id)
+            validationCtx.ThrowError("Cannot make a category a child of itself");
 
+        // get category, include current supercategory for later
         var category = await ctx.Categories
             .Include(c => c.SuperCategory)
-            .FirstOrDefaultAsync(c => c.Id == req.Id, token);
+            .ThenInclude(c => c!.Subcategories)
+            .FirstOrDefaultAsync(c => c.Id == req.Id);
 
         if (category is null)
             return false;
         
+        // get the category it's being moved into
+        var target = await ctx.Categories
+            .Include(c => c.Subcategories)
+            .FirstOrDefaultAsync(c => c.Id == req.SuperCategoryId);
 
-        if (req.SuperCategoryId is not null)
+        if (target is null && req.SuperCategoryId is not null)
+            validationCtx.ThrowError("Invalid parent category");
+
+        category.Name = req.Name;
+
+        if (req.SuperCategoryId == category.SuperCategoryId && req.Position == category.Position)
         {
-            if (req.SuperCategoryId == req.Id)
-                validationCtx.ThrowError("Cannot make a category its own subcategory");
-                
-            var superCategory = await ctx.Categories
-                .Include(c => c.Subcategories)
-                .FirstOrDefaultAsync(c => c.Id == req.SuperCategoryId, token);
-            
-            if (superCategory is null)
-                validationCtx.ThrowError("Invalid supercategory");
+            await ctx.SaveChangesAsync(token);
+            return true;
+        }
 
-            if (superCategory.Id != category.SuperCategoryId)
-            {
-                foreach (var c in superCategory.Subcategories.Where(c => c.Position >= req.Position))
-                    c.Position++;
-            }
+        // get the cateogry's new siblings
+        var siblings = target?.Subcategories ??
+                       await ctx.Categories.Where(c => c.SuperCategoryId == null).ToListAsync();
+        var orderedSiblings = siblings.OrderBy(c => c.Position).ToList();
+
+        if (orderedSiblings.Remove(category))
+        {
+            if (req.Position == orderedSiblings.Select(c => c.Position).DefaultIfEmpty().Max() + 1)
+                orderedSiblings.Add(category);
+            else if (req.Position <= category.Position)
+                orderedSiblings.Insert(req.Position - 1, category);
             else
-            {
-                superCategory.Subcategories.Remove(category);
-                if (req.Position == superCategory.Subcategories.Max(c => c.Position) + 1)
-                    superCategory.Subcategories.Add(category);
-                else
-                    superCategory.Subcategories.Insert(req.Position - 1, category);
-                foreach (var (c, i) in superCategory.Subcategories.Select((c, i) => (c, i)))
-                    c.Position = i + 1;
-            }
+                orderedSiblings.Insert(req.Position - 2, category);
         }
         else
         {
-            await ctx.Categories
-                .Where(c => c.SuperCategoryId == null && c.Position >= req.Position)
-                .ExecuteUpdateAsync(c => c.SetProperty(cc => cc.Position, cc => cc.Position + 1), token);
+            if (req.Position == orderedSiblings.Select(c => c.Position).DefaultIfEmpty().Max() + 1)
+                orderedSiblings.Add(category);
+            else
+                orderedSiblings.Insert(req.Position - 1, category);
         }
 
-        category.Name = req.Name;
-        category.Position = req.Position;
-        category.SuperCategoryId = req.SuperCategoryId;
+        foreach (var (c, i) in orderedSiblings.Select((c, i) => (c, i)))
+            c.Position = i + 1;
 
+        category.SuperCategoryId = req.SuperCategoryId;
+        
         await ctx.SaveChangesAsync(token);
-        await transaction.CommitAsync();
         return true;
     }
 }
