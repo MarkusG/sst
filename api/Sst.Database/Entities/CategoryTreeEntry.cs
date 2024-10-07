@@ -18,7 +18,7 @@ public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration
                             
                                 union all
                             
-                                select c."Id", c."Name", "Level" + 1, c."Position", c."SuperCategoryId", cast("Path" || '.' || cast(c."Position" as text) as text) as Path
+                                select c."Id", c."Name", "Level" + 1, c."Position", c."SuperCategoryId", cast("Path" || '$' || cast(c."Position" as text) as text) as Path
                                 from "Categories" c
                                          inner join categories cats on cats."Id" = c."SuperCategoryId"
                             )
