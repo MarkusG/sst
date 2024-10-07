@@ -27,7 +27,7 @@ public partial class UpdateCategoryCommand
         if (req.ParentId == req.Id)
             validationCtx.ThrowError("Cannot make a category a child of itself");
 
-        // get category, include current supercategory for later
+        // get category, include current parent category for later
         var category = await ctx.Categories
             .Include(c => c.ParentCategory)
             .ThenInclude(c => c!.Subcategories)
@@ -52,7 +52,7 @@ public partial class UpdateCategoryCommand
             return true;
         }
         
-        // get the cateogry's new siblings
+        // get the category's new siblings
         var siblings = target?.Subcategories ??
                        await ctx.Categories.Where(c => c.ParentId == null).ToListAsync();
         var orderedSiblings = siblings.OrderBy(c => c.Position).ToList();
