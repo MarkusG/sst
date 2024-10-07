@@ -26,8 +26,6 @@ public partial class UpdateTransactionCommand
 
     private static async ValueTask<bool> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
-        // explicit transaction to prevent a race condition between getting the max position and inserting the new category
-        await using var dbTransaction = await ctx.Database.BeginTransactionAsync(IsolationLevel.Serializable, token);
         var transaction = await ctx.Transactions
             .FirstOrDefaultAsync(t => t.Id == req.Id, token);
 
@@ -48,24 +46,15 @@ public partial class UpdateTransactionCommand
             // else, create the category and put the transaction into it
             else
             {
-                var position = 1;
-                try
-                {
-                    position = await ctx.Categories.Where(c => c.ParentId == null)
-                        .Select(c => c.Position)
-                        .MaxAsync(token) + 1;
-                }
-                catch
-                {
-                    // ignored
-                }
-            
-                transaction.Category = new Category
-                {
-                    Name = req.Category,
-                    Position = position,
-                    ParentId = null
-                };
+                transaction.CategoryId = (await ctx.Database.SqlQuery<int>(
+                    $"""
+                     insert into "Categories" ("Name", "Position", "ParentId")
+                     select {req.Category}, max("Position") + 1, null
+                     from "Categories"
+                     where "ParentId" is null
+                     returning "Id";
+                     """
+                ).ToListAsync()).First();
             }
         }
         else if (transaction.CategoryId is not null)
@@ -94,7 +83,6 @@ public partial class UpdateTransactionCommand
         transaction.AccountName = req.Account;
 
         await ctx.SaveChangesAsync(token);
-        await dbTransaction.CommitAsync(token);
         return true;
     }
 }
