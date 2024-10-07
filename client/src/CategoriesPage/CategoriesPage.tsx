@@ -103,7 +103,8 @@ function CategoriesPage() {
                                       onDragStart={async (_, data) => setDraggingCategory(data)}
                                       onDragEnd={dragEnd}
                                       onDragOver={categoryDraggedOver}/>)}
-            </Dropzone> </>
+            </Dropzone>
+        </>
     );
 }
 
