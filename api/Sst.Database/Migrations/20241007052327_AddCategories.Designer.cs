@@ -12,8 +12,8 @@ using Sst.Database;
 namespace Sst.Database.Migrations
 {
     [DbContext(typeof(SstDbContext))]
-    [Migration("20241005030657_AddCategoryPosition")]
-    partial class AddCategoryPosition
+    [Migration("20241007052327_AddCategories")]
+    partial class AddCategories
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,10 +74,10 @@ namespace Sst.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Position")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SuperCategoryId")
+                    b.Property<int>("Position")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -85,7 +85,7 @@ namespace Sst.Database.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("SuperCategoryId");
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -122,9 +122,12 @@ namespace Sst.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Path")
+                    b.Property<int[]>("Path")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("integer[]");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("SuperCategoryId")
                         .HasColumnType("integer");
@@ -133,7 +136,7 @@ namespace Sst.Database.Migrations
 
                     b.ToTable((string)null);
 
-                    b.ToSqlQuery("   select * from (with recursive categories as (\n       select \"Id\", \"Name\", 0 as \"Level\", \"SuperCategoryId\", cast(\"Id\" as text) as \"Path\"\n       from \"Categories\"\n       where \"SuperCategoryId\" is null\n       \n       union all\n       \n       select c.\"Id\", c.\"Name\", \"Level\" + 1, c.\"SuperCategoryId\", cast(\"Path\" || '.' || cast(c.\"Id\" as text) as text) as Path\n       from \"Categories\" c\n       inner join categories cats on cats.\"Id\" = c.\"SuperCategoryId\"\n   )\n   select * from categories order by \"Path\") as CategoryTreeEntries;");
+                    b.ToSqlQuery("   select * from (with recursive categories as (\n       select \"Id\", \"Name\", 0 as \"Level\", \"Position\", \"SuperCategoryId\", array[\"Position\"] as \"Path\"\n       from \"Categories\"\n       where \"SuperCategoryId\" is null\n   \n       union all\n   \n       select c.\"Id\", c.\"Name\", \"Level\" + 1, c.\"Position\", c.\"SuperCategoryId\", array_append(\"Path\", c.\"Position\") as Path\n       from \"Categories\" c\n                inner join categories cats on cats.\"Id\" = c.\"SuperCategoryId\"\n   )\n   select * from categories order by \"Path\", \"Position\") as CategoryTreeEntries;");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Item", b =>
@@ -216,11 +219,11 @@ namespace Sst.Database.Migrations
 
             modelBuilder.Entity("Sst.Database.Entities.Category", b =>
                 {
-                    b.HasOne("Sst.Database.Entities.Category", "SuperCategory")
+                    b.HasOne("Sst.Database.Entities.Category", "ParentCategory")
                         .WithMany("Subcategories")
-                        .HasForeignKey("SuperCategoryId");
+                        .HasForeignKey("ParentId");
 
-                    b.Navigation("SuperCategory");
+                    b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Transaction", b =>

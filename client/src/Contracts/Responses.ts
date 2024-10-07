@@ -76,7 +76,7 @@ export interface CategoryTreeEntryResponse {
     id: number,
     name: string,
     position: number,
-    superCategoryId: number,
+    parentId: number,
     subcategories: CategoryTreeEntryResponse[]
 }
 

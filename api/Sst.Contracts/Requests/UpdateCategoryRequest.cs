@@ -8,5 +8,5 @@ public class UpdateCategoryRequest
     
     public required int Position { get; set; }
     
-    public required int? SuperCategoryId { get; set; }
+    public required int? ParentId { get; set; }
 }

@@ -28,14 +28,15 @@ namespace Sst.Database.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    SuperCategoryId = table.Column<int>(type: "integer", nullable: true)
+                    Position = table.Column<int>(type: "integer", nullable: false),
+                    ParentId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Categories_Categories_SuperCategoryId",
-                        column: x => x.SuperCategoryId,
+                        name: "FK_Categories_Categories_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Categories",
                         principalColumn: "Id");
                 });
@@ -52,9 +53,9 @@ namespace Sst.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_SuperCategoryId",
+                name: "IX_Categories_ParentId",
                 table: "Categories",
-                column: "SuperCategoryId");
+                column: "ParentId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Transactions_Categories_CategoryId",

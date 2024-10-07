@@ -8,7 +8,7 @@ public class CategoryTreeEntryResponse
     
     public required int Position { get; set; }
     
-    public required int? SuperCategoryId { get; set; }
+    public required int? ParentId { get; set; }
     
     public required IEnumerable<CategoryTreeEntryResponse> Subcategories { get; set; }
 }

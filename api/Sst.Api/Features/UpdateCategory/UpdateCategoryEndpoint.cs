@@ -20,7 +20,7 @@ public class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest>
             Id = req.Id,
             Name = req.Name,
             Position = req.Position,
-            SuperCategoryId = req.SuperCategoryId
+            ParentId = req.ParentId
         });
 
         if (!result)

@@ -39,7 +39,7 @@ public partial class UpdateTransactionCommand
             // get requested category
             var category = await ctx.Categories
                 .FirstOrDefaultAsync(c => c.Name == req.Category, token);
-
+            
             // if category exists, put the transaction into it
             if (category is { Id: var id })
             {
@@ -51,7 +51,7 @@ public partial class UpdateTransactionCommand
                 var position = 1;
                 try
                 {
-                    position = await ctx.Categories.Where(c => c.SuperCategoryId == null)
+                    position = await ctx.Categories.Where(c => c.ParentId == null)
                         .Select(c => c.Position)
                         .MaxAsync(token) + 1;
                 }
@@ -59,12 +59,12 @@ public partial class UpdateTransactionCommand
                 {
                     // ignored
                 }
-
+            
                 transaction.Category = new Category
                 {
                     Name = req.Category,
                     Position = position,
-                    SuperCategoryId = null
+                    ParentId = null
                 };
             }
         }

@@ -28,7 +28,7 @@ function CategoriesPage() {
                 id: c.id,
                 name: c.name,
                 position: c.position,
-                superCategoryId: c.superCategoryId
+                parentId: c.parentId
             })
         }),
         onSuccess: () => queryClient.invalidateQueries(['categories', 'tree'])
@@ -73,15 +73,15 @@ function CategoriesPage() {
 
         switch (dragOverPosition) {
             case 'top':
-                c.superCategoryId = dragOverCategory.superCategoryId;
+                c.parentId = dragOverCategory.parentId;
                 c.position = dragOverCategory.position;
                 break;
             case 'mid':
-                c.superCategoryId = dragOverCategory.id;
+                c.parentId = dragOverCategory.id;
                 c.position = 1;
                 break;
             case 'bot':
-                c.superCategoryId = dragOverCategory.superCategoryId;
+                c.parentId = dragOverCategory.parentId;
                 c.position = dragOverCategory.position + 1;
         }
 
