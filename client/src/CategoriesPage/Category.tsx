@@ -24,27 +24,14 @@ export interface CategoryProps {
 
 function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDragging, dragOverCategory, dragOverPosition }: CategoryProps) {
     const [open, setOpen] = useState(true);
-    const [dragging, setDragging] = useState(isDragging);
 
     async function dragStart(e: React.DragEvent<HTMLDivElement>, data: CategoryTreeEntryResponse) {
-        setDragging(true);
         e.stopPropagation();
         await onDragStart(e, data);
     }
 
     async function dragEnd(e: React.DragEvent<HTMLDivElement>, data: CategoryTreeEntryResponse) {
-        setDragging(false);
         e.stopPropagation();
-        await onDragEnd(e, data);
-    }
-
-    async function childDragStart(e: React.DragEvent<HTMLDivElement>, data: CategoryTreeEntryResponse) {
-        setDragging(true);
-        await onDragStart(e, data);
-    }
-
-    async function childDragEnd(e: React.DragEvent<HTMLDivElement>, data: CategoryTreeEntryResponse) {
-        setDragging(false);
         await onDragEnd(e, data);
     }
 
@@ -55,7 +42,7 @@ function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDr
     return (
         <Draggable data={entry} onDragStart={dragStart} onDragEnd={dragEnd}>
             <div className="cursor-grab flex flex-col">
-                {(isDragging || isDragging) &&
+                {isDragging &&
                     <div className={`w-full h-[.2rem] ${dragOverCategory?.id === entry.id && dragOverPosition === 'top' ? 'bg-primary-200' : ''}`} style={{ marginLeft: `${(level + 1) * .5}rem` }}>
                         <Dropzone className="w-full h-full" onDragOver={async (_, __) => await dragOver('top')}/>
                     </div>
@@ -74,7 +61,7 @@ function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDr
                             </>
                         }
                     </button>
-                    {(dragging || isDragging) &&
+                    {isDragging &&
                         <>
                             <Dropzone className={`absolute top-0 left-0 w-full h-full z-10`}
                                 onDragOver={async (_, __) => await dragOver('mid')}>
@@ -89,16 +76,16 @@ function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDr
                                                  entry={c}
                                                  last={c.position === entry.subcategories.length}
                                                  level={level + 1}
-                                                 isDragging={dragging || isDragging}
-                                                 onDragStart={childDragStart}
-                                                 onDragEnd={childDragEnd}
+                                                 isDragging={isDragging}
+                                                 onDragStart={dragStart}
+                                                 onDragEnd={dragEnd}
                                                  onDragOver={async (e) => await onDragOver(e)}
                                                  dragOverCategory={dragOverCategory}
                                                  dragOverPosition={dragOverPosition}/>)}
                     </div>
                 }
             </div>
-            {(isDragging || isDragging) && last &&
+            {isDragging && last &&
                 <div className={`w-full h-[.2rem] ${dragOverCategory?.id === entry.id && dragOverPosition === 'bot' ? 'bg-primary-200' : ''}`} style={{ marginLeft: `${(level + 1) * .5}rem` }}>
                     <Dropzone className="w-full h-full" onDragOver={async (_, __) => await dragOver('bot')}/>
                 </div>
