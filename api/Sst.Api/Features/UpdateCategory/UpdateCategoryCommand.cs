@@ -43,6 +43,24 @@ public partial class UpdateCategoryCommand
             return true;
         }
 
+        var targetIsDescendantOfSelf = await ctx.Database.SqlQuery<bool>(
+            $"""
+             with recursive categories as (
+             select "Id", "ParentId"
+             from "Categories"
+             where "Id" = {req.ParentId} 
+
+             union all
+
+             select c."Id", c."ParentId"
+             from "Categories" c
+             inner join categories cats on cats."ParentId" = c."Id"
+             ) select exists(select 1 from categories where "Id" = {req.Id}) as "Value"
+             """).FirstAsync(token);
+        
+        if (targetIsDescendantOfSelf)
+            validationCtx.ThrowError("Cannot make a category a descendant of itself");
+
         var siblings = await ctx.Categories
             .Where(c => c.ParentId == req.ParentId)
             .OrderBy(c => c.Position)
