@@ -1,3 +1,4 @@
+using EntityFramework.Exceptions.Common;
 using FastEndpoints;
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -12,74 +13,98 @@ public partial class UpdateCategoryCommand
     public record Command
     {
         public required int Id { get; set; }
-        
+
         public required string Name { get; set; }
-        
+
         public required int Position { get; set; }
-        
+
         public required int? ParentId { get; set; }
     }
-    
+
     private static async ValueTask<bool> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
         var validationCtx = ValidationContext<UpdateCategoryRequest>.Instance;
-        
+
         if (req.ParentId == req.Id)
             validationCtx.ThrowError("Cannot make a category a child of itself");
 
-        // get category, include current parent category for later
         var category = await ctx.Categories
-            .Include(c => c.ParentCategory)
-            .ThenInclude(c => c!.Subcategories)
-            .FirstOrDefaultAsync(c => c.Id == req.Id);
+            .FirstOrDefaultAsync(c => c.Id == req.Id, token);
 
         if (category is null)
             return false;
-        
-        // get the category it's being moved into
-        var target = await ctx.Categories
-            .Include(c => c.Subcategories)
-            .FirstOrDefaultAsync(c => c.Id == req.ParentId);
-
-        if (target is null && req.ParentId is not null)
-            validationCtx.ThrowError("Invalid parent category");
 
         category.Name = req.Name;
 
-        if (req.ParentId == category.ParentId && req.Position == category.Position)
+        // if no movement needs to happen, we're done
+        if (category.ParentId == req.ParentId && category.Position == req.Position)
         {
             await ctx.SaveChangesAsync(token);
             return true;
         }
-        
-        // get the category's new siblings
-        var siblings = target?.Subcategories ??
-                       await ctx.Categories.Where(c => c.ParentId == null).ToListAsync();
-        var orderedSiblings = siblings.OrderBy(c => c.Position).ToList();
-        
-        if (orderedSiblings.Remove(category))
+
+        var siblings = await ctx.Categories
+            .Where(c => c.ParentId == req.ParentId)
+            .OrderBy(c => c.Position)
+            .ToListAsync(token);
+
+        try
         {
-            if (req.Position == orderedSiblings.Select(c => c.Position).DefaultIfEmpty().Max() + 1)
-                orderedSiblings.Add(category);
-            else if (req.Position <= category.Position)
-                orderedSiblings.Insert(req.Position - 1, category);
+            // case 1: moving within the same category
+            if (category.ParentId == req.ParentId)
+            {
+                // remove category
+                siblings.Remove(category);
+
+                // re-insert category at new position
+                if (req.Position == siblings.Select(c => c.Position).Max() + 1)
+                    siblings.Add(category);
+                else if (req.Position <= category.Position)
+                    siblings.Insert(req.Position - 1, category);
+                else
+                    siblings.Insert(req.Position - 2, category);
+
+                // update positions
+                foreach (var (c, i) in siblings.Select((c, i) => (c, i)))
+                    c.Position = i + 1;
+            }
+            // case 2: moving between categories
             else
-                orderedSiblings.Insert(req.Position - 2, category);
+            {
+                // insert category at new position
+                siblings.Insert(req.Position - 1, category);
+
+                // update positions
+                foreach (var (c, i) in siblings.Select((c, i) => (c, i)))
+                    c.Position = i + 1;
+
+                // get old siblings
+                var oldSiblings = await ctx.Categories
+                    .Where(c => c.ParentId == category.ParentId && c.Id != req.Id)
+                    .OrderBy(c => c.Position)
+                    .ToListAsync(token);
+
+                // update old sibling positions
+                foreach (var (c, i) in oldSiblings.Select((c, i) => (c, i)))
+                    c.Position = i + 1;
+            }
         }
-        else
+        catch (ArgumentOutOfRangeException)
         {
-            if (req.Position == orderedSiblings.Select(c => c.Position).DefaultIfEmpty().Max() + 1)
-                orderedSiblings.Add(category);
-            else
-                orderedSiblings.Insert(req.Position - 1, category);
+            validationCtx.ThrowError("Invalid position");
         }
-        
-        foreach (var (c, i) in orderedSiblings.Select((c, i) => (c, i)))
-            c.Position = i + 1;
-        
+
         category.ParentId = req.ParentId;
-        
-        await ctx.SaveChangesAsync(token);
+
+        try
+        {
+            await ctx.SaveChangesAsync(token);
+        }
+        catch (ReferenceConstraintException)
+        {
+            validationCtx.ThrowError("Invalid parent category");
+        }
+
         return true;
     }
 }
