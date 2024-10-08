@@ -22,7 +22,7 @@ public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration
                                 from "Categories" c
                                          inner join categories cats on cats."Id" = c."ParentId"
                             )
-                            select * from categories order by "Path", "Position") as CategoryTreeEntries;
+                            select * from categories order by "Path") as CategoryTreeEntries;
                          """);
     }
 }
