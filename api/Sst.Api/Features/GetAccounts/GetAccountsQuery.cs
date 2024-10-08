@@ -18,6 +18,7 @@ public partial class GetAccountsQuery
                 ItemId = g.Key,
                 Accounts = g.Select(a => new AccountResponse
                 {
+                    Id = a.Id,
                     Name = a.Name,
                     AvailableBalance = a.AvailableBalance,
                     CurrentBalance = a.CurrentBalance
