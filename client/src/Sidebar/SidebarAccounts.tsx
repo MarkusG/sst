@@ -4,7 +4,7 @@ import SyncButton from "./SyncButton";
 import { AccountsResponse } from "../Contracts/Responses";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
-function SidebarAccounts() {
+export default function SidebarAccounts() {
     const { data, error, isLoading } = useQuery<AccountsResponse>({
         queryKey: ['accounts'],
         queryFn: async () => await fetch('https://localhost:5001/accounts')
@@ -36,5 +36,3 @@ function SidebarAccounts() {
         </div>
     );
 }
-
-export default SidebarAccounts;

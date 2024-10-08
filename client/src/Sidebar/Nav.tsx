@@ -1,6 +1,6 @@
 import SstNavLink from "./SstNavLink";
 
-function Nav() {
+export default function Nav() {
     return (
         <nav className="mb-2">
             <ul className="flex flex-col gap-2">
@@ -20,5 +20,3 @@ function Nav() {
         </nav>
     );
 }
-
-export default Nav;

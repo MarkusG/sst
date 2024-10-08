@@ -18,7 +18,7 @@ interface SortContext {
 
 export const TableContext = createContext<SortContext | null>(null);
 
-function SortableTable(props: PropsWithChildren<SortableTableProps>) {
+export default function SortableTable(props: PropsWithChildren<SortableTableProps>) {
     const [options, setOptions] = useState<SortOptions>(props.options);
 
     async function onSetOptions(options: SortOptions) {
@@ -34,5 +34,3 @@ function SortableTable(props: PropsWithChildren<SortableTableProps>) {
         </TableContext.Provider>
     );
 }
-
-export default SortableTable;

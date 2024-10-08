@@ -21,7 +21,7 @@
 //
 // https://github.com/tobiasahlin/SpinKit
 
-function LoadingIcon() {
+export default function LoadingIcon() {
     return (
         <div className="spinner">
             <div className="rect1"></div>
@@ -32,5 +32,3 @@ function LoadingIcon() {
         </div>
     );
 }
-
-export default LoadingIcon;

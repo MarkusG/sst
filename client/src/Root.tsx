@@ -5,7 +5,7 @@ import './Styles.css';
 import SidebarAccounts from './Sidebar/SidebarAccounts';
 import Nav from './Sidebar/Nav';
 
-function Root() {
+export default function Root() {
     useEffect(() => {
         document.title = 'sst';
     });
@@ -25,5 +25,3 @@ function Root() {
         </div>
     );
 }
-
-export default Root;

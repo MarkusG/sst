@@ -13,7 +13,7 @@ async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsR
         .then((res) => res.json())
 }
 
-function TransactionsPage() {
+export default function TransactionsPage() {
     const [params, setParams] = useState(new QueryParameters({ pageSize: 100, sortField: "timestamp", sortDirection: "up" }));
     const [categorizingTransactionId, setCategorizingTransactionId] = useState<number | null>(null);
 
@@ -122,5 +122,3 @@ function TransactionsPage() {
         </div>
     );
 }
-
-export default TransactionsPage;

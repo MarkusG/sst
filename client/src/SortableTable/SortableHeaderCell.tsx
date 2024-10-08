@@ -6,7 +6,7 @@ interface SortableHeaderCellProps {
     field: string
 }
 
-function SortableHeaderCell(props: PropsWithChildren<SortableHeaderCellProps>) {
+export default function SortableHeaderCell(props: PropsWithChildren<SortableHeaderCellProps>) {
     const ctx = useContext(TableContext);
 
     function cycleDirection() {
@@ -41,5 +41,3 @@ function SortableHeaderCell(props: PropsWithChildren<SortableHeaderCellProps>) {
         </td>
     );
 }
-
-export default SortableHeaderCell;

@@ -10,7 +10,7 @@ async function query({ queryKey }: QueryFunctionContext) : Promise<CashFlowRespo
         .then((res) => res.json())
 }
 
-function CashflowPage() {
+export default function CashflowPage() {
     const [enableYearButtons, setEnableYearButtons] = useState(true);
     const [year, setYear] = useState(new Date().getFullYear());
     const [rawYear, setRawYear] = useState(year.toString());
@@ -171,5 +171,3 @@ function CashflowPage() {
         </div>
     )
 }
-
-export default CashflowPage;

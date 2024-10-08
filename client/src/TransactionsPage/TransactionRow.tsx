@@ -9,7 +9,7 @@ interface TransactionRowProps {
     onCategorized: (id: number, moveNext: boolean) => void
 }
 
-function TransactionRow({ transaction, isCategorizing, onCategorized }: TransactionRowProps) {
+export default function TransactionRow({ transaction, isCategorizing, onCategorized }: TransactionRowProps) {
     const [categorizing, setCategorizing] = useState(false);
     const [category, setCategory] = useState<string | null>(transaction.category ?? null);
 
@@ -92,5 +92,3 @@ function TransactionRow({ transaction, isCategorizing, onCategorized }: Transact
         </tr>
     );
 }
-
-export default TransactionRow;

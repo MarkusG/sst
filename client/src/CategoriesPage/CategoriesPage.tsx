@@ -5,7 +5,7 @@ import { useState } from "react";
 import Dropzone from "../Dropzone";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
-function CategoriesPage() {
+export default function CategoriesPage() {
     const [draggingCategory, setDraggingCategory] = useState<CategoryTreeEntryResponse | null>(null);
     const [dragOverPosition, setDragOverPosition] = useState<DragOverPosition>(null);
     const [dragOverCategory, setDragOverCategory] = useState<CategoryTreeEntryResponse | null>(null);
@@ -61,6 +61,10 @@ function CategoriesPage() {
         setDragOverPosition(null);
     }
 
+    async function dragStart(_: React.DragEvent, c: CategoryTreeEntryResponse) {
+        setDraggingCategory(c);
+    }
+
     async function dragEnd(_: React.DragEvent<HTMLDivElement>, c: CategoryTreeEntryResponse) {
         clearDragOver();
         setDraggingCategory(null);
@@ -100,12 +104,10 @@ function CategoriesPage() {
                                       isDragging={!!draggingCategory}
                                       dragOverCategory={dragOverCategory}
                                       dragOverPosition={dragOverPosition}
-                                      onDragStart={async (_, data) => setDraggingCategory(data)}
+                                      onDragStart={dragStart}
                                       onDragEnd={dragEnd}
                                       onDragOver={categoryDraggedOver}/>)}
             </Dropzone>
         </>
     );
 }
-
-export default CategoriesPage;

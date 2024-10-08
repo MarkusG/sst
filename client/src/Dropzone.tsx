@@ -7,7 +7,7 @@ interface DropzoneProps<T> {
     onDragLeave?: (e: React.DragEvent<HTMLDivElement>, data: T) => Promise<void>
 }
 
-function Dropzone<T>(props: PropsWithChildren<DropzoneProps<T>>) {
+export default function Dropzone<T>(props: PropsWithChildren<DropzoneProps<T>>) {
     async function onDrop(e: React.DragEvent<HTMLDivElement>) {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData("application/json")) as T;
@@ -38,5 +38,3 @@ function Dropzone<T>(props: PropsWithChildren<DropzoneProps<T>>) {
         </div>
     )
 }
-
-export default Dropzone;

@@ -7,7 +7,7 @@ interface SyncButtonProps {
     onClick: () => Promise<void>
 }
 
-function SyncButton(props: SyncButtonProps) {
+export default function SyncButton(props: SyncButtonProps) {
     const [syncing, setSyncing] = useState(false);
 
     async function sync() {
@@ -22,5 +22,3 @@ function SyncButton(props: SyncButtonProps) {
         </button>
     );
 }
-
-export default SyncButton;

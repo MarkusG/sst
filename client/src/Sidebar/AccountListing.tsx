@@ -5,7 +5,7 @@ export interface AccountListingProps {
     account: AccountResponse
 }
 
-function AccountListing({ account }: AccountListingProps) {
+export default function AccountListing({ account }: AccountListingProps) {
     return (
         <li className="mb-2">
             <p className="truncate text-ellipsis" title={account.name}>{account.name}</p>
@@ -13,5 +13,3 @@ function AccountListing({ account }: AccountListingProps) {
         </li>
     );
 }
-
-export default AccountListing;

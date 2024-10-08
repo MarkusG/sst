@@ -6,7 +6,7 @@ interface DraggableProps<T> {
     onDragEnd: (e: React.DragEvent<HTMLDivElement>, data: T) => Promise<void>
 }
 
-function Draggable<T>(props: PropsWithChildren<DraggableProps<T>>) {
+export default function Draggable<T>(props: PropsWithChildren<DraggableProps<T>>) {
     async function onDragStart(e: React.DragEvent<HTMLDivElement>) {
         e.dataTransfer?.setData('application/json', JSON.stringify(props.data));
         await props.onDragStart(e, props.data);
@@ -26,5 +26,3 @@ function Draggable<T>(props: PropsWithChildren<DraggableProps<T>>) {
         </div>
     )
 }
-
-export default Draggable;

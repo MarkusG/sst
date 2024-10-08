@@ -22,7 +22,7 @@ export interface CategoryProps {
     dragOverPosition: DragOverPosition
 }
 
-function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDragging, dragOverCategory, dragOverPosition }: CategoryProps) {
+export default function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDragging, dragOverCategory, dragOverPosition }: CategoryProps) {
     const [open, setOpen] = useState(true);
 
     async function dragStart(e: React.DragEvent<HTMLDivElement>, data: CategoryTreeEntryResponse) {
@@ -93,5 +93,3 @@ function Category({ entry, last, level, onDragStart, onDragEnd, onDragOver, isDr
         </Draggable>
     );
 }
-
-export default Category;
