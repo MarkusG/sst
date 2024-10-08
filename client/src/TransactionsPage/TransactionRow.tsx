@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CategoriesResponse, TransactionResponse } from "../Contracts/Responses";
 import Amount from "../Amount";
+import Timestamp from "../Timestamp";
 
 interface TransactionRowProps {
     transaction: TransactionResponse,
@@ -67,7 +68,7 @@ export default function TransactionRow({ transaction, isCategorizing, onCategori
 
     return (
         <tr className="odd:bg-gray-100">
-            <td className="px-1 pl-4">{transaction.timestamp.toLocaleString()}</td>
+            <td className="px-1 pl-4"><Timestamp ts={transaction.timestamp}></Timestamp></td>
             <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
             <td className="px-1">{transaction.description}</td>
             <td className="px-1">{transaction.account}</td>
