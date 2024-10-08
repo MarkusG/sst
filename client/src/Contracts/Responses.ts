@@ -20,6 +20,7 @@ export interface CategoriesResponse {
 }
 
 export interface AccountResponse {
+    id: number,
     name: string,
     availableBalance?: number,
     currentBalance?: number

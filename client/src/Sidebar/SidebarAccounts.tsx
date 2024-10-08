@@ -28,11 +28,7 @@ export default function SidebarAccounts() {
     return (
         <div className="w-52 truncate text-sm flex flex-col gap-4">
             <SyncButton text="Sync All Accounts" textSize="base" iconSize="sm"/>
-            { data?.groups.map(g =>
-                <>
-                    <AccountGroup group={g}/>
-                </>)
-            }
+            {data?.groups.map(g => <AccountGroup key={g.itemId} group={g}/>)}
         </div>
     );
 }

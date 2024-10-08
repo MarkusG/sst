@@ -24,7 +24,7 @@ export default function AccountGroup({ group }: AccountGroupProps) {
             <SyncButton text="Sync" textSize="sm" iconSize="sm" onClick={async () => { await syncMutation.mutateAsync() }}/>
             <ul className="flex flex-col gap-1">
                 {group.accounts.map(a =>
-                    <AccountListing account={a}/>)
+                    <AccountListing key={a.id} account={a}/>)
                 }
             </ul>
         </div>
