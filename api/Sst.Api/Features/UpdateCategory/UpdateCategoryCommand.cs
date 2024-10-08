@@ -57,14 +57,19 @@ public partial class UpdateCategoryCommand
              inner join categories cats on cats."ParentId" = c."Id"
              ) select exists(select 1 from categories where "Id" = {req.Id}) as "Value"
              """).FirstAsync(token);
-        
+
         if (targetIsDescendantOfSelf)
-            validationCtx.ThrowError("Cannot make a category a descendant of itself");
+            validationCtx.ThrowError("Requested parent category is a descendant of the category to be moved");
 
         var siblings = await ctx.Categories
             .Where(c => c.ParentId == req.ParentId)
             .OrderBy(c => c.Position)
             .ToListAsync(token);
+
+        var maxPosition = siblings
+            .Select(c => c.Position)
+            .DefaultIfEmpty(0)
+            .Max();
 
         try
         {
@@ -109,7 +114,8 @@ public partial class UpdateCategoryCommand
         }
         catch (ArgumentOutOfRangeException)
         {
-            validationCtx.ThrowError("Invalid position");
+            validationCtx.ThrowError(
+                $"Invalid position. Maximum valid position for this category is {maxPosition + 1}");
         }
 
         category.ParentId = req.ParentId;
@@ -120,7 +126,7 @@ public partial class UpdateCategoryCommand
         }
         catch (ReferenceConstraintException)
         {
-            validationCtx.ThrowError("Invalid parent category");
+            validationCtx.ThrowError("Requested parent category does not exist");
         }
 
         return true;
