@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sst.Database.Entities;
 
-public record CategoryTreeEntry(int Id, string Name, int Level, int Position, int? ParentId, int[] Path);
+public record CategoryTreeEntry(int Id, string Name, int Level, int Position, int? ParentId);
 
 public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration<CategoryTreeEntry>
 {
@@ -22,7 +22,7 @@ public class CategoryTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration
                                 from "Categories" c
                                          inner join categories cats on cats."Id" = c."ParentId"
                             )
-                            select * from categories order by "Path") as CategoryTreeEntries;
+                            select "Id", "Name", "Level", "Position", "ParentId" from categories order by "Path") as CategoryTreeEntries;
                          """);
     }
 }
