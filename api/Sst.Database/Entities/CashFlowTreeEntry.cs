@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sst.Database.Entities;
 
-public record CategoryMonthTotalTreeEntry(int Id, string Name, int Level, decimal TreeTotal, decimal CategoryTotal, int Year, int Month);
+public record CashFlowTreeEntry(int Id, string Name, int Level, decimal TreeTotal, decimal CategoryTotal, int Year, int Month);
 
-public class CategoryMonthTotalTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration<CategoryMonthTotalTreeEntry>
+public class CategoryMonthTotalTreeEntryEntityTypeConfiguration : IEntityTypeConfiguration<CashFlowTreeEntry>
 {
-    public void Configure(EntityTypeBuilder<CategoryMonthTotalTreeEntry> builder)
+    public void Configure(EntityTypeBuilder<CashFlowTreeEntry> builder)
     {
         builder.ToSqlQuery(
             $"""

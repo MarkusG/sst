@@ -35,9 +35,9 @@ public partial class GetCashFlowQuery
         Dictionary<int, decimal> CategoryTotals,
         List<TreeEntry> Children);
 
-    private static (TreeEntry, int) GetTreeEntry(int idx, List<CategoryMonthTotalTreeEntry> entries)
+    private static (TreeEntry, int) GetTreeEntry(int idx, List<CashFlowTreeEntry> entries)
     {
-        CategoryMonthTotalTreeEntry entry;
+        CashFlowTreeEntry entry;
         var treeTotals = new Dictionary<int, decimal>();
         var categoryTotals = new Dictionary<int, decimal>();
 
@@ -75,7 +75,7 @@ public partial class GetCashFlowQuery
     private static async ValueTask<CashFlowTreeResponse> HandleAsync(Command req, SstDbContext ctx,
         CancellationToken token)
     {
-        var entries = await ctx.Set<CategoryMonthTotalTreeEntry>()
+        var entries = await ctx.Set<CashFlowTreeEntry>()
             .Where(t => t.Year == req.Year)
             .ToListAsync(token);
 
