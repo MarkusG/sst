@@ -14,35 +14,16 @@ public partial class GetCashFlowQuery
         public required int Year { get; init; }
     }
 
-    private static CashFlowTreeTotalResponse Map(TreeEntry entry, int month)
-    {
-        return new CashFlowTreeTotalResponse
-        {
-            Tree = entry.TreeTotals.GetValueOrDefault(month, 0),
-            Category = entry.CategoryTotals.GetValueOrDefault(month, 0)
-        };
-    }
-
     private static CashFlowTreeEntryResponse Map(TreeEntry entry)
     {
         return new CashFlowTreeEntryResponse
         {
             Id = entry.Id,
             Category = entry.Name,
-            January = Map(entry, 1),
-            February = Map(entry, 2),
-            March = Map(entry, 3),
-            April = Map(entry, 4),
-            May = Map(entry, 5),
-            June = Map(entry, 6),
-            July = Map(entry, 7),
-            August = Map(entry, 8),
-            September = Map(entry, 9),
-            October = Map(entry, 10),
-            November = Map(entry, 11),
-            December = Map(entry, 12),
-            TreeTotal = entry.TreeTotals.Values.Sum(),
-            CategoryTotal = entry.CategoryTotals.Values.Sum(),
+            TreeTotals = Enumerable.Range(1, 12).Select(i => entry.TreeTotals.GetValueOrDefault(i, 0)),
+            CategoryTotals = Enumerable.Range(1, 12).Select(i => entry.CategoryTotals.GetValueOrDefault(i, 0)),
+            YearTreeTotal = entry.TreeTotals.Values.Sum(),
+            YearCategoryTotal = entry.CategoryTotals.Values.Sum(),
             Children = entry.Children.Select(c => Map(c))
         };
     }
@@ -102,31 +83,23 @@ public partial class GetCashFlowQuery
             .Where(e => e.Entry.Level == 0)
             .GroupBy(e => e.Entry.Id)
             .Select(g => g.First())
-            .Select(e => GetTreeEntry(e.Index, entries).Item1);
+            .Select(e => GetTreeEntry(e.Index, entries).Item1)
+            .ToList();
 
-        var categoriesResponse = output.Select(c => Map(c)).ToList();
+        var monthTotals = Enumerable.Range(1, 12)
+            .Select(i =>
+                output
+                    .Select(c => c.TreeTotals.GetValueOrDefault(i, 0))
+                    .Sum())
+            .ToList();
 
         var response = new CashFlowTreeResponse
         {
-            Categories = categoriesResponse,
+            Categories = output.Select(Map),
             Totals = new CashFlowTreeTotalsResponse
             {
-                January = categoriesResponse.Sum(r => r.January.Tree),
-                February = categoriesResponse.Sum(r => r.February.Tree),
-                March = categoriesResponse.Sum(r => r.March.Tree),
-                April = categoriesResponse.Sum(r => r.April.Tree),
-                May = categoriesResponse.Sum(r => r.May.Tree),
-                June = categoriesResponse.Sum(r => r.June.Tree),
-                July = categoriesResponse.Sum(r => r.July.Tree),
-                August = categoriesResponse.Sum(r => r.August.Tree),
-                September = categoriesResponse.Sum(r => r.September.Tree),
-                October = categoriesResponse.Sum(r => r.October.Tree),
-                November = categoriesResponse.Sum(r => r.November.Tree),
-                December = categoriesResponse.Sum(r => r.December.Tree),
-                Total = categoriesResponse.Sum(r =>
-                    r.January.Tree + r.February.Tree + r.March.Tree + r.April.Tree +
-                    r.May.Tree + r.June.Tree + r.July.Tree + r.August.Tree + r.September.Tree +
-                    r.October.Tree + r.November.Tree + r.December.Tree)
+                Totals = monthTotals,
+                YearTotal = monthTotals.Sum()
             }
         };
 
