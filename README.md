@@ -3,8 +3,9 @@
 https://github.com/user-attachments/assets/fb20a567-5bfa-4b99-9aaa-8a6926cfcf88
 
 # Screenshots
-![Transactions page](https://i.imgur.com/ZVG3QPo.png)
-![Cash flow page](https://i.imgur.com/YksOzmq.png)
+![Transactions Page](https://github.com/user-attachments/assets/71d2e578-b36a-4a3d-ad9a-94b15cb96588)
+![Cash Flow Page](https://github.com/user-attachments/assets/a4d56d39-4245-4e5d-a9b2-d06ce8ef9de1)
+
 
 # Setting Up the API
 
