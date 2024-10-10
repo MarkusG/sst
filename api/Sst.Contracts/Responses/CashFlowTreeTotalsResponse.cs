@@ -1,6 +1,6 @@
 namespace Sst.Contracts.Responses;
 
-public class CashFlowTotalsResponse
+public class CashFlowTreeTotalsResponse
 {
     public required decimal January { get; set; }
     
