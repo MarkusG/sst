@@ -49,7 +49,7 @@ public partial class UpdateTransactionCommand
                 transaction.CategoryId = (await ctx.Database.SqlQuery<int>(
                     $"""
                      insert into "Categories" ("Name", "Position", "ParentId")
-                     select {req.Category}, max("Position") + 1, null
+                     select {req.Category}, coalesce(max("Position") + 1, 1), null
                      from "Categories"
                      where "ParentId" is null
                      returning "Id";
