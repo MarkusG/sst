@@ -4,6 +4,7 @@ import Category, { DragOverEvent, DragOverPosition } from "./Category";
 import { useState } from "react";
 import Dropzone from "../Dropzone";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
+import CategoryCreator from "./CategoryCreator";
 
 export default function CategoriesPage() {
     const [draggingCategory, setDraggingCategory] = useState<CategoryTreeEntryResponse | null>(null);
@@ -95,6 +96,7 @@ export default function CategoriesPage() {
     return (
         <>
             <h1 className="text-3xl text-center mt-2">Categories</h1>
+            <CategoryCreator/>
             <Dropzone onDragLeave={clearDragOver}>
                 {data?.categories.map(c => <Category
                                       key={c.id}
