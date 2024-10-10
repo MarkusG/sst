@@ -16,12 +16,12 @@ export default function CashflowEntry({ category, level, hidden }: CashflowEntry
                 <div className="text-left bg-inherit" style={{ paddingLeft: `calc(.5rem + ${level * .5}rem)` }}>
                     {category.children.length > 0 &&
                         <button onClick={() => setOpen(!open)}>
-                            <span>{category.category}</span>
+                            <span>{category.name}</span>
                             <i className={`ml-1 fa fa-xs fa-chevron-${open ? 'down' : 'right'}`}></i>
                         </button>
                     }
                     {category.children.length === 0 &&
-                        <span>{category.category}</span>
+                        <span>{category.name}</span>
                     }
                 </div>
                 <div className="px-2"><Amount amount={open ? category.categoryTotals[0] : category.treeTotals[0]}/></div>

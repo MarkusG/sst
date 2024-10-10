@@ -37,7 +37,7 @@ export interface AccountsResponse {
 
 export interface CategoryCashFlowResponse {
     id: number,
-    category: string,
+    name: string,
     treeTotals: number[],
     categoryTotals: number[],
     yearTreeTotal: number,

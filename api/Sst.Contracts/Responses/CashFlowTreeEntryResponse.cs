@@ -4,7 +4,7 @@ public class CashFlowTreeEntryResponse
 {
     public required int Id { get; set; }
     
-    public required string Category { get; set; }
+    public required string Name { get; set; }
     
     public required IEnumerable<decimal> TreeTotals { get; set; }
     

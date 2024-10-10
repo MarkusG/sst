@@ -19,7 +19,7 @@ public partial class GetCashFlowQuery
         return new CashFlowTreeEntryResponse
         {
             Id = entry.Id,
-            Category = entry.Name,
+            Name = entry.Name,
             TreeTotals = Enumerable.Range(1, 12).Select(i => entry.TreeTotals.GetValueOrDefault(i, 0)),
             CategoryTotals = Enumerable.Range(1, 12).Select(i => entry.CategoryTotals.GetValueOrDefault(i, 0)),
             YearTreeTotal = entry.TreeTotals.Values.Sum(),
