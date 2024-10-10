@@ -3,6 +3,7 @@ import { CashFlowResponse } from "../Contracts/Responses";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import Amount from "../Amount";
 import { useState } from "react";
+import CashflowEntry from "./CashflowEntry";
 
 async function query({ queryKey }: QueryFunctionContext) : Promise<CashFlowResponse> {
     const params = queryKey[1] as number;
@@ -132,39 +133,22 @@ export default function CashflowPage() {
                         <div className="border-b border-gray-300 px-2">Nov</div>
                         <div className="border-b border-gray-300 px-2">Dec</div>
                         <div className="border-b border-gray-300 px-2">Total</div>
-                        {data.categories.map(c => <>
-                            <div className="contents [&_div]:even:bg-gray-100">
-                                <div className="text-left pl-2 bg-inherit">{c.category}</div>
-                                <div className="px-2"><Amount amount={c.january}/></div>
-                                <div className="px-2"><Amount amount={c.february}/></div>
-                                <div className="px-2"><Amount amount={c.march}/></div>
-                                <div className="px-2"><Amount amount={c.april}/></div>
-                                <div className="px-2"><Amount amount={c.may}/></div>
-                                <div className="px-2"><Amount amount={c.june}/></div>
-                                <div className="px-2"><Amount amount={c.july}/></div>
-                                <div className="px-2"><Amount amount={c.august}/></div>
-                                <div className="px-2"><Amount amount={c.september}/></div>
-                                <div className="px-2"><Amount amount={c.october}/></div>
-                                <div className="px-2"><Amount amount={c.november}/></div>
-                                <div className="px-2"><Amount amount={c.december}/></div>
-                                <div className="px-2 border-l border-gray-300"><Amount amount={c.total}/></div>
-                            </div>
-                        </>)}
+                        {data.categories.map(c => <CashflowEntry key={c.id} category={c} level={0} hidden={false}/>)}
                         <div className="contents [&_div]:even:bg-gray-100">
                             <div className="text-left pl-2 bg-inherit border-t border-gray-300">Total</div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.january}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.february}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.march}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.april}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.may}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.june}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.july}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.august}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.september}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.october}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.november}/></div>
-                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.december}/></div>
-                            <div className="px-2 border-t border-l border-gray-300"><Amount amount={data.totals.total}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[0]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[1]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[2]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[3]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[4]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[5]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[6]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[7]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[8]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[9]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[10]}/></div>
+                            <div className="px-2 border-t border-gray-300"><Amount amount={data.totals.totals[11]}/></div>
+                            <div className="px-2 border-t border-l border-gray-300"><Amount amount={data.totals.yearTotal}/></div>
                         </div>
                 </div>
             }

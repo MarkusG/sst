@@ -36,36 +36,18 @@ export interface AccountsResponse {
 }
 
 export interface CategoryCashFlowResponse {
+    id: number,
     category: string,
-    january: number,
-    february: number,
-    march: number,
-    april: number,
-    may: number,
-    june: number,
-    july: number,
-    august: number,
-    september: number,
-    october: number,
-    november: number,
-    december: number,
-    total: number
+    treeTotals: number[],
+    categoryTotals: number[],
+    yearTreeTotal: number,
+    yearCategoryTotal: number,
+    children: CategoryCashFlowResponse[]
 }
 
 export interface CashFlowTotalsResponse {
-    january: number,
-    february: number,
-    march: number,
-    april: number,
-    may: number,
-    june: number,
-    july: number,
-    august: number,
-    september: number,
-    october: number,
-    november: number,
-    december: number,
-    total: number
+    totals: number[],
+    yearTotal: number
 }
 
 export interface CashFlowResponse {
