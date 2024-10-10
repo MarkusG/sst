@@ -42,7 +42,7 @@ export interface CategoryCashFlowResponse {
     categoryTotals: number[],
     yearTreeTotal: number,
     yearCategoryTotal: number,
-    children: CategoryCashFlowResponse[]
+    subcategories: CategoryCashFlowResponse[]
 }
 
 export interface CashFlowTotalsResponse {

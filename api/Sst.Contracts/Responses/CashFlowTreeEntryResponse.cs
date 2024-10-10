@@ -14,5 +14,5 @@ public class CashFlowTreeEntryResponse
     
     public required decimal YearCategoryTotal { get; set; }
     
-    public required IEnumerable<CashFlowTreeEntryResponse> Children { get; set; }
+    public required IEnumerable<CashFlowTreeEntryResponse> Subcategories { get; set; }
 }

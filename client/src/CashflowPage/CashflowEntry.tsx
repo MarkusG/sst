@@ -14,13 +14,13 @@ export default function CashflowEntry({ category, level, hidden }: CashflowEntry
         <>
             <div className={`${hidden ? 'hidden' : 'contents'} [&_div]:even:bg-gray-100`}>
                 <div className="text-left bg-inherit" style={{ paddingLeft: `calc(.5rem + ${level * .5}rem)` }}>
-                    {category.children.length > 0 &&
+                    {category.subcategories.length > 0 &&
                         <button onClick={() => setOpen(!open)}>
                             <span>{category.name}</span>
                             <i className={`ml-1 fa fa-xs fa-chevron-${open ? 'down' : 'right'}`}></i>
                         </button>
                     }
-                    {category.children.length === 0 &&
+                    {category.subcategories.length === 0 &&
                         <span>{category.name}</span>
                     }
                 </div>
@@ -38,7 +38,7 @@ export default function CashflowEntry({ category, level, hidden }: CashflowEntry
                 <div className="px-2"><Amount amount={open ? category.categoryTotals[11] : category.treeTotals[11]}/></div>
                 <div className="px-2 border-l border-gray-300"><Amount amount={open ? category.yearCategoryTotal : category.yearTreeTotal}/></div>
             </div>
-            {category.children.map(c => <CashflowEntry key={c.id} category={c} level={level + 1} hidden={hidden || !open}/>)}
+            {category.subcategories.map(c => <CashflowEntry key={c.id} category={c} level={level + 1} hidden={hidden || !open}/>)}
         </>
     );
 }

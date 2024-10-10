@@ -24,7 +24,7 @@ public partial class GetCashFlowQuery
             CategoryTotals = Enumerable.Range(1, 12).Select(i => entry.CategoryTotals.GetValueOrDefault(i, 0)),
             YearTreeTotal = entry.TreeTotals.Values.Sum(),
             YearCategoryTotal = entry.CategoryTotals.Values.Sum(),
-            Children = entry.Children.Select(c => Map(c))
+            Subcategories = entry.Children.Select(c => Map(c))
         };
     }
 
