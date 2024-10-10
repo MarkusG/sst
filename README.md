@@ -1,3 +1,7 @@
+# Video
+
+https://github.com/user-attachments/assets/fb20a567-5bfa-4b99-9aaa-8a6926cfcf88
+
 # Screenshots
 ![Transactions page](https://i.imgur.com/ZVG3QPo.png)
 ![Cash flow page](https://i.imgur.com/YksOzmq.png)
