@@ -68,7 +68,7 @@ export default function TransactionRow({ transaction, isCategorizing, onCategori
 
     return (
         <tr className="odd:bg-gray-100">
-            <td className="px-1 pl-4"><Timestamp ts={transaction.timestamp}></Timestamp></td>
+            <td className="px-1 pl-2"><Timestamp ts={transaction.timestamp}></Timestamp></td>
             <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
             <td className="px-1">{transaction.description}</td>
             <td className="px-1">{transaction.account}</td>
