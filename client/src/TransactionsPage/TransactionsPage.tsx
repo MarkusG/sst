@@ -6,7 +6,7 @@ import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
 import { TransactionsResponse } from "../Contracts/Responses";
-import QueryControls from "./QueryControls";
+import QueryControls from "./QueryControls/QueryControls";
 
 async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsResponse> {
     const params = queryKey[1] as QueryParameters;
@@ -64,7 +64,6 @@ export default function TransactionsPage() {
     }
 
     async function paramsUpdated(params: QueryParameters) {
-        console.log(params);
         setParams(params);
     }
 

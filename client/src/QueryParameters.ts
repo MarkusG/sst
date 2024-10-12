@@ -3,6 +3,8 @@ export class QueryParameters {
     page?: number = 1;
     sortField?: string;
     sortDirection?: "up" | "down";
+    from?: Date;
+    to?: Date;
     
     constructor(init?: Partial<QueryParameters>) {
         Object.assign(this, init);
@@ -28,6 +30,16 @@ export class QueryParameters {
         if (this.sortDirection) {
             const paramCharacter = builder.length === 0 ? '?' : '&';
             builder.push(`${paramCharacter}sortDirection=${this.sortDirection}`);
+        }
+
+        if (this.from) {
+            const paramCharacter = builder.length === 0 ? '?' : '&';
+            builder.push(`${paramCharacter}from=${encodeURIComponent(new Date(this.from).toISOString())}`);
+        }
+
+        if (this.to) {
+            const paramCharacter = builder.length === 0 ? '?' : '&';
+            builder.push(`${paramCharacter}to=${encodeURIComponent(new Date(this.to).toISOString())}`);
         }
 
         return builder.join('');
