@@ -59,17 +59,18 @@ public partial class UpdateTransactionCommand
         }
         else if (transaction.CategoryId is not null)
         {
-            // if category has no more transactions, delete it
+            // if category has no more transactions or children, delete it
             var category = await ctx.Categories
                 .Where(c => c.Id == transaction.CategoryId)
                 .Select(c => new
                 {
                     Category = c,
-                    TransactionCount = c.Transactions.Count
+                    TransactionCount = c.Transactions.Count,
+                    ChildCount = c.Subcategories.Count
                 })
                 .FirstOrDefaultAsync(token);
 
-            if (category?.TransactionCount == 1)
+            if (category?.TransactionCount == 1 && category.ChildCount == 0)
             {
                 ctx.Categories.Remove(category.Category);
             }
