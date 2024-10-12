@@ -9,4 +9,10 @@ public class GetTransactionsRequest
     public string? SortField { get; set; }
     
     public string? SortDirection { get; set; }
+    
+    public DateTimeOffset? From { get; set; }
+    
+    public DateTimeOffset? To { get; set; }
+    
+    public int? Offset { get; set; }
 }

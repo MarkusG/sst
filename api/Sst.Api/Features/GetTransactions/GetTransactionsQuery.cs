@@ -1,6 +1,5 @@
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
-using Sst.Contracts;
 using Sst.Contracts.Responses;
 using Sst.Database;
 using Sst.Database.Entities;
@@ -13,12 +12,18 @@ public partial class GetTransactionsQuery
     public record Query
     {
         public required int Page { get; set; }
-        
+
         public required int PageSize { get; set; }
-        
+
         public required string? SortField { get; set; }
-        
+
         public required string? SortDirection { get; set; }
+
+        public required DateTimeOffset? From { get; set; }
+
+        public required DateTimeOffset? To { get; set; }
+        
+        public required int? Offset { get; set; }
     }
 
     private static async ValueTask<TransactionsResponse> HandleAsync(
@@ -26,7 +31,20 @@ public partial class GetTransactionsQuery
         SstDbContext ctx,
         CancellationToken token)
     {
-        var query = ctx.Transactions.Include(t => t.Category);
+        IQueryable<Transaction> query = ctx.Transactions.Include(t => t.Category);
+
+        if (request.From is { } from)
+        {
+            var fromOffset = from.AddMinutes(request.Offset!.Value);
+            query = query.Where(t => t.Timestamp >= fromOffset);
+        }
+
+        if (request.To is { } to)
+        {
+            var toOffset = to.AddMinutes(request.Offset!.Value);
+            query = query.Where(t => t.Timestamp <= toOffset);
+        }
+
         IOrderedQueryable<Transaction> sortedQuery;
         if (request is { SortField: not null, SortDirection: "up" })
         {

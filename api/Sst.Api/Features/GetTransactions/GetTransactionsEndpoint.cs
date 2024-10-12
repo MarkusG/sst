@@ -21,7 +21,10 @@ public class GetTransactionsEndpoint : Endpoint<GetTransactionsRequest>
             Page = req.Page,
             PageSize = req.PageSize,
             SortDirection = req.SortDirection,
-            SortField = req.SortField
+            SortField = req.SortField,
+            From = req.From,
+            To = req.To,
+            Offset = req.Offset
         });
 
         await SendOkAsync(response);

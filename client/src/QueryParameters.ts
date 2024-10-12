@@ -42,6 +42,10 @@ export class QueryParameters {
             builder.push(`${paramCharacter}to=${encodeURIComponent(new Date(this.to).toISOString())}`);
         }
 
+        if (this.from || this.to) {
+            builder.push(`&offset=${new Date().getTimezoneOffset()}`);
+        }
+
         return builder.join('');
     }
 }
