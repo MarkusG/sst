@@ -6,6 +6,7 @@ import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
 import { TransactionsResponse } from "../Contracts/Responses";
+import QueryControls from "./QueryControls";
 
 async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsResponse> {
     const params = queryKey[1] as QueryParameters;
@@ -62,6 +63,11 @@ export default function TransactionsPage() {
         setParams(new QueryParameters({ ...params, sortField: field, sortDirection: direction }));
     }
 
+    async function paramsUpdated(params: QueryParameters) {
+        console.log(params);
+        setParams(params);
+    }
+
     function categorized(id: number, moveNext: boolean) {
         if (!moveNext) {
             setCategorizingTransactionId(null);
@@ -80,6 +86,7 @@ export default function TransactionsPage() {
             <div className="px-2 pt-2">
                 <h1 className="text-3xl">Transactions</h1>
             </div>
+            <QueryControls params={params} onParamsUpdated={paramsUpdated}/>
             <div className="overflow-auto">
                 <SortableTable className="w-full table-fixed border-separate border-spacing-0 whitespace-nowrap"
                     options={{ field: params.sortField, direction: params.sortDirection }}
