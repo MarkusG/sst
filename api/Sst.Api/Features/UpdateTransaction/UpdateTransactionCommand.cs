@@ -1,8 +1,6 @@
-using System.Data;
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
 using Sst.Database;
-using Sst.Database.Entities;
 
 namespace Sst.Api.Features.UpdateTransaction;
 
