@@ -19,8 +19,8 @@ export default function QueryControls({ params, onParamsUpdated }: QueryControls
     return (
         <div className="ml-2 mb-1">
             <div className="mb-1">
-                <label className="mr-1">Page Size:</label>
-                <select className="w-14 text-center border rounded"
+                <label htmlFor="pageSize" className="mr-1">Page Size:</label>
+                <select id="pageSize" className="w-14 text-center border rounded"
                     value={params.pageSize}
                     onChange={change}>
                     <option>100</option>
