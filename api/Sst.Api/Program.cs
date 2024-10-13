@@ -40,5 +40,15 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseCors("localhost");
 
+// delay responses in development for a more realistic UX
+if (app.Environment.IsDevelopment())
+{
+    app.Use(async (ctx, next) =>
+    {
+        await Task.Delay(1000);
+        await next(ctx);
+    });
+}
+
 app.UseFastEndpoints();
 app.Run();
