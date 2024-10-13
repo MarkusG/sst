@@ -18,7 +18,7 @@ export default function TransactionsPage() {
     const [params, setParams] = useState(new QueryParameters({ pageSize: 100, sortField: "timestamp", sortDirection: "up" }));
     const [categorizingTransactionId, setCategorizingTransactionId] = useState<number | null>(null);
 
-    const { data, error, isLoading } = useQuery<TransactionsResponse>({
+    const { data, error, isLoading, isFetching } = useQuery<TransactionsResponse>({
         queryKey: ['transactions', params],
         keepPreviousData: true,
         queryFn: query
@@ -86,7 +86,7 @@ export default function TransactionsPage() {
                 <h1 className="text-3xl">Transactions</h1>
             </div>
             <QueryControls params={params} onParamsUpdated={paramsUpdated}/>
-            <div className="overflow-auto">
+            <div className="overflow-auto relative">
                 <SortableTable className="w-full table-fixed border-separate border-spacing-0 whitespace-nowrap"
                     options={{ field: params.sortField, direction: params.sortDirection }}
                     onSortUpdated={sortUpdated}>
@@ -109,6 +109,14 @@ export default function TransactionsPage() {
                         )}
                     </tbody>
                 </SortableTable>
+                {isFetching &&
+                    <>
+                        <div className="absolute top-0 left-0 w-full h-full bg-gray-100 opacity-50"></div>
+                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <LoadingIcon/>
+                        </div>
+                    </>
+                }
             </div>
             <div className="flex justify-around items-baseline p-4 mt-auto">
                 <button className="bg-white hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 transition duration-300 p-2 rounded shadow"
