@@ -7,7 +7,7 @@ public class Transaction
 {
     public int Id { get; set; }
 
-    public required string PlaidId { get; set; }
+    public required string? PlaidId { get; set; }
 
     public required string AccountName { get; set; }
 
