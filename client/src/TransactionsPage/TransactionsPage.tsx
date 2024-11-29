@@ -7,6 +7,7 @@ import { QueryParameters } from "../QueryParameters";
 import { ChangeEvent, useState } from "react";
 import { TransactionsResponse } from "../Contracts/Responses";
 import QueryControls from "./QueryControls/QueryControls";
+import TransactionForm from "./TransactionForm";
 
 async function query({ queryKey }: QueryFunctionContext) : Promise<TransactionsResponse> {
     const params = queryKey[1] as QueryParameters;
@@ -86,6 +87,10 @@ export default function TransactionsPage() {
                 <h1 className="text-3xl">Transactions</h1>
             </div>
             <QueryControls params={params} onParamsUpdated={paramsUpdated}/>
+            <div className="px-2">
+                <h2 className="text-xl">Add Transaction</h2>
+                <TransactionForm/>
+            </div>
             <div className="overflow-auto relative">
                 <SortableTable className="w-full table-fixed border-separate border-spacing-0 whitespace-nowrap"
                     options={{ field: params.sortField, direction: params.sortDirection }}
