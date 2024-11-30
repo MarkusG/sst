@@ -9,7 +9,8 @@ namespace Sst.Api.Features.CreateTransaction;
 [Handler]
 public partial class CreateTransactionCommand
 {
-    private static async ValueTask<TransactionResponse> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
+    private static async ValueTask<TransactionResponse> HandleAsync(Command req, SstDbContext ctx,
+        CancellationToken token)
     {
         var transaction = new Transaction
         {
@@ -21,16 +22,26 @@ public partial class CreateTransactionCommand
             Description = req.Description,
             AccountName = req.Account
         };
-        
+
         if (req.Category is not null)
         {
             transaction.Category = await ctx.Categories.FirstOrDefaultAsync(c => c.Name == req.Category);
-            transaction.Category ??= new Category
+            if (transaction.Category is null)
             {
-                Name = req.Category,
-                Position = 1,
-                ParentId = null
-            };
+                var rootCategories = await ctx.Categories
+                    .Where(c => c.ParentId == null)
+                    .ToListAsync();
+
+                foreach (var c in rootCategories)
+                    c.Position++;
+                
+                transaction.Category ??= new Category
+                {
+                    Name = req.Category,
+                    Position = 1,
+                    ParentId = null
+                };
+            }
         }
 
         ctx.Transactions.Add(transaction);
