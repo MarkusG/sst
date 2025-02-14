@@ -31,7 +31,9 @@ public partial class GetTransactionsQuery
         SstDbContext ctx,
         CancellationToken token)
     {
-        IQueryable<Transaction> query = ctx.Transactions.Include(t => t.Category);
+        IQueryable<Transaction> query = ctx.Transactions
+            .Include(t => t.Categorizations)
+            .ThenInclude(c => c.Category);
 
         if (request.From is { } from)
         {
@@ -54,7 +56,6 @@ public partial class GetTransactionsQuery
                 "amount" => query.OrderByDescending(t => t.Amount),
                 "description" => query.OrderByDescending(t => t.Description),
                 "account" => query.OrderByDescending(t => t.AccountName),
-                "category" => query.OrderByDescending(t => t.Category),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -66,7 +67,6 @@ public partial class GetTransactionsQuery
                 "amount" => query.OrderBy(t => t.Amount),
                 "description" => query.OrderBy(t => t.Description),
                 "account" => query.OrderBy(t => t.AccountName),
-                "category" => query.OrderBy(t => t.Category),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -96,7 +96,7 @@ public partial class GetTransactionsQuery
                 Account = t.AccountName,
                 Amount = t.Amount,
                 Description = t.Description,
-                Category = t.Category?.Name
+                Category = t.Categorizations.FirstOrDefault()?.Category!.Name
             })
         };
     }

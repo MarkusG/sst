@@ -39,9 +39,10 @@ public class CategoryMonthTotalTreeEntryEntityTypeConfiguration : IEntityTypeCon
                                       C."ParentId",
                                       extract(year from "Timestamp")  as "Year",
                                       extract(month from "Timestamp") as "Month",
-                                      sum(T."Amount")                 as "Total"
+                                      sum(CZ."Amount")                 as "Total"
                                from "Categories" C
-                                        left join "Transactions" T on C."Id" = T."CategoryId"
+                                        left join "Categorizations" CZ on C."Id" = CZ."CategoryId"
+                                        left join "Transactions" T on CZ."TransactionId" = T."Id"
                                group by C."Id", C."Name", extract(year from "Timestamp"), extract(month from "Timestamp")),
                     categoryTotals as (select a."AncestorId" as "CategoryId", t."Year", t."Month", sum(t."Total") as "Total"
                                        from ancestry as a

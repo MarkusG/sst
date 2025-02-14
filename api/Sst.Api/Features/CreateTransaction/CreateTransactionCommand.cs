@@ -25,8 +25,8 @@ public partial class CreateTransactionCommand
 
         if (req.Category is not null)
         {
-            transaction.Category = await ctx.Categories.FirstOrDefaultAsync(c => c.Name == req.Category);
-            if (transaction.Category is null)
+            var category = await ctx.Categories.FirstOrDefaultAsync(c => c.Name == req.Category);
+            if (category is null)
             {
                 var rootCategories = await ctx.Categories
                     .Where(c => c.ParentId == null)
@@ -35,13 +35,20 @@ public partial class CreateTransactionCommand
                 foreach (var c in rootCategories)
                     c.Position++;
                 
-                transaction.Category ??= new Category
+                category = new Category
                 {
                     Name = req.Category,
                     Position = 1,
                     ParentId = null
                 };
             }
+            transaction.Categorizations.Add(new Categorization
+            {
+                TransactionId = 0,
+                CategoryId = 0,
+                Amount = req.Amount,
+                Category = category
+            });
         }
 
         ctx.Transactions.Add(transaction);
@@ -55,7 +62,7 @@ public partial class CreateTransactionCommand
             Amount = transaction.Amount,
             Description = transaction.Description,
             Account = transaction.AccountName,
-            Category = transaction.Category?.Name
+            Category = transaction.Categorizations.First().Category!.Name
         };
     }
 

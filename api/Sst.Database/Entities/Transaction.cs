@@ -17,13 +17,11 @@ public class Transaction
 
     public required string Currency { get; set; }
 
-    public int? CategoryId { get; set; }
-    
-    public Category? Category { get; set; }
-
     public DateTimeOffset? Timestamp { get; set; }
 
     public required string Description { get; set; }
+
+    public List<Categorization> Categorizations { get; set; } = [];
 }
 
 public class TransactionEntityTypeConfiguration : IEntityTypeConfiguration<Transaction>

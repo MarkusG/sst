@@ -8,16 +8,14 @@ public class Category
     public int Id { get; set; }
 
     public required string Name { get; set; }
-    
+
     public required int Position { get; set; }
 
     public required int? ParentId { get; set; }
-    
+
     public Category? ParentCategory { get; set; }
 
     public List<Category> Subcategories { get; set; } = [];
-
-    public List<Transaction> Transactions { get; set; } = [];
 }
 
 public class CategoryEntityTypeConfiguration : IEntityTypeConfiguration<Category>

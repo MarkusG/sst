@@ -13,6 +13,8 @@ public class SstDbContext(DbContextOptions<SstDbContext> options) : DbContext(op
     public DbSet<Account> Accounts { get; set; }
     
     public DbSet<Category> Categories { get; set; }
+    
+    public DbSet<Categorization> Categorizations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

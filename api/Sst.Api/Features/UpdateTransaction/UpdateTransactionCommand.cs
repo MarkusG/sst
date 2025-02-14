@@ -1,6 +1,7 @@
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
 using Sst.Database;
+using Sst.Database.Entities;
 
 namespace Sst.Api.Features.UpdateTransaction;
 
@@ -25,6 +26,7 @@ public partial class UpdateTransactionCommand
     private static async ValueTask<bool> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
         var transaction = await ctx.Transactions
+            .Include(t => t.Categorizations)
             .FirstOrDefaultAsync(t => t.Id == req.Id, token);
 
         if (transaction is null)
@@ -33,18 +35,22 @@ public partial class UpdateTransactionCommand
         if (req.Category is not null)
         {
             // get requested category
-            var category = await ctx.Categories
-                .FirstOrDefaultAsync(c => c.Name == req.Category, token);
-            
+            var category = await ctx.Categories.FirstOrDefaultAsync(c => c.Name == req.Category, token);
+
             // if category exists, put the transaction into it
             if (category is { Id: var id })
             {
-                transaction.CategoryId = id;
+                transaction.Categorizations = [new Categorization
+                {
+                    TransactionId = 0,
+                    CategoryId = id,
+                    Amount = transaction.Amount
+                }];
             }
             // else, create the category and put the transaction into it
             else
             {
-                transaction.CategoryId = (await ctx.Database.SqlQuery<int>(
+                var categoryId = (await ctx.Database.SqlQuery<int>(
                     $"""
                      insert into "Categories" ("Name", "Position", "ParentId")
                      select {req.Category}, coalesce(max("Position") + 1, 1), null
@@ -53,27 +59,38 @@ public partial class UpdateTransactionCommand
                      returning "Id";
                      """
                 ).ToListAsync()).First();
+                
+                transaction.Categorizations = [new Categorization
+                {
+                    TransactionId = 0,
+                    CategoryId = categoryId,
+                    Amount = transaction.Amount
+                }];
             }
         }
-        else if (transaction.CategoryId is not null)
+        else if (transaction.Categorizations is [var transactionCategory])
         {
             // if category has no more transactions or children, delete it
             var category = await ctx.Categories
-                .Where(c => c.Id == transaction.CategoryId)
+                .Where(c => c.Id == transactionCategory.CategoryId)
                 .Select(c => new
                 {
                     Category = c,
-                    TransactionCount = c.Transactions.Count,
+                    CategorizationCount = ctx.Categorizations.Count(cc => cc.CategoryId == c.Id),
                     ChildCount = c.Subcategories.Count
                 })
                 .FirstOrDefaultAsync(token);
+            
+            Console.WriteLine($"category: {category.Category.Name}");
+            Console.WriteLine($"categorizations: {category.CategorizationCount}");
+            Console.WriteLine($"children: {category.ChildCount}");
 
-            if (category?.TransactionCount == 1 && category.ChildCount == 0)
+            if (category?.CategorizationCount == 1 && category.ChildCount == 0)
             {
                 ctx.Categories.Remove(category.Category);
             }
 
-            transaction.CategoryId = null;
+            transaction.Categorizations = [];
         }
 
         transaction.Timestamp = req.Timestamp;
