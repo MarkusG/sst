@@ -98,9 +98,9 @@ export default function TransactionsPage() {
                     <thead className="sticky top-0 bg-gray-50 border-b">
                         <tr>
                             <SortableHeaderCell field="timestamp" className="w-[160px] px-1 pl-2 border-gray-300 border-r border-b">Timestamp</SortableHeaderCell>
-                            <SortableHeaderCell field="amount" className="w-[100px] px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
-                            <SortableHeaderCell field="description" className="px-1 border-gray-300 border-r border-b">Description</SortableHeaderCell>
                             <SortableHeaderCell field="account" className="w-[200px] px-1 border-gray-300 border-r border-b">Account</SortableHeaderCell>
+                            <SortableHeaderCell field="description" className="px-1 border-gray-300 border-r border-b">Description</SortableHeaderCell>
+                            <SortableHeaderCell field="amount" className="w-[100px] px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
                             <SortableHeaderCell field="category" className="w-[200px] px-1 border-gray-300 border-r border-b">Category</SortableHeaderCell>
                         </tr>
                     </thead>

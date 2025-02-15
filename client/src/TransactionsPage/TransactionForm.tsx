@@ -77,17 +77,17 @@ export default function TransactionForm() {
             onSubmit={submit}>
             {props =>
                 <Form>
-                    <div className="mb-1 grid grid-rows-[min-content,_min-content,_min-content] grid-cols-[240px_8rem_6fr_1fr_2fr,_min-content] gap-1">
+                    <div className="mb-1 grid grid-rows-[min-content,_min-content,_min-content] grid-cols-[240px_1fr_6fr_8rem_2fr,_min-content] gap-1">
                         <label htmlFor="timestamp">Timestamp:</label>
-                        <label htmlFor="amount">Amount:</label>
-                        <label htmlFor="description">Description:</label>
                         <label htmlFor="account">Account:</label>
+                        <label htmlFor="description">Description:</label>
+                        <label htmlFor="amount">Amount:</label>
                         <label htmlFor="category">Category:</label>
                         <div></div>
                         <Field id="timestamp" name="timestamp" type="datetime-local" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.timestamp && props.errors.timestamp ? 'border-red-500' : ''}`}/>
-                        <Field id="amount" name="amount" type="number" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.amount && props.errors.amount ? 'border-red-500' : ''}`}/>
-                        <Field id="description" name="description" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.description && props.errors.description ? 'border-red-500' : ''}`}/>
                         <Field id="account" name="account" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.account && props.errors.account ? 'border-red-500' : ''}`}/>
+                        <Field id="description" name="description" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.description && props.errors.description ? 'border-red-500' : ''}`}/>
+                        <Field id="amount" name="amount" type="number" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.amount && props.errors.amount ? 'border-red-500' : ''}`}/>
                         <Field id="category" name="category" disabled={props.isSubmitting} className={`border rounded px-1 disabled:bg-gray-150 disabled:text-gray-400 ${props.touched.category && props.errors.category ? 'border-red-500' : ''}`}/>
                         <button type="submit" className="text-gray-700 mx-2"><i className="fa fa-arrow-right"></i></button>
                         <p className="text-sm text-red-500">{props.touched.timestamp && props.errors.timestamp && props.errors.timestamp}</p>
