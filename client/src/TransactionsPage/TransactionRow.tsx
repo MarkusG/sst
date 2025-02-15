@@ -12,7 +12,7 @@ interface TransactionRowProps {
 
 export default function TransactionRow({transaction, isCategorizing, onCategorized}: TransactionRowProps) {
     const [categorizing, setCategorizing] = useState(false);
-    const [category, setCategory] = useState<string | null>(transaction.category ?? null);
+    const [category, setCategory] = useState<string | null>(transaction.categorizations[0]?.category ?? null);
 
     const queryClient = useQueryClient();
 
@@ -36,7 +36,6 @@ export default function TransactionRow({transaction, isCategorizing, onCategoriz
     });
 
     async function categorize(category: string | null, moveNext: boolean) {
-        transaction.category = category ?? undefined;
         await updateMutation.mutateAsync(category);
         queryClient.invalidateQueries(['categories']);
         setCategorizing(false);
@@ -65,30 +64,46 @@ export default function TransactionRow({transaction, isCategorizing, onCategoriz
         }
     }
 
-    return (
-        <tr className="odd:bg-gray-100">
-            <td className="px-1 pl-2"><Timestamp ts={transaction.timestamp}></Timestamp></td>
-            <td className="px-1">{transaction.account}</td>
-            <td className="px-1">{transaction.description}</td>
-            <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
-            <td className="px-1">
-                {!(categorizing || isCategorizing) ? <button className={`w-full text-left ${transaction.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.category ?? "Add category"}</button>
-                    : (
-                        <>
-                            <input className="bg-[inherit] focus:bg-gray-200 w-full h-full" list="categoryList"
-                                   value={category ?? undefined}
-                                   autoFocus
-                                   onKeyDown={keyDown}
-                                   onInput={input}
-                                   onBlur={blur}/>
-                            {!!data &&
-                                <datalist id="categoryList">
-                                    {data.categories.map(c => <option value={c}></option>)}
-                                </datalist>
-                            }
-                        </>
-                    )}
-            </td>
-        </tr>
-    );
+    if (transaction.categorizations.length === 0) {
+        return (
+            <tr className="odd:bg-gray-100">
+                <td className="px-1 pl-2">
+                    <Timestamp ts={transaction.timestamp}/>
+                </td>
+                <td className="px-1">{transaction.account}</td>
+                <td className="px-1">{transaction.description}</td>
+                <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
+                <td className="px-1">
+                    {!(categorizing || isCategorizing) ? <button className={`w-full text-left ${transaction.categorizations[0]?.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.categorizations[0]?.category ?? "Add category"}</button>
+                        : (
+                            <>
+                                <input className="bg-[inherit] focus:bg-gray-200 w-full h-full" list="categoryList"
+                                       value={category ?? undefined}
+                                       autoFocus
+                                       onKeyDown={keyDown}
+                                       onInput={input}
+                                       onBlur={blur}/>
+                                {!!data &&
+                                    <datalist id="categoryList">
+                                        {data.categories.map(c => <option value={c}></option>)}
+                                    </datalist>
+                                }
+                            </>
+                        )}
+                </td>
+            </tr>
+        );
+    } else {
+        return transaction.categorizations.map((cz, idx) =>
+            <tr className="odd:bg-gray-100">
+                <td className="px-1 pl-2">
+                    {idx === 0 && <Timestamp ts={transaction.timestamp}/>}
+                </td>
+                <td className="px-1">{idx === 0 && transaction.account}</td>
+                <td className="px-1">{idx === 0 && transaction.description}</td>
+                <td className="px-1 text-right"><Amount amount={cz.amount}/></td>
+                <td className="px-1">{cz.category}</td>
+            </tr>
+        );
+    }
 }

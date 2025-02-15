@@ -96,7 +96,11 @@ public partial class GetTransactionsQuery
                 Account = t.AccountName,
                 Amount = t.Amount,
                 Description = t.Description,
-                Category = t.Categorizations.FirstOrDefault()?.Category!.Name
+                Categorizations = t.Categorizations.Select(cz => new CategorizationResponse
+                {
+                    Amount = cz.Amount,
+                    Category = cz.Category!.Name
+                })
             })
         };
     }
