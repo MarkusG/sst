@@ -67,7 +67,8 @@ export default function Categorizer({transaction, categorization, onCategorized,
         return (
             <button
                 className={`w-full text-left ${categorization ? "" : "text-gray-400"}`}
-                onClick={_ => setCategorizing(true)}>
+                onClick={_ => setCategorizing(true)}
+                onFocus={_ => setCategorizing(true)}>
                 {categorization?.category ?? "Add category"}
             </button>
         );

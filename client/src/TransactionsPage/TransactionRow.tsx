@@ -1,6 +1,5 @@
-import React, {useState} from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {CategoriesResponse, TransactionResponse} from "../Contracts/Responses";
+import React from "react";
+import {TransactionResponse} from "../Contracts/Responses";
 import Amount from "../Amount";
 import Timestamp from "../Timestamp";
 import Categorizer from "./Categorizer.tsx";
