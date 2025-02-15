@@ -98,6 +98,7 @@ public partial class GetTransactionsQuery
                 Description = t.Description,
                 Categorizations = t.Categorizations.Select(cz => new CategorizationResponse
                 {
+                    Id = cz.Id,
                     Amount = cz.Amount,
                     Category = cz.Category!.Name
                 })

@@ -8,6 +8,7 @@ export interface TransactionResponse {
 }
 
 export interface CategorizationResponse {
+    id: number,
     category: string,
     amount: number
 }

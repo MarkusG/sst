@@ -3,6 +3,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CategoriesResponse, TransactionResponse} from "../Contracts/Responses";
 import Amount from "../Amount";
 import Timestamp from "../Timestamp";
+import Categorizer from "./Categorizer.tsx";
 
 interface TransactionRowProps {
     transaction: TransactionResponse,
@@ -11,59 +12,6 @@ interface TransactionRowProps {
 }
 
 export default function TransactionRow({transaction, isCategorizing, onCategorized}: TransactionRowProps) {
-    const [categorizing, setCategorizing] = useState(false);
-    const [category, setCategory] = useState<string | null>(transaction.categorizations[0]?.category ?? null);
-
-    const queryClient = useQueryClient();
-
-    const {data} = useQuery<CategoriesResponse>({
-        queryKey: ['categories'],
-        queryFn: async () => await fetch('https://localhost:5001/categories')
-            .then((res) => res.json())
-    });
-
-    const updateMutation = useMutation({
-        mutationFn: async (category: string | null) => {
-            await fetch(`https://localhost:5001/transactions/${transaction.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({...transaction, category: category})
-            });
-        },
-        onSuccess: () => queryClient.invalidateQueries(['transactions'])
-    });
-
-    async function categorize(category: string | null, moveNext: boolean) {
-        await updateMutation.mutateAsync(category);
-        queryClient.invalidateQueries(['categories']);
-        setCategorizing(false);
-        onCategorized(transaction.id, moveNext);
-    }
-
-    async function finishInput(moveNext: boolean) {
-        if (!!category?.trim()) {
-            await categorize(category.trim(), moveNext);
-        } else {
-            await categorize(null, moveNext);
-        }
-    }
-
-    async function blur() {
-        await finishInput(false);
-    }
-
-    function input(e: React.ChangeEvent<HTMLInputElement>) {
-        setCategory(e.target.value);
-    }
-
-    async function keyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-        if (e.key === "Enter") {
-            await finishInput(true);
-        }
-    }
-
     if (transaction.categorizations.length === 0) {
         return (
             <tr className="odd:bg-gray-100">
@@ -74,22 +22,7 @@ export default function TransactionRow({transaction, isCategorizing, onCategoriz
                 <td className="px-1">{transaction.description}</td>
                 <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
                 <td className="px-1">
-                    {!(categorizing || isCategorizing) ? <button className={`w-full text-left ${transaction.categorizations[0]?.category ? "" : "text-gray-400"}`} onClick={_ => setCategorizing(true)}>{transaction.categorizations[0]?.category ?? "Add category"}</button>
-                        : (
-                            <>
-                                <input className="bg-[inherit] focus:bg-gray-200 w-full h-full" list="categoryList"
-                                       value={category ?? undefined}
-                                       autoFocus
-                                       onKeyDown={keyDown}
-                                       onInput={input}
-                                       onBlur={blur}/>
-                                {!!data &&
-                                    <datalist id="categoryList">
-                                        {data.categories.map(c => <option value={c}></option>)}
-                                    </datalist>
-                                }
-                            </>
-                        )}
+                    <Categorizer transaction={transaction} onCategorized={onCategorized} isCategorizing={isCategorizing}/>
                 </td>
             </tr>
         );
@@ -102,7 +35,9 @@ export default function TransactionRow({transaction, isCategorizing, onCategoriz
                 <td className="px-1">{idx === 0 && transaction.account}</td>
                 <td className="px-1">{idx === 0 && transaction.description}</td>
                 <td className="px-1 text-right"><Amount amount={cz.amount}/></td>
-                <td className="px-1">{cz.category}</td>
+                <td className="px-1">
+                    <Categorizer transaction={transaction} categorization={cz} onCategorized={onCategorized} isCategorizing={isCategorizing}/>
+                </td>
             </tr>
         );
     }

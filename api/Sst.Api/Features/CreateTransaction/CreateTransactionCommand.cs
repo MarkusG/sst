@@ -64,6 +64,7 @@ public partial class CreateTransactionCommand
             Account = transaction.AccountName,
             Categorizations = transaction.Categorizations.Select(cz => new CategorizationResponse
             {
+                Id = cz.Id,
                 Amount = cz.Amount,
                 Category = cz.Category!.Name
             })
