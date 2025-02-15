@@ -5,12 +5,12 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 export interface CategorizerProps {
     transaction: TransactionResponse,
     categorization?: CategorizationResponse,
-    onCategorized: (transactionId: number, moveNext: boolean) => any | Promise<any>,
-    isCategorizing: boolean
+    onCategorized: (moveNext: boolean) => any | Promise<any>,
+    selected: boolean
+    onSelected: () => any
 }
 
-export default function Categorizer({transaction, categorization, onCategorized, isCategorizing}: CategorizerProps) {
-    const [categorizing, setCategorizing] = useState(false);
+export default function Categorizer({transaction, categorization, onCategorized, selected, onSelected}: CategorizerProps) {
     const [category, setCategory] = useState<string | undefined>(categorization?.category);
 
     const queryClient = useQueryClient();
@@ -37,8 +37,7 @@ export default function Categorizer({transaction, categorization, onCategorized,
     async function categorize(category: string | null, moveNext: boolean) {
         await updateMutation.mutateAsync(category);
         queryClient.invalidateQueries(['categories']);
-        setCategorizing(false);
-        onCategorized(transaction.id, moveNext);
+        onCategorized(moveNext);
     }
 
     async function finishInput(moveNext: boolean) {
@@ -63,12 +62,11 @@ export default function Categorizer({transaction, categorization, onCategorized,
         }
     }
 
-    if (!categorizing && !isCategorizing) {
+    if (!selected) {
         return (
             <button
                 className={`w-full text-left ${categorization ? "" : "text-gray-400"}`}
-                onClick={_ => setCategorizing(true)}
-                onFocus={_ => setCategorizing(true)}>
+                onFocus={onSelected}>
                 {categorization?.category ?? "Add category"}
             </button>
         );
