@@ -1,17 +1,19 @@
 import {CategoriesResponse, CategorizationResponse, TransactionResponse} from "../Contracts/Responses.ts";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {AfterCategorizationAction} from "./AfterCategorizationAction.ts";
+import {Focus, TransactionTableContext} from "./TransactionTableContext.tsx";
 
 export interface CategorizerProps {
     transaction: TransactionResponse,
     categorization?: CategorizationResponse,
-    onCategorized: (moveNext: boolean) => any | Promise<any>,
-    selected: boolean
-    onSelected: () => any
+    onCategorized: (category: string | null, after: AfterCategorizationAction) => any | Promise<any>,
+    deferMutation?: boolean
 }
 
-export default function Categorizer({transaction, categorization, onCategorized, selected, onSelected}: CategorizerProps) {
+export default function Categorizer({transaction, categorization, onCategorized, deferMutation}: CategorizerProps) {
     const [category, setCategory] = useState<string | undefined>(categorization?.category);
+    const [context, setContext] = useContext(TransactionTableContext);
 
     const queryClient = useQueryClient();
 
@@ -23,33 +25,35 @@ export default function Categorizer({transaction, categorization, onCategorized,
 
     const updateMutation = useMutation({
         mutationFn: async (category: string | null) => {
-            await fetch(`https://localhost:5001/transactions/${transaction.id}`, {
+            await fetch(`https://localhost:5001/transactions/${transaction.id}/categorizations/${category}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({...transaction, category: category})
+                body: JSON.stringify({amount: categorization?.amount ?? transaction.amount})
             });
         },
         onSuccess: () => queryClient.invalidateQueries(['transactions'])
     });
 
-    async function categorize(category: string | null, moveNext: boolean) {
-        await updateMutation.mutateAsync(category);
-        queryClient.invalidateQueries(['categories']);
-        onCategorized(moveNext);
+    async function categorize(category: string | null, after: AfterCategorizationAction) {
+        if (deferMutation !== true && category) {
+            await updateMutation.mutateAsync(category);
+            queryClient.invalidateQueries(['categories']);
+        }
+        await onCategorized(category, after);
     }
 
-    async function finishInput(moveNext: boolean) {
+    async function finishInput(after: AfterCategorizationAction) {
         if (!!category?.trim()) {
-            await categorize(category.trim(), moveNext);
+            await categorize(category.trim(), after);
         } else {
-            await categorize(null, moveNext);
+            await categorize(null, after);
         }
     }
 
     async function blur() {
-        await finishInput(false);
+        await finishInput(AfterCategorizationAction.Deselect);
     }
 
     function input(e: React.ChangeEvent<HTMLInputElement>) {
@@ -58,15 +62,26 @@ export default function Categorizer({transaction, categorization, onCategorized,
 
     async function keyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
-            await finishInput(true);
+            const action = e.ctrlKey ? AfterCategorizationAction.CreateNew : AfterCategorizationAction.MoveNext;
+            await finishInput(action);
         }
     }
 
-    if (!selected) {
+    function select() {
+        setContext({
+            transactionId: transaction.id,
+            categorizationId: categorization?.id,
+            focus: Focus.Category
+        });
+    }
+
+    if (context.transactionId !== transaction.id
+        || context.categorizationId !== categorization?.id
+        || context.focus !== Focus.Category) {
         return (
             <button
                 className={`w-full text-left ${categorization ? "" : "text-gray-400"}`}
-                onFocus={onSelected}>
+                onFocus={select}>
                 {categorization?.category ?? "Add category"}
             </button>
         );
@@ -74,7 +89,8 @@ export default function Categorizer({transaction, categorization, onCategorized,
 
     return (
         <>
-            <input className="bg-[inherit] focus:bg-gray-200 w-full h-full" list="categoryList"
+            <input className="bg-[inherit] focus:bg-gray-200 w-full h-full"
+                   list="categoryList"
                    value={category ?? undefined}
                    autoFocus
                    onKeyDown={keyDown}

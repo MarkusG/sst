@@ -2,6 +2,7 @@ using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sst.Api;
+using Sst.Api.Services;
 using Sst.Database;
 using Sst.Plaid;
 
@@ -22,6 +23,8 @@ builder.Services.AddHttpClient<PlaidClient>((sp, c) =>
 {
     c.BaseAddress = new Uri(sp.GetRequiredService<IOptions<PlaidClientOptions>>().Value.BaseAddress);
 });
+
+builder.Services.AddScoped<CategoryService>();
 
 builder.Services.AddHandlers();
 

@@ -1,66 +1,78 @@
-import React, {useState} from "react";
+import React, {useContext} from "react";
 import {TransactionResponse} from "../Contracts/Responses";
-import Amount from "../Amount";
-import Timestamp from "../Timestamp";
-import Categorizer from "./Categorizer.tsx";
+import {AfterCategorizationAction} from "./AfterCategorizationAction.ts";
+import UncategorizedTransactionRow from "./UncategorizedTransactionRow.tsx";
+import CategorizedTransactionRow from "./CategorizedTransactionRow.tsx";
+import {Focus, TransactionTableContext} from "./TransactionTableContext.tsx";
+import ExtraCategorizationRow from "./ExtraCategorizationRow.tsx";
+import {AfterAmountChangedAction} from "./AfterAmountChangedAction.ts";
 
 interface TransactionRowProps {
     transaction: TransactionResponse,
-    isCategorizing: boolean,
-    onNavigateOut: (moveNext: boolean) => void
+    onMoveNext: () => void
 }
 
-export default function TransactionRow({transaction, isCategorizing, onNavigateOut}: TransactionRowProps) {
-    const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
+export default function TransactionRow({transaction, onMoveNext}: TransactionRowProps) {
+    const [context, setContext] = useContext(TransactionTableContext);
 
-    function categorized(idx: number, moveNext: boolean) {
-        if (!moveNext || selectedCategoryIndex! + 1 >= transaction.categorizations.length) {
-            setSelectedCategoryIndex(null);
-            onNavigateOut(moveNext);
+    async function categorized(idx: number, after: AfterCategorizationAction) {
+        if (after === AfterCategorizationAction.CreateNew) {
+            setContext({
+                transactionId: context.transactionId,
+                addCategoryAfterIdx: idx,
+                focus: Focus.Amount
+            });
             return;
         }
 
-        if (selectedCategoryIndex! < transaction.categorizations.length + 1) {
-            setSelectedCategoryIndex(idx + 1);
+        if (after === AfterCategorizationAction.Deselect) {
+            setContext({});
+            return;
         }
+
+        if (idx + 1 >= transaction.categorizations.length) {
+            onMoveNext();
+            return;
+        }
+
+        setContext({...context, addCategoryAfterIdx: undefined, categorizationId: transaction.categorizations[idx + 1].id})
+    }
+
+    async function amountUpdated(after: AfterAmountChangedAction) {
+        if (after === AfterAmountChangedAction.Deselect) {
+            setContext({});
+            return;
+        }
+
+        setContext({
+            ...context,
+            focus: Focus.Category
+        });
     }
 
     if (transaction.categorizations.length === 0) {
-        return (
-            <tr className="odd:bg-gray-100">
-                <td className="px-1 pl-2">
-                    <Timestamp ts={transaction.timestamp}/>
-                </td>
-                <td className="px-1">{transaction.account}</td>
-                <td className="px-1">{transaction.description}</td>
-                <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
-                <td className="px-1">
-                    <Categorizer
-                        transaction={transaction}
-                        onCategorized={moveNext => categorized(0, moveNext)}
-                        selected={selectedCategoryIndex === 0 || isCategorizing}
-                        onSelected={() => setSelectedCategoryIndex(0)}/>
-                </td>
-            </tr>
-        );
+        return <UncategorizedTransactionRow
+            transaction={transaction}
+            onCategoryUpdated={async after => await categorized(0, after)}
+            onAmountUpdated={amountUpdated}/>
     } else {
         return transaction.categorizations.map((cz, idx) =>
-            <tr className="odd:bg-gray-100">
-                <td className="px-1 pl-2">
-                    {idx === 0 && <Timestamp ts={transaction.timestamp}/>}
-                </td>
-                <td className="px-1">{idx === 0 && transaction.account}</td>
-                <td className="px-1">{idx === 0 && transaction.description}</td>
-                <td className="px-1 text-right"><Amount amount={cz.amount}/></td>
-                <td className="px-1">
-                    <Categorizer
-                        transaction={transaction}
+            <>
+                <CategorizedTransactionRow
+                    categorization={cz}
+                    showDetails={idx === 0}
+                    transaction={transaction}
+                    onCategoryUpdated={async after => await categorized(idx, after)}
+                    onAmountUpdated={amountUpdated}/>
+                {context.transactionId === transaction.id && context.addCategoryAfterIdx === idx &&
+                    <ExtraCategorizationRow
                         categorization={cz}
-                        onCategorized={moveNext => categorized(idx, moveNext)}
-                        selected={selectedCategoryIndex === idx || (!selectedCategoryIndex && isCategorizing && idx === 0)}
-                        onSelected={() => setSelectedCategoryIndex(idx)}/>
-                </td>
-            </tr>
+                        index={idx}
+                        transaction={transaction}
+                        onCategoryUpdated={async after => await categorized(idx, after)}
+                        onAmountUpdated={amountUpdated}/>
+                }
+            </>
         );
     }
 }

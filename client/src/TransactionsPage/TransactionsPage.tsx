@@ -1,6 +1,4 @@
-import SortableTable, {SortOptions} from "../SortableTable/SortableTable";
-import SortableHeaderCell from "../SortableTable/SortableHeaderCell";
-import TransactionRow from "./TransactionRow";
+import {SortOptions} from "../SortableTable/SortableTable";
 import {QueryFunctionContext, useQuery} from "@tanstack/react-query";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import {QueryParameters} from "../QueryParameters";
@@ -8,6 +6,8 @@ import {ChangeEvent, useState} from "react";
 import {TransactionsResponse} from "../Contracts/Responses";
 import QueryControls from "./QueryControls/QueryControls";
 import TransactionForm from "./TransactionForm";
+import TransactionsTable from "./TransactionsTable.tsx";
+import TransactionTableContextProvider from "./TransactionTableContext.tsx";
 
 async function query({queryKey}: QueryFunctionContext): Promise<TransactionsResponse> {
     const params = queryKey[1] as QueryParameters;
@@ -19,7 +19,7 @@ export default function TransactionsPage() {
     const [params, setParams] = useState(new QueryParameters({pageSize: 100, sortField: "timestamp", sortDirection: "up"}));
     const [categorizingTransactionIdx, setCategorizingTransactionIdx] = useState<number | null>(null);
 
-    const {data, error, isLoading, isFetching} = useQuery<TransactionsResponse>({
+    const {data, isLoading, isError, error, isFetching} = useQuery<TransactionsResponse>({
         queryKey: ['transactions', params],
         keepPreviousData: true,
         queryFn: query
@@ -33,10 +33,10 @@ export default function TransactionsPage() {
         );
     }
 
-    if (!!error) {
+    if (isError) {
         return (
             <div className="p-2">
-                <p className="text-xl">{error.toString()}</p>
+                <p className="text-xl">{error?.toString()}</p>
             </div>
         );
     }
@@ -68,17 +68,6 @@ export default function TransactionsPage() {
         setParams(params);
     }
 
-    function categorized(idx: number, moveNext: boolean) {
-        if (!moveNext) {
-            setCategorizingTransactionIdx(null);
-            return;
-        }
-
-        if (idx + 1 >= data!.transactions.length)
-            return;
-
-        setCategorizingTransactionIdx(idx + 1);
-    }
 
     return (
         <div className="flex flex-col h-screen">
@@ -91,28 +80,12 @@ export default function TransactionsPage() {
                 <TransactionForm/>
             </div>
             <div className="overflow-auto relative">
-                <SortableTable className="w-full table-fixed border-separate border-spacing-0 whitespace-nowrap"
-                               options={{field: params.sortField, direction: params.sortDirection}}
-                               onSortUpdated={sortUpdated}>
-                    <thead className="sticky top-0 bg-gray-50 border-b">
-                    <tr>
-                        <SortableHeaderCell field="timestamp" className="w-[160px] px-1 pl-2 border-gray-300 border-r border-b">Timestamp</SortableHeaderCell>
-                        <SortableHeaderCell field="account" className="w-[200px] px-1 border-gray-300 border-r border-b">Account</SortableHeaderCell>
-                        <SortableHeaderCell field="description" className="px-1 border-gray-300 border-r border-b">Description</SortableHeaderCell>
-                        <SortableHeaderCell field="amount" className="w-[100px] px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
-                        <SortableHeaderCell field="category" className="w-[200px] px-1 border-gray-300 border-r border-b">Category</SortableHeaderCell>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {data?.transactions.map((t, idx) =>
-                        <TransactionRow
-                            transaction={t}
-                            isCategorizing={idx === categorizingTransactionIdx}
-                            onNavigateOut={moveNext => categorized(idx, moveNext)}
-                            key={t.id}/>
-                    )}
-                    </tbody>
-                </SortableTable>
+                <TransactionTableContextProvider>
+                    <TransactionsTable
+                        options={{field: params.sortField, direction: params.sortDirection}}
+                        onSortUpdated={sortUpdated}
+                        transactions={data.transactions}/>
+                </TransactionTableContextProvider>
                 {isFetching &&
                     <>
                         <div className="absolute top-0 left-0 w-full h-full bg-gray-100 opacity-50"></div>
