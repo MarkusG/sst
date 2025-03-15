@@ -11,7 +11,7 @@ public partial class CategorizeTransactionCommand
 {
     private static async ValueTask HandleAsync(Command req, SstDbContext ctx, CategoryService categoryService, CancellationToken token)
     {
-        var categoryId = await categoryService.GetOrCreateCategoryIdByName(req.Category, token);
+        var categoryId = await categoryService.GetOrCreateCategoryIdByNameAsync(req.Category, token);
 
         var transaction = await ctx.Transactions
             .Include(t => t.Categorizations)

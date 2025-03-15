@@ -1,21 +1,18 @@
 import {CategoriesResponse, CategorizationResponse, TransactionResponse} from "../Contracts/Responses.ts";
 import React, {useContext, useState} from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import {AfterCategorizationAction} from "./AfterCategorizationAction.ts";
 import {Focus, TransactionTableContext} from "./TransactionTableContext.tsx";
 
 export interface CategorizerProps {
     transaction: TransactionResponse,
     categorization?: CategorizationResponse,
-    onCategorized: (category: string | null, after: AfterCategorizationAction) => any | Promise<any>,
-    deferMutation?: boolean
+    onCategorized: (category: string | null, after: AfterCategorizationAction) => any | Promise<any>
 }
 
-export default function Categorizer({transaction, categorization, onCategorized, deferMutation}: CategorizerProps) {
+export default function Categorizer({transaction, categorization, onCategorized}: CategorizerProps) {
     const [category, setCategory] = useState<string | undefined>(categorization?.category);
     const [context, setContext] = useContext(TransactionTableContext);
-
-    const queryClient = useQueryClient();
 
     const {data} = useQuery<CategoriesResponse>({
         queryKey: ['categories'],
@@ -23,32 +20,11 @@ export default function Categorizer({transaction, categorization, onCategorized,
             .then((res) => res.json())
     });
 
-    const updateMutation = useMutation({
-        mutationFn: async (category: string | null) => {
-            await fetch(`https://localhost:5001/transactions/${transaction.id}/categorizations/${category}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({amount: categorization?.amount ?? transaction.amount})
-            });
-        },
-        onSuccess: () => queryClient.invalidateQueries(['transactions'])
-    });
-
-    async function categorize(category: string | null, after: AfterCategorizationAction) {
-        if (deferMutation !== true && category) {
-            await updateMutation.mutateAsync(category);
-            queryClient.invalidateQueries(['categories']);
-        }
-        await onCategorized(category, after);
-    }
-
     async function finishInput(after: AfterCategorizationAction) {
         if (!!category?.trim()) {
-            await categorize(category.trim(), after);
+            await onCategorized(category.trim(), after);
         } else {
-            await categorize(null, after);
+            await onCategorized(null, after);
         }
     }
 

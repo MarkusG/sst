@@ -52,8 +52,7 @@ export default function ExtraCategorizationRow({transaction, onCategoryUpdated, 
             <td className="px-1">
                 <Categorizer
                     transaction={transaction}
-                    onCategorized={categoryUpdated}
-                    deferMutation={true}/>
+                    onCategorized={categoryUpdated}/>
             </td>
         </tr>
     );
