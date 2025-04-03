@@ -37,8 +37,13 @@ public partial class CategorizeTransactionCommand
         {
             TransactionId = req.TransactionId,
             Amount = req.Amount,
-            CategoryId = categoryId
+            CategoryId = categoryId,
+            Position = req.Position
         });
+
+        await ctx.Categorizations
+            .Where(cz => cz.TransactionId == req.TransactionId && cz.Position >= req.Position)
+            .ExecuteUpdateAsync(cz => cz.SetProperty(ccz => ccz.Position, ccz => ccz.Position + 1), token);
 
         await ctx.SaveChangesAsync();
     }
@@ -50,5 +55,7 @@ public partial class CategorizeTransactionCommand
         public required decimal Amount { get; set; }
 
         public required string Category { get; set; }
+        
+        public required int Position { get; set; }
     }
 }

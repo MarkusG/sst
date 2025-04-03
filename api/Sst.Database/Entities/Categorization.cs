@@ -17,6 +17,8 @@ public class Categorization
     
     public Category? Category { get; set; }
     
+    public required int Position { get; set; }
+    
     public string? Description { get; set; }
 }
 

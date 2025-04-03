@@ -12,7 +12,7 @@ export interface CategorizedTransactionRowProps extends TransactionRowProps {
     index: number
 }
 
-export default function ExtraCategorizationRow({transaction, onCategoryUpdated, onAmountUpdated}: CategorizedTransactionRowProps) {
+export default function ExtraCategorizationRow({categorization, transaction, onCategoryUpdated, onAmountUpdated}: CategorizedTransactionRowProps) {
     const [amount, setAmount] = useState<number>(0);
 
     const queryClient = useQueryClient();
@@ -24,10 +24,12 @@ export default function ExtraCategorizationRow({transaction, onCategoryUpdated, 
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({amount: body.amount})
+                body: JSON.stringify({amount: body.amount, position: categorization.position + 1})
             });
         },
-        onSuccess: () => queryClient.invalidateQueries(['transactions'])
+        onSuccess: () => {
+            queryClient.invalidateQueries(['transactions'])
+        }
     });
 
     async function amountUpdated(newAmount: number, after: AfterAmountChangedAction) {
@@ -36,6 +38,9 @@ export default function ExtraCategorizationRow({transaction, onCategoryUpdated, 
     }
 
     async function categoryUpdated(category: string | null, after: AfterCategorizationAction) {
+        if (transaction.categorizations.some(cz => cz.category === category))
+            return;
+
         await mutation.mutateAsync({category, amount});
         await onCategoryUpdated(after);
     }

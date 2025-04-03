@@ -15,7 +15,7 @@ export default function UncategorizedTransactionRow({transaction, onCategoryUpda
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({amount: transaction.amount})
+                body: JSON.stringify({amount: transaction.amount, position: 0})
             });
         },
         onSuccess: () => queryClient.invalidateQueries(['transactions'])

@@ -7,4 +7,6 @@ public class CategorizeTransactionRequest
     public required decimal Amount { get; set; }
 
     public string Category { get; set; } = string.Empty;
+    
+    public required int Position { get; set; }
 }

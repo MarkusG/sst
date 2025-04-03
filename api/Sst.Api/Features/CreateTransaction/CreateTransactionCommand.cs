@@ -47,7 +47,8 @@ public partial class CreateTransactionCommand
                 TransactionId = 0,
                 CategoryId = 0,
                 Amount = req.Amount,
-                Category = category
+                Category = category,
+                Position = 0
             });
         }
 
@@ -66,7 +67,8 @@ public partial class CreateTransactionCommand
             {
                 Id = cz.Id,
                 Amount = cz.Amount,
-                Category = cz.Category!.Name
+                Category = cz.Category!.Name,
+                Position = cz.Position
             })
         };
     }

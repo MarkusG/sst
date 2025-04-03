@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {Fragment, useContext} from "react";
 import {TransactionResponse} from "../Contracts/Responses";
 import {AfterCategorizationAction} from "./AfterCategorizationAction.ts";
 import UncategorizedTransactionRow from "./UncategorizedTransactionRow.tsx";
@@ -57,7 +57,7 @@ export default function TransactionRow({transaction, onMoveNext}: TransactionRow
             onAmountUpdated={amountUpdated}/>
     } else {
         return transaction.categorizations.map((cz, idx) =>
-            <>
+            <Fragment key={cz.id}>
                 <CategorizedTransactionRow
                     categorization={cz}
                     showDetails={idx === 0}
@@ -69,10 +69,10 @@ export default function TransactionRow({transaction, onMoveNext}: TransactionRow
                         categorization={cz}
                         index={idx}
                         transaction={transaction}
-                        onCategoryUpdated={async after => await categorized(idx, after)}
+                        onCategoryUpdated={async after => await categorized(idx + 1, after)}
                         onAmountUpdated={amountUpdated}/>
                 }
-            </>
+            </Fragment>
         );
     }
 }

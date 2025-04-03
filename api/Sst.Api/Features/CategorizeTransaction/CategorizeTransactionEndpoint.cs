@@ -19,7 +19,8 @@ public class CategorizeTransactionEndpoint : Endpoint<CategorizeTransactionReque
         {
             TransactionId = req.TransactionId,
             Amount = req.Amount,
-            Category = req.Category
+            Category = req.Category,
+            Position = req.Position
         });
     }
 }

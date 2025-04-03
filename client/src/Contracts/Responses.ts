@@ -10,7 +10,8 @@ export interface TransactionResponse {
 export interface CategorizationResponse {
     id: number,
     category: string,
-    amount: number
+    amount: number,
+    position: number
 }
 
 export interface TransactionsResponse {
