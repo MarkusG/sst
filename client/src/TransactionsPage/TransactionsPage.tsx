@@ -70,7 +70,15 @@ export default function TransactionsPage() {
 
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen relative">
+            {isFetching &&
+                <>
+                    <div className="absolute top-0 left-0 w-full h-full bg-gray-100 opacity-50"></div>
+                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                        <LoadingIcon/>
+                    </div>
+                </>
+            }
             <div className="px-2 pt-2">
                 <h1 className="text-3xl">Transactions</h1>
             </div>
@@ -79,21 +87,13 @@ export default function TransactionsPage() {
                 <h2 className="text-xl">Add Transaction</h2>
                 <TransactionForm/>
             </div>
-            <div className="overflow-auto relative">
+            <div className="overflow-auto">
                 <TransactionTableContextProvider>
                     <TransactionsTable
                         options={{field: params.sortField, direction: params.sortDirection}}
                         onSortUpdated={sortUpdated}
                         transactions={data.transactions}/>
                 </TransactionTableContextProvider>
-                {isFetching &&
-                    <>
-                        <div className="absolute top-0 left-0 w-full h-full bg-gray-100 opacity-50"></div>
-                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                            <LoadingIcon/>
-                        </div>
-                    </>
-                }
             </div>
             <div className="flex justify-around items-baseline p-4 mt-auto">
                 <button className="bg-white hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 transition duration-300 p-2 rounded shadow"
