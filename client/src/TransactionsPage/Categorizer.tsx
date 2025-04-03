@@ -67,7 +67,7 @@ export default function Categorizer({transaction, categorization, onCategorized}
         <>
             <input className="bg-[inherit] focus:bg-gray-200 w-full h-full"
                    list="categoryList"
-                   value={category ?? undefined}
+                   value={category ?? ''}
                    autoFocus
                    onKeyDown={keyDown}
                    onInput={input}
