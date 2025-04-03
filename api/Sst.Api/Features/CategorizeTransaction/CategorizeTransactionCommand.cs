@@ -14,7 +14,7 @@ public partial class CategorizeTransactionCommand
         var categoryId = await categoryService.GetOrCreateCategoryIdByNameAsync(req.Category, token);
 
         var transaction = await ctx.Transactions
-            .Include(t => t.Categorizations)
+            .Include(t => t.Categorizations.OrderBy(cz => cz.Position))
             .FirstOrDefaultAsync(t => t.Id == req.TransactionId, token);
 
         if (transaction is null)
@@ -30,8 +30,8 @@ public partial class CategorizeTransactionCommand
             return;
         }
 
-        if (transaction.Categorizations is [var cz])
-            cz.Amount = transaction.Amount - req.Amount;
+        if (transaction.Categorizations is [var cz, ..])
+            cz.Amount -= req.Amount;
 
         ctx.Categorizations.Add(new Categorization
         {
