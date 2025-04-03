@@ -2,6 +2,7 @@ using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sst.Api;
+using Sst.Api.Services;
 using Sst.Database;
 using Sst.Plaid;
 
@@ -23,6 +24,8 @@ builder.Services.AddHttpClient<PlaidClient>((sp, c) =>
     c.BaseAddress = new Uri(sp.GetRequiredService<IOptions<PlaidClientOptions>>().Value.BaseAddress);
 });
 
+builder.Services.AddScoped<CategoryService>();
+
 builder.Services.AddHandlers();
 
 builder.Services.AddCors(options =>
@@ -41,14 +44,14 @@ app.UseHttpsRedirection();
 app.UseCors("localhost");
 
 // delay responses in development for a more realistic UX
-// if (app.Environment.IsDevelopment())
-// {
-    // app.Use(async (ctx, next) =>
-    // {
-        // await Task.Delay(1000);
-        // await next(ctx);
-    // });
-// }
+if (app.Environment.IsDevelopment())
+{
+    app.Use(async (ctx, next) =>
+    {
+        await Task.Delay(100);
+        await next(ctx);
+    });
+}
 
 app.UseFastEndpoints();
 app.Run();

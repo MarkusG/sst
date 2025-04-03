@@ -4,7 +4,14 @@ export interface TransactionResponse {
     amount: number,
     description: string,
     account: string,
-    category?: string
+    categorizations: CategorizationResponse[]
+}
+
+export interface CategorizationResponse {
+    id: number,
+    category: string,
+    amount: number,
+    position: number
 }
 
 export interface TransactionsResponse {

@@ -32,7 +32,7 @@ public partial class GetTransactionsQuery
         CancellationToken token)
     {
         IQueryable<Transaction> query = ctx.Transactions
-            .Include(t => t.Categorizations)
+            .Include(t => t.Categorizations.OrderBy(cz => cz.Position))
             .ThenInclude(c => c.Category);
 
         if (request.From is { } from)
@@ -96,7 +96,13 @@ public partial class GetTransactionsQuery
                 Account = t.AccountName,
                 Amount = t.Amount,
                 Description = t.Description,
-                Category = t.Categorizations.FirstOrDefault()?.Category!.Name
+                Categorizations = t.Categorizations.Select(cz => new CategorizationResponse
+                {
+                    Id = cz.Id,
+                    Amount = cz.Amount,
+                    Category = cz.Category!.Name,
+                    Position = cz.Position
+                })
             })
         };
     }

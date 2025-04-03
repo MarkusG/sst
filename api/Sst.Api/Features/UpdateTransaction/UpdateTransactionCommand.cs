@@ -44,7 +44,8 @@ public partial class UpdateTransactionCommand
                 {
                     TransactionId = 0,
                     CategoryId = id,
-                    Amount = transaction.Amount
+                    Amount = transaction.Amount,
+                    Position = 0
                 }];
             }
             // else, create the category and put the transaction into it
@@ -64,7 +65,8 @@ public partial class UpdateTransactionCommand
                 {
                     TransactionId = 0,
                     CategoryId = categoryId,
-                    Amount = transaction.Amount
+                    Amount = transaction.Amount,
+                    Position = 0
                 }];
             }
         }

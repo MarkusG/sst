@@ -47,7 +47,8 @@ public partial class CreateTransactionCommand
                 TransactionId = 0,
                 CategoryId = 0,
                 Amount = req.Amount,
-                Category = category
+                Category = category,
+                Position = 0
             });
         }
 
@@ -62,7 +63,13 @@ public partial class CreateTransactionCommand
             Amount = transaction.Amount,
             Description = transaction.Description,
             Account = transaction.AccountName,
-            Category = transaction.Categorizations.First().Category!.Name
+            Categorizations = transaction.Categorizations.Select(cz => new CategorizationResponse
+            {
+                Id = cz.Id,
+                Amount = cz.Amount,
+                Category = cz.Category!.Name,
+                Position = cz.Position
+            })
         };
     }
 
