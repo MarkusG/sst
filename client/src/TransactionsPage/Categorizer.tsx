@@ -74,7 +74,7 @@ export default function Categorizer({transaction, categorization, onCategorized}
                    onBlur={blur}/>
             {!!data &&
                 <datalist id="categoryList">
-                    {data.categories.map(c => <option value={c}></option>)}
+                    {data.categories.map(c => <option value={c} key={c}></option>)}
                 </datalist>
             }
         </>
