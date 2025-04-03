@@ -25,6 +25,11 @@ public partial class DeleteCategorizationCommand
         ctx.Categorizations.Remove(categorization);
         
         await ctx.SaveChangesAsync(token);
+
+        // add amount to first categorization
+        await ctx.Categorizations
+            .Where(cz => cz.TransactionId == categorization.TransactionId && cz.Position == 0)
+            .ExecuteUpdateAsync(cz => cz.SetProperty(ccz => ccz.Amount, ccz => ccz.Amount + categorization.Amount), token);
         
         await categoryService.DeleteCategoryIfEmptyAsync(categorization.CategoryId, token);
         
