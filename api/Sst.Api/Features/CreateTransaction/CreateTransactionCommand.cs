@@ -9,18 +9,16 @@ namespace Sst.Api.Features.CreateTransaction;
 [Handler]
 public partial class CreateTransactionCommand
 {
-    private static async ValueTask<TransactionResponse> HandleAsync(Command req, SstDbContext ctx,
-        CancellationToken token)
+    private static async ValueTask<TransactionResponse> HandleAsync(Command req, SstDbContext ctx, CancellationToken token)
     {
         var transaction = new Transaction
         {
             PlaidId = null,
-            // TODO support currency
             Currency = "USD",
             Timestamp = req.Timestamp,
             Amount = req.Amount,
             Description = req.Description,
-            AccountName = req.Account
+            AccountId = await ctx.Accounts.Select(a => a.Id).FirstAsync(token)
         };
 
         if (req.Category is not null)
@@ -34,7 +32,7 @@ public partial class CreateTransactionCommand
 
                 foreach (var c in rootCategories)
                     c.Position++;
-                
+
                 category = new Category
                 {
                     Name = req.Category,
@@ -42,6 +40,7 @@ public partial class CreateTransactionCommand
                     ParentId = null
                 };
             }
+
             transaction.Categorizations.Add(new Categorization
             {
                 TransactionId = 0,
@@ -62,7 +61,7 @@ public partial class CreateTransactionCommand
             Timestamp = transaction.Timestamp,
             Amount = transaction.Amount,
             Description = transaction.Description,
-            Account = transaction.AccountName,
+            Account = transaction.Account?.Name ?? string.Empty,
             Categorizations = transaction.Categorizations.Select(cz => new CategorizationResponse
             {
                 Id = cz.Id,
@@ -80,8 +79,6 @@ public partial class CreateTransactionCommand
         public required decimal Amount { get; set; }
 
         public required string Description { get; set; }
-
-        public required string Account { get; set; }
 
         public required string? Category { get; set; }
     }

@@ -10,7 +10,7 @@ public partial class ImportTransactionsCommand
 {
     public record Command
     {
-        public required string AccountName { get; set; }
+        public required string? AccountName { get; set; }
 
         public required IFormFile File { get; set; }
     }
@@ -35,12 +35,11 @@ public partial class ImportTransactionsCommand
             // deduplicate
             foreach (var t in newTransactions.Where(t =>
                          !existingTransactions.Any(tt =>
-                             tt.AccountName == req.AccountName
-                             && tt.Timestamp == t.Timestamp
+                             tt.Timestamp == t.Timestamp
                              && tt.Description == t.Description
                              && tt.Amount == t.Amount)))
             {
-                t.AccountName = req.AccountName;
+                // t.AccountName = req.AccountName;
                 ctx.Transactions.Add(t);
             }
         }

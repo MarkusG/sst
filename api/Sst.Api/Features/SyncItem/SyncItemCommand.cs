@@ -79,8 +79,6 @@ public partial class SyncItemCommand
             hasMore = response.HasMore;
             cursor = response.NextCursor;
 
-            var accounts = response.Accounts.ToDictionary(a => a.AccountId, a => a);
-
             foreach (var t in response.Added)
             {
                 var timestamp = t switch
@@ -94,8 +92,7 @@ public partial class SyncItemCommand
                 ctx.Transactions.Add(new Transaction
                 {
                     PlaidId = t.TransactionId,
-                    AccountName = accounts[t.AccountId].Name,
-                    AccountMask = accounts[t.AccountId].Mask,
+                    AccountId = null,
                     Amount = -(decimal)t.Amount,
                     Currency = t.IsoCurrencyCode ?? t.UnofficialCurrencyCode!,
                     Timestamp = timestamp,

@@ -98,7 +98,6 @@ public partial class UpdateTransactionCommand
         transaction.Timestamp = req.Timestamp;
         transaction.Amount = req.Amount;
         transaction.Description = req.Description;
-        transaction.AccountName = req.Account;
 
         await ctx.SaveChangesAsync(token);
         return true;

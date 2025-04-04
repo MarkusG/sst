@@ -42,8 +42,7 @@ public class CitibankTransactionMapper : ITransactionMapper
         return records.Select(t => new Database.Entities.Transaction
         {
             PlaidId = null,
-            // the caller will set this
-            AccountName = null!,
+            AccountId = null,
             Amount = -t.Debit ?? -t.Credit ?? 0,
             Currency = "USD",
             Description = t.Description,

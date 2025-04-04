@@ -7,7 +7,7 @@ public class Account
 {
     public int Id { get; set; }
     
-    public required string PlaidId { get; set; }
+    public required string? PlaidId { get; set; }
     
     public required string Name { get; set; }
     
@@ -15,7 +15,7 @@ public class Account
     
     public required decimal? CurrentBalance { get; set; }
     
-    public int ItemId { get; set; }
+    public int? ItemId { get; set; }
     
     public Item? Item { get; set; }
 }
