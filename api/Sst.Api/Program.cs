@@ -2,6 +2,7 @@ using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sst.Api;
+using Sst.Api.Features.ImportTransactions.Mappers;
 using Sst.Api.Services;
 using Sst.Database;
 using Sst.Plaid;
@@ -25,6 +26,7 @@ builder.Services.AddHttpClient<PlaidClient>((sp, c) =>
 });
 
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddSingleton<TransactionMapperProvider>();
 
 builder.Services.AddHandlers();
 

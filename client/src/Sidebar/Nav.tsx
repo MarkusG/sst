@@ -16,6 +16,9 @@ export default function Nav() {
                 <SstNavLink to="/cashflow">
                     <i className="fa-solid fa-fw fa-dollar-sign fa-lg"></i> Cash Flow
                 </SstNavLink>
+                <SstNavLink to="/import">
+                    <i className="fa-solid fa-fw fa-download fa-lg"></i> Import
+                </SstNavLink>
             </ul>
         </nav>
     );
