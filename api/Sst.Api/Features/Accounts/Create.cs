@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Sst.Database;
 using Sst.Database.Entities;
 
-namespace Sst.Api.Features.CreateAccount;
+namespace Sst.Api.Features.Accounts;
 
 [Handler]
 [MapPost("/accounts")]
-public static partial class CreateAccount
+public static partial class Create
 {
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>
