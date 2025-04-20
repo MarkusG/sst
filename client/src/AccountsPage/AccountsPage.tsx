@@ -1,6 +1,7 @@
 import useGetAccounts from "./GetAccountsQuery.ts";
 import LoadingIcon from "../LoadingIcon/LoadingIcon.tsx";
 import AccountCard from "./AccountCard.tsx";
+import NewAccountForm from "./NewAccountForm.tsx";
 
 export default function AccountsPage() {
     const {data: accounts, isLoading, isError, error} = useGetAccounts();
@@ -24,7 +25,12 @@ export default function AccountsPage() {
     return (
         <div className="p-2">
             <h1 className="text-3xl">Accounts</h1>
-            {accounts.map(a => <AccountCard key={a.id} account={a}/>)}
+            <div className="mb-2">
+                <NewAccountForm/>
+            </div>
+            <div className="flex flex-col gap-2">
+                {accounts.map(a => <AccountCard key={a.id} account={a}/>)}
+            </div>
         </div>
     );
 }
