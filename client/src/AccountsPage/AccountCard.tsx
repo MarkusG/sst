@@ -3,6 +3,7 @@ import plaidLogo from "../../public/plaid.svg";
 import useUpdateAccount from "./UpdateAccountCommand.ts";
 import {useState} from "react";
 import AccountForm, {AccountFormValues} from "./AccountForm.tsx";
+import Deleter from "./Deleter.tsx";
 
 export interface AccountCardProps {
     account: Account
@@ -19,7 +20,7 @@ export default function AccountCard({account}: AccountCardProps) {
     const [editing, setEditing] = useState(false);
     const {mutateAsync: update} = useUpdateAccount(account.id);
 
-    async function submit(values: AccountFormValues){
+    async function submit(values: AccountFormValues) {
         await update(values);
         setEditing(false);
     }
@@ -34,9 +35,12 @@ export default function AccountCard({account}: AccountCardProps) {
                     </button>
                 </div>}
                 {editing && <AccountForm autoFocus={true} editing={true} initialValues={account} onSubmit={submit}/>}
-                <p>{account.transactionCount} transactions</p>
+                <p className="mb-1">{account.transactionCount} transactions</p>
+                {account.isPlaid && <img src={plaidLogo} alt="Plaid logo" className="h-4"/>}
             </div>
-            {account.isPlaid && <img src={plaidLogo} alt="Plaid logo" className="h-8"/>}
+            <div className="flex gap-2 items-center">
+                <Deleter accountId={account.id} accountName={account.name}/>
+            </div>
         </div>
     );
 }
