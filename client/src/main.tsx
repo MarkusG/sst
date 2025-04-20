@@ -10,6 +10,7 @@ import TransactionsPage from './TransactionsPage/TransactionsPage.tsx';
 import CashflowPage from './CashflowPage/CashflowPage.tsx';
 import CategoriesPage from './CategoriesPage/CategoriesPage.tsx';
 import ImportPage from "./ImportPage/ImportPage.tsx";
+import AccountsPage from "./AccountsPage/AccountsPage.tsx";
 //import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 
 const queryClient = new QueryClient({
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: '/cashflow',
                 element: <CashflowPage/>
+            },
+            {
+                path: '/accounts',
+                element: <AccountsPage/>
             },
             {
                 path: '/import',

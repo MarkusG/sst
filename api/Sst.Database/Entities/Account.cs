@@ -18,6 +18,8 @@ public class Account
     public int? ItemId { get; set; }
     
     public Item? Item { get; set; }
+
+    public List<Transaction> Transactions { get; set; } = [];
 }
 
 public class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Account>

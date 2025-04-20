@@ -28,7 +28,8 @@ builder.Services.AddHttpClient<PlaidClient>((sp, c) =>
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddSingleton<TransactionMapperProvider>();
 
-builder.Services.AddHandlers();
+builder.Services.AddSstApiHandlers();
+builder.Services.AddSstApiBehaviors();
 
 builder.Services.AddCors(options =>
 {
@@ -56,4 +57,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseFastEndpoints();
+app.MapSstApiEndpoints();
+
 app.Run();
