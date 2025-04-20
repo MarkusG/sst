@@ -1,10 +1,13 @@
 import useGetAccounts from "./GetAccountsQuery.ts";
 import LoadingIcon from "../LoadingIcon/LoadingIcon.tsx";
 import AccountCard from "./AccountCard.tsx";
-import NewAccountForm from "./NewAccountForm.tsx";
+import AccountForm from "./AccountForm.tsx";
+import useCreateAccount from "./CreateAccountCommand.ts";
 
 export default function AccountsPage() {
     const {data: accounts, isLoading, isError, error} = useGetAccounts();
+
+    const {mutateAsync: createAccount} = useCreateAccount();
 
     if (isLoading) {
         return (
@@ -26,7 +29,7 @@ export default function AccountsPage() {
         <div className="p-2">
             <h1 className="text-3xl">Accounts</h1>
             <div className="mb-2">
-                <NewAccountForm/>
+                <AccountForm autoFocus={false} editing={false} onSubmit={createAccount}/>
             </div>
             <div className="flex flex-col gap-2">
                 {accounts.map(a => <AccountCard key={a.id} account={a}/>)}

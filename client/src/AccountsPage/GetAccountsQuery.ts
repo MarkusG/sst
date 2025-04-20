@@ -14,5 +14,5 @@ export default function useGetAccounts() {
    return useQuery<Account[]>({
       queryKey: ['accounts'],
       queryFn: async () => await axios.get('/accounts').then(r => r.data)
-   })
+   });
 }
