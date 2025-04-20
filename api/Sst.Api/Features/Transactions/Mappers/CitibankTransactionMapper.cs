@@ -7,7 +7,7 @@ public class CitibankTransactionMapper : ITransactionMapper
 {
     private record Transaction
     {
-        public required DateOnly Date { get; init; }
+        public required DateTimeOffset Date { get; init; }
 
         public required string Description { get; init; }
 
@@ -46,7 +46,7 @@ public class CitibankTransactionMapper : ITransactionMapper
             Amount = -t.Debit ?? -t.Credit ?? 0,
             Currency = "USD",
             Description = t.Description,
-            Timestamp = new DateTimeOffset(t.Date, TimeOnly.FromTimeSpan(TimeSpan.Zero), TimeSpan.Zero)
+            Timestamp = t.Date.ToUniversalTime()
         }).ToList();
     }
 }
