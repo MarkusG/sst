@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sst.Api;
 using Sst.Api.Exceptions;
-using Sst.Api.Features.ImportTransactions.Mappers;
+using Sst.Api.Features.Transactions.Mappers;
 using Sst.Api.Services;
 using Sst.Database;
 using Sst.Plaid;

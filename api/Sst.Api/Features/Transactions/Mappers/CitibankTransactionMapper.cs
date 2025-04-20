@@ -1,7 +1,7 @@
 using System.Globalization;
 using CsvHelper;
 
-namespace Sst.Api.Features.ImportTransactions.Mappers;
+namespace Sst.Api.Features.Transactions.Mappers;
 
 public class CitibankTransactionMapper : ITransactionMapper
 {

@@ -1,6 +1,6 @@
 using Sst.Database.Entities;
 
-namespace Sst.Api.Features.ImportTransactions.Mappers;
+namespace Sst.Api.Features.Transactions.Mappers;
 
 public interface ITransactionMapper
 {
