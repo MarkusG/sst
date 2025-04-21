@@ -273,10 +273,15 @@ namespace Sst.Database.Migrations
             modelBuilder.Entity("Sst.Database.Entities.Transaction", b =>
                 {
                     b.HasOne("Sst.Database.Entities.Account", "Account")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("AccountId");
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Account", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Category", b =>

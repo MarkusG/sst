@@ -12,8 +12,8 @@ using Sst.Database;
 namespace Sst.Database.Migrations
 {
     [DbContext(typeof(SstDbContext))]
-    [Migration("20241013051247_MakeTransactionPlaidIdOptional")]
-    partial class MakeTransactionPlaidIdOptional
+    [Migration("20250421052955_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace Sst.Database.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
 
-                    b.Property<int>("ItemId")
+                    b.Property<int?>("ItemId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -49,7 +49,6 @@ namespace Sst.Database.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PlaidId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -88,7 +87,41 @@ namespace Sst.Database.Migrations
 
                     b.ToTable((string)null);
 
-                    b.ToSqlQuery("   with recursive\n       categories as (select \"Id\", \"Name\", 0 as \"Level\", \"Position\", \"ParentId\", array [\"Position\"] as \"Path\"\n                      from \"Categories\"\n                      where \"ParentId\" is null\n   \n                      union all\n   \n                      select c.\"Id\",\n                             c.\"Name\",\n                             \"Level\" + 1,\n                             c.\"Position\",\n                             c.\"ParentId\",\n                             array_append(\"Path\", c.\"Position\") as Path\n                      from \"Categories\" c\n                               inner join categories cats on cats.\"Id\" = c.\"ParentId\"),\n       ancestry as (select \"Id\", \"Name\", \"ParentId\", \"Id\" as \"AncestorId\"\n                    from \"Categories\"\n   \n                    union all\n   \n                    select c.\"Id\", a.\"Name\", c.\"ParentId\", \"AncestorId\"\n                    from \"Categories\" c\n                             inner join ancestry a on a.\"Id\" = c.\"ParentId\"),\n       totals as (select C.\"Id\",\n                         C.\"Name\",\n                         C.\"ParentId\",\n                         extract(year from \"Timestamp\")  as \"Year\",\n                         extract(month from \"Timestamp\") as \"Month\",\n                         sum(T.\"Amount\")                 as \"Total\"\n                  from \"Categories\" C\n                           left join \"Transactions\" T on C.\"Id\" = T.\"CategoryId\"\n                  group by C.\"Id\", C.\"Name\", extract(year from \"Timestamp\"), extract(month from \"Timestamp\")),\n       categoryTotals as (select a.\"AncestorId\" as \"CategoryId\", t.\"Year\", t.\"Month\", sum(t.\"Total\") as \"Total\"\n                          from ancestry as a\n                                   inner join totals t on t.\"Id\" = a.\"Id\"\n                          group by a.\"AncestorId\", t.\"Year\", t.\"Month\")\n   select ct.\"CategoryId\" as \"Id\", c.\"Name\", c.\"Level\", ct.\"Total\" as \"TreeTotal\", coalesce(t.\"Total\", 0) as \"CategoryTotal\", ct.\"Year\", ct.\"Month\"\n   from categoryTotals ct\n            inner join categories c on c.\"Id\" = ct.\"CategoryId\"\n            left join totals t on t.\"Id\" = ct.\"CategoryId\" and t.\"Year\" = ct.\"Year\" and t.\"Month\" = ct.\"Month\"\n   where ct.\"Year\" is not null\n     and ct.\"Month\" is not null\n   order by c.\"Path\", \"Year\", \"Month\"");
+                    b.ToSqlQuery("   with recursive\n       categories as (select \"Id\", \"Name\", 0 as \"Level\", \"Position\", \"ParentId\", array [\"Position\"] as \"Path\"\n                      from \"Categories\"\n                      where \"ParentId\" is null\n   \n                      union all\n   \n                      select c.\"Id\",\n                             c.\"Name\",\n                             \"Level\" + 1,\n                             c.\"Position\",\n                             c.\"ParentId\",\n                             array_append(\"Path\", c.\"Position\") as Path\n                      from \"Categories\" c\n                               inner join categories cats on cats.\"Id\" = c.\"ParentId\"),\n       ancestry as (select \"Id\", \"Name\", \"ParentId\", \"Id\" as \"AncestorId\"\n                    from \"Categories\"\n   \n                    union all\n   \n                    select c.\"Id\", a.\"Name\", c.\"ParentId\", \"AncestorId\"\n                    from \"Categories\" c\n                             inner join ancestry a on a.\"Id\" = c.\"ParentId\"),\n       totals as (select C.\"Id\",\n                         C.\"Name\",\n                         C.\"ParentId\",\n                         extract(year from \"Timestamp\")  as \"Year\",\n                         extract(month from \"Timestamp\") as \"Month\",\n                         sum(CZ.\"Amount\")                 as \"Total\"\n                  from \"Categories\" C\n                           left join \"Categorizations\" CZ on C.\"Id\" = CZ.\"CategoryId\"\n                           left join \"Transactions\" T on CZ.\"TransactionId\" = T.\"Id\"\n                  group by C.\"Id\", C.\"Name\", extract(year from \"Timestamp\"), extract(month from \"Timestamp\")),\n       categoryTotals as (select a.\"AncestorId\" as \"CategoryId\", t.\"Year\", t.\"Month\", sum(t.\"Total\") as \"Total\"\n                          from ancestry as a\n                                   inner join totals t on t.\"Id\" = a.\"Id\"\n                          group by a.\"AncestorId\", t.\"Year\", t.\"Month\")\n   select ct.\"CategoryId\" as \"Id\", c.\"Name\", c.\"Level\", ct.\"Total\" as \"TreeTotal\", coalesce(t.\"Total\", 0) as \"CategoryTotal\", ct.\"Year\", ct.\"Month\"\n   from categoryTotals ct\n            inner join categories c on c.\"Id\" = ct.\"CategoryId\"\n            left join totals t on t.\"Id\" = ct.\"CategoryId\" and t.\"Year\" = ct.\"Year\" and t.\"Month\" = ct.\"Month\"\n   where ct.\"Year\" is not null\n     and ct.\"Month\" is not null\n   order by c.\"Path\", \"Year\", \"Month\"");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Categorization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("Categorizations");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Category", b =>
@@ -172,19 +205,12 @@ namespace Sst.Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountMask")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AccountName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Currency")
                         .IsRequired()
@@ -202,7 +228,7 @@ namespace Sst.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("PlaidId")
                         .IsUnique();
@@ -214,11 +240,28 @@ namespace Sst.Database.Migrations
                 {
                     b.HasOne("Sst.Database.Entities.Item", "Item")
                         .WithMany("Accounts")
-                        .HasForeignKey("ItemId")
+                        .HasForeignKey("ItemId");
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Categorization", b =>
+                {
+                    b.HasOne("Sst.Database.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
+                    b.HasOne("Sst.Database.Entities.Transaction", "Transaction")
+                        .WithMany("Categorizations")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Category", b =>
@@ -232,23 +275,31 @@ namespace Sst.Database.Migrations
 
             modelBuilder.Entity("Sst.Database.Entities.Transaction", b =>
                 {
-                    b.HasOne("Sst.Database.Entities.Category", "Category")
+                    b.HasOne("Sst.Database.Entities.Account", "Account")
                         .WithMany("Transactions")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("AccountId");
 
-                    b.Navigation("Category");
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Account", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Category", b =>
                 {
                     b.Navigation("Subcategories");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Item", b =>
                 {
                     b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Transaction", b =>
+                {
+                    b.Navigation("Categorizations");
                 });
 #pragma warning restore 612, 618
         }
