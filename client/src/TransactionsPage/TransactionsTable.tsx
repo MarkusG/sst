@@ -37,7 +37,7 @@ export default function TransactionsTable({options, onSortUpdated, transactions}
                 <SortableHeaderCell field="account" className="w-[200px] px-1 border-gray-300 border-r border-b">Account</SortableHeaderCell>
                 <SortableHeaderCell field="description" className="px-1 border-gray-300 border-r border-b">Description</SortableHeaderCell>
                 <SortableHeaderCell field="amount" className="w-[100px] px-1 border-gray-300 border-r border-b">Amount</SortableHeaderCell>
-                <SortableHeaderCell field="category" className="w-[200px] px-1 border-gray-300 border-r border-b">Category</SortableHeaderCell>
+                <td className="w-[200px] px-1 border-gray-300 border-r border-b">Category</td>
             </tr>
             </thead>
             <tbody>

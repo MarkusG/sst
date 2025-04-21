@@ -7,7 +7,7 @@ import LoadingIcon from "../LoadingIcon/LoadingIcon";
 export default function SidebarAccounts() {
     const { data, error, isLoading } = useQuery<AccountsResponse>({
         queryKey: ['accounts-old'],
-        queryFn: async () => await fetch('https://localhost:5001/accounts-old')
+        queryFn: async () => await fetch('https://localhost:5001/accounts/grouped')
             .then((res) => res.json())
     });
 

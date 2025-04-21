@@ -1,19 +1,22 @@
 using FastEndpoints;
+using Immediate.Handlers.Shared;
 using Immediate.Validations.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sst.Api;
 using Sst.Api.Exceptions;
-using Sst.Api.Features.Transactions.Mappers;
+using Sst.Api.Features.Transactions.Import.Mappers;
 using Sst.Api.Services;
 using Sst.Database;
 using Sst.Plaid;
-using ProblemDetails = FastEndpoints.ProblemDetails;
+using ValidationException = Immediate.Validations.Shared.ValidationException;
+
+[assembly: Behaviors(
+    typeof(ValidationBehavior<,>)
+)]
 
 var builder = WebApplication.CreateBuilder();
-
-builder.Services.AddFastEndpoints();
 
 builder.Services.AddDbContext<SstDbContext>(options =>
 {
@@ -77,6 +80,12 @@ builder.Services.AddProblemDetails(options =>
                 Status = StatusCodes.Status404NotFound
             },
 
+            Sst.Api.Exceptions.ValidationException ex => new()
+            {
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            },
+
             _ => new Microsoft.AspNetCore.Mvc.ProblemDetails
             {
                 Detail = "An error has occurred.",
@@ -105,7 +114,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseFastEndpoints();
 app.MapSstApiEndpoints();
 
 app.Run();

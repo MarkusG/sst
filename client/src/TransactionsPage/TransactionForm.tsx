@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Field, Form, Formik, FormikHelpers } from "formik";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {Field, Form, Formik, FormikHelpers} from "formik";
 import * as yup from "yup";
 
 export interface TransactionFormValues {
@@ -43,15 +43,15 @@ export default function TransactionForm() {
         category: '',
     };
 
-    const { mutateAsync } = useMutation({
+    const {mutateAsync} = useMutation({
         mutationFn: async (values: TransactionFormValues) => fetch('https://localhost:5001/transactions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(values)
         })
     });
 
-    async function submit(rawValues: TransactionRawFormValues, { setSubmitting, resetForm }: FormikHelpers<TransactionRawFormValues>) {
+    async function submit(rawValues: TransactionRawFormValues, {setSubmitting, resetForm}: FormikHelpers<TransactionRawFormValues>) {
         // I'm not sure if I'm not using Formik right or if it's just bad, but we're in the "make it work" stage. I'll make it work better later(tm)
         setSubmitting(true);
         const values = {
@@ -63,7 +63,7 @@ export default function TransactionForm() {
         };
 
         const response = await mutateAsync(values);
-        if (response.status === 200) {
+        if (response.status === 204) {
             resetForm();
         }
         setSubmitting(false);
