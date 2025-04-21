@@ -4,7 +4,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace Sst.Api.Features.Transactions.Mappers;
 
-public class ChaseTransactionMapper : ITransactionMapper
+public class ChaseCheckingTransactionMapper : ITransactionMapper
 {
     private record Transaction
     {
