@@ -34,7 +34,7 @@ export default function UncategorizedTransactionRow({transaction, onCategoryUpda
                 <Timestamp ts={transaction.timestamp}/>
             </td>
             <td className="px-1">{transaction.account}</td>
-            <td className="px-1">{transaction.description}</td>
+            <td className="px-1 overflow-hidden text-ellipsis">{transaction.description}</td>
             <td className="px-1 text-right"><Amount amount={transaction.amount}/></td>
             <td className="px-1">
                 <Categorizer

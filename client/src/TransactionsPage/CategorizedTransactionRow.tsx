@@ -51,7 +51,7 @@ export default function CategorizedTransactionRow({transaction, categorization, 
                 {showDetails && <Timestamp ts={transaction.timestamp}/>}
             </td>
             <td className="px-1">{showDetails && transaction.account}</td>
-            <td className="px-1">{showDetails && transaction.description}</td>
+            <td className="px-1 overflow-hidden text-ellipsis">{showDetails && transaction.description}</td>
             <td className="px-1 text-right"><Amount amount={categorization.amount}/></td>
             <td className="px-1">
                 <Categorizer
