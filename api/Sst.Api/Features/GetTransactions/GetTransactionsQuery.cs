@@ -33,7 +33,8 @@ public partial class GetTransactionsQuery
     {
         IQueryable<Transaction> query = ctx.Transactions
             .Include(t => t.Categorizations.OrderBy(cz => cz.Position))
-            .ThenInclude(c => c.Category);
+            .ThenInclude(c => c.Category)
+            .Include(t => t.Account);
 
         if (request.From is { } from)
         {
@@ -91,7 +92,7 @@ public partial class GetTransactionsQuery
             {
                 Id = t.Id,
                 Timestamp = t.Timestamp,
-                Account = null,
+                Account = t.Account!.Name,
                 Amount = t.Amount,
                 Description = t.Description,
                 Categorizations = t.Categorizations.Select(cz => new CategorizationResponse

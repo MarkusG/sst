@@ -10,7 +10,7 @@ public class TransactionResponse
     
     public required string Description { get; set; }
     
-    public required string? Account { get; set; }
+    public required string Account { get; set; }
 
     public required IEnumerable<CategorizationResponse> Categorizations { get; set; }
 }
