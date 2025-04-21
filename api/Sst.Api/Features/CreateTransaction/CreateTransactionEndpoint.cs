@@ -20,7 +20,6 @@ public class CreateTransactionEndpoint : Endpoint<CreateTransactionRequest>
             Timestamp = req.Timestamp,
             Amount = req.Amount,
             Description = req.Description,
-            Account = req.Account,
             Category = req.Category
         });
 

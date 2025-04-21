@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AccountGroupResonse } from "../Contracts/Responses";
+import { AccountGroupResponse } from "../Contracts/Responses";
 import AccountListing from "./AccountListing";
 import SyncButton from "./SyncButton";
 
 export interface AccountGroupProps {
-    group: AccountGroupResonse
+    group: AccountGroupResponse
 }
 
 export default function AccountGroup({ group }: AccountGroupProps) {

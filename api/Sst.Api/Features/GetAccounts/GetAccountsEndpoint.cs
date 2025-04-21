@@ -8,7 +8,7 @@ public class GetAccountsEndpoint : EndpointWithoutRequest
     
     public override void Configure()
     {
-        Get("/accounts");
+        Get("/accounts-old");
         AllowAnonymous();
     }
 

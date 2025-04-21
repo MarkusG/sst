@@ -4,7 +4,7 @@ interface SyncButtonProps {
     text: String
     textSize: String
     iconSize: String
-    onClick: () => Promise<void>
+    onClick: () => any | Promise<any>
 }
 
 export default function SyncButton(props: SyncButtonProps) {

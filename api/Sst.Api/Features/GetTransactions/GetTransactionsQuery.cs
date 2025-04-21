@@ -55,7 +55,6 @@ public partial class GetTransactionsQuery
                 "timestamp" => query.OrderByDescending(t => t.Timestamp),
                 "amount" => query.OrderByDescending(t => t.Amount),
                 "description" => query.OrderByDescending(t => t.Description),
-                "account" => query.OrderByDescending(t => t.AccountName),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -66,7 +65,6 @@ public partial class GetTransactionsQuery
                 "timestamp" => query.OrderBy(t => t.Timestamp),
                 "amount" => query.OrderBy(t => t.Amount),
                 "description" => query.OrderBy(t => t.Description),
-                "account" => query.OrderBy(t => t.AccountName),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -93,7 +91,7 @@ public partial class GetTransactionsQuery
             {
                 Id = t.Id,
                 Timestamp = t.Timestamp,
-                Account = t.AccountName,
+                Account = null,
                 Amount = t.Amount,
                 Description = t.Description,
                 Categorizations = t.Categorizations.Select(cz => new CategorizationResponse

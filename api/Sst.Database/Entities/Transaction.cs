@@ -9,9 +9,9 @@ public class Transaction
 
     public required string? PlaidId { get; set; }
 
-    public required string AccountName { get; set; }
-
-    public string? AccountMask { get; set; }
+    public required int? AccountId { get; set; }
+    
+    public Account? Account { get; set; }
 
     public required decimal Amount { get; set; }
 

@@ -38,7 +38,7 @@ namespace Sst.Database.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
 
-                    b.Property<int>("ItemId")
+                    b.Property<int?>("ItemId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -46,7 +46,6 @@ namespace Sst.Database.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PlaidId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -203,12 +202,8 @@ namespace Sst.Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountMask")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AccountName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(10, 2)
@@ -230,6 +225,8 @@ namespace Sst.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId");
+
                     b.HasIndex("PlaidId")
                         .IsUnique();
 
@@ -240,9 +237,7 @@ namespace Sst.Database.Migrations
                 {
                     b.HasOne("Sst.Database.Entities.Item", "Item")
                         .WithMany("Accounts")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemId");
 
                     b.Navigation("Item");
                 });
@@ -273,6 +268,15 @@ namespace Sst.Database.Migrations
                         .HasForeignKey("ParentId");
 
                     b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("Sst.Database.Entities.Transaction", b =>
+                {
+                    b.HasOne("Sst.Database.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId");
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Sst.Database.Entities.Category", b =>

@@ -6,8 +6,8 @@ import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
 export default function SidebarAccounts() {
     const { data, error, isLoading } = useQuery<AccountsResponse>({
-        queryKey: ['accounts'],
-        queryFn: async () => await fetch('https://localhost:5001/accounts')
+        queryKey: ['accounts-old'],
+        queryFn: async () => await fetch('https://localhost:5001/accounts-old')
             .then((res) => res.json())
     });
 
@@ -27,7 +27,7 @@ export default function SidebarAccounts() {
 
     return (
         <div className="w-52 truncate text-sm flex flex-col gap-4">
-            <SyncButton text="Sync All Accounts" textSize="base" iconSize="sm"/>
+            <SyncButton text="Sync All Accounts" textSize="base" iconSize="sm" onClick={() => {}}/>
             {data?.groups.map(g => <AccountGroup key={g.itemId} group={g}/>)}
         </div>
     );

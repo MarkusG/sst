@@ -3,7 +3,7 @@ export interface TransactionResponse {
     timestamp: Date,
     amount: number,
     description: string,
-    account: string,
+    account?: string,
     categorizations: CategorizationResponse[]
 }
 
@@ -33,13 +33,13 @@ export interface AccountResponse {
     currentBalance?: number
 }
 
-export interface AccountGroupResonse {
-    itemId: number,
+export interface AccountGroupResponse {
+    itemId?: number,
     accounts: AccountResponse[]
 }
 
 export interface AccountsResponse {
-    groups: AccountGroupResonse[]
+    groups: AccountGroupResponse[]
 }
 
 export interface CategoryCashFlowResponse {
