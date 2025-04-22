@@ -1,5 +1,5 @@
 // @ts-ignore
-import plaidLogo from "../../public/plaid.svg";
+import plaidLogo from "../assets/plaid.svg";
 import useUpdateAccount from "./UpdateAccountCommand.ts";
 import {useState} from "react";
 import AccountForm, {AccountFormValues} from "./AccountForm.tsx";
