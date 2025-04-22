@@ -9,7 +9,7 @@ export default function SelectAccount() {
 
     const {data: accounts, isLoading, isError, error} = useGetImportAccounts();
 
-    if (!context.file || context.accountId)
+    if (!context.files || context.accountId)
         return;
 
     if (isLoading) {

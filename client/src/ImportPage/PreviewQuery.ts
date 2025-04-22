@@ -15,8 +15,8 @@ export default function usePreview() {
     const [context, _] = useContext(ImportContext);
 
     return useQuery<Response[]>({
-        queryKey: ['import', 'preview', context.file],
-        queryFn: async () => await axios.post('/import/preview', {file: context.file, accountId: context.accountId}, SubmitFormOptions).then(r => r.data),
-        enabled: !!context.file && !!context.accountId
+        queryKey: ['import', 'preview', context.files],
+        queryFn: async () => await axios.post('/import/preview', {files: context.files, accountId: context.accountId}, SubmitFormOptions).then(r => r.data),
+        enabled: !!context.files && !!context.accountId
     });
 }

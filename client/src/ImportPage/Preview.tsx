@@ -4,13 +4,13 @@ import usePreview from "./PreviewQuery.ts";
 import LoadingIcon from "../LoadingIcon/LoadingIcon.tsx";
 import Amount from "../Amount.tsx";
 import Timestamp from "../Timestamp.tsx";
-import useImportTransactions from "./ImportTransactionsCommand.ts";
+import useImport from "./ImportCommand.ts";
 
 export default function Preview() {
     const [context, setContext] = useContext(ImportContext);
 
     const {data, isLoading, isError, error} = usePreview();
-    const {mutateAsync} = useImportTransactions();
+    const {mutateAsync} = useImport();
 
     if (!context.accountId || context.done)
         return;

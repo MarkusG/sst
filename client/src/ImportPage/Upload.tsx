@@ -4,12 +4,12 @@ import {ImportContext} from "./ImportContext.tsx";
 export default function Upload() {
     const [context, setContext] = useContext(ImportContext);
 
-    if (context.file)
+    if (context.files)
         return;
 
     function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files.length > 0)
-            setContext({...context, file: e.target.files[0]});
+            setContext({...context, files: e.target.files});
     }
 
     return (
@@ -18,7 +18,7 @@ export default function Upload() {
                 <i className="fa fa-4x fa-upload mb-1"></i>
                 <p className="text-2xl">Upload CSV</p>
             </div>
-            <input id="upload" type="file" className="hidden" onChange={handleFileChange}/>
+            <input id="upload" type="file" multiple className="hidden" onChange={handleFileChange}/>
         </label>
     );
 }

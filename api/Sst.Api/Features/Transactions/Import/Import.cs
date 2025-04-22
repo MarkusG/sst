@@ -16,44 +16,46 @@ public static partial class Import
 
     public sealed record Command
     {
-        [FromForm]
         public required int AccountId { get; init; }
 
-        [FromForm]
-        public required IFormFile File { get; init; }
+        public required IFormFileCollection Files { get; init; }
     }
 
     private static async ValueTask<NoContent> HandleAsync(
+        [FromForm]
         Command command,
         SstDbContext ctx,
         TransactionMapperProvider provider,
         CancellationToken token)
     {
-        var reader = new StreamReader(command.File.OpenReadStream());
-        var csv = await reader.ReadToEndAsync(token);
-
-        if (provider.TryGetMapper(csv, out var mapper))
+        foreach (var file in command.Files)
         {
-            var newTransactions = mapper.GetTransactions(csv);
-            var earliest = newTransactions.OrderBy(t => t.Timestamp).FirstOrDefault();
+            var reader = new StreamReader(file.OpenReadStream());
+            var csv = await reader.ReadToEndAsync(token);
 
-            if (earliest is null)
-                return TypedResults.NoContent();
-
-            var existingTransactions = await ctx.Transactions
-                .Where(t => t.AccountId == command.AccountId)
-                .Where(t => t.Timestamp >= earliest.Timestamp)
-                .ToListAsync(token);
-
-            // deduplicate
-            foreach (var t in newTransactions.Where(t =>
-                         !existingTransactions.Any(tt =>
-                             tt.Timestamp == t.Timestamp
-                             && tt.Description == t.Description
-                             && tt.Amount == t.Amount)))
+            if (provider.TryGetMapper(csv, out var mapper))
             {
-                t.AccountId = command.AccountId;
-                ctx.Transactions.Add(t);
+                var newTransactions = mapper.GetTransactions(csv);
+                var earliest = newTransactions.OrderBy(t => t.Timestamp).FirstOrDefault();
+
+                if (earliest is null)
+                    continue;
+
+                var existingTransactions = await ctx.Transactions
+                    .Where(t => t.AccountId == command.AccountId)
+                    .Where(t => t.Timestamp >= earliest.Timestamp)
+                    .ToListAsync(token);
+
+                // deduplicate
+                foreach (var t in newTransactions.Where(t =>
+                             !existingTransactions.Any(tt =>
+                                 tt.Timestamp == t.Timestamp
+                                 && tt.Description == t.Description
+                                 && tt.Amount == t.Amount)))
+                {
+                    t.AccountId = command.AccountId;
+                    ctx.Transactions.Add(t);
+                }
             }
         }
 

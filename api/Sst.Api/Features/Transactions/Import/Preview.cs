@@ -15,10 +15,8 @@ public static partial class Preview
 
     public sealed record Query
     {
-        [FromForm]
-        public required IFormFile File { get; init; }
+        public required IFormFileCollection Files { get; init; }
 
-        [FromForm]
         public required int AccountId { get; init; }
     }
 
@@ -34,40 +32,46 @@ public static partial class Preview
     }
 
     private static async ValueTask<IEnumerable<Response>> HandleAsync(
+        [FromForm]
         Query query,
         SstDbContext ctx,
         TransactionMapperProvider provider,
         CancellationToken token)
     {
-        var reader = new StreamReader(query.File.OpenReadStream());
-        var csv = await reader.ReadToEndAsync(token);
+        var transactions = new List<Response>();
 
-        if (provider.TryGetMapper(csv, out var mapper))
+        foreach (var file in query.Files)
         {
-            var newTransactions = mapper.GetTransactions(csv);
-            var earliest = newTransactions.OrderBy(t => t.Timestamp).FirstOrDefault();
+            var reader = new StreamReader(file.OpenReadStream());
+            var csv = await reader.ReadToEndAsync(token);
 
-            if (earliest is null)
-                return [];
+            if (provider.TryGetMapper(csv, out var mapper))
+            {
+                var newTransactions = mapper.GetTransactions(csv);
+                var earliest = newTransactions.OrderBy(t => t.Timestamp).FirstOrDefault();
 
-            var existingTransactions = await ctx.Transactions
-                .Where(t => t.AccountId == query.AccountId)
-                .Where(t => t.Timestamp >= earliest.Timestamp)
-                .ToListAsync(token);
+                if (earliest is null)
+                    continue;
 
-            return newTransactions.Select(t => new Response
-                {
-                    Timestamp = t.Timestamp!.Value,
-                    Description = t.Description,
-                    Amount = t.Amount,
-                    Skipped = existingTransactions.Any(tt =>
-                        tt.Timestamp == t.Timestamp
-                        && tt.Description == t.Description
-                        && tt.Amount == t.Amount)
-                })
-                .OrderByDescending(t => t.Timestamp);
+                var existingTransactions = await ctx.Transactions
+                    .Where(t => t.AccountId == query.AccountId)
+                    .Where(t => t.Timestamp >= earliest.Timestamp)
+                    .ToListAsync(token);
+
+                transactions.AddRange(newTransactions.Select(t => new Response
+                    {
+                        Timestamp = t.Timestamp!.Value,
+                        Description = t.Description,
+                        Amount = t.Amount,
+                        Skipped = existingTransactions.Any(tt =>
+                            tt.Timestamp == t.Timestamp
+                            && tt.Description == t.Description
+                            && tt.Amount == t.Amount)
+                    })
+                    .OrderByDescending(t => t.Timestamp));
+            }
         }
 
-        return [];
+        return transactions;
     }
 }

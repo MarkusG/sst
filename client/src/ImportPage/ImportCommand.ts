@@ -3,16 +3,11 @@ import {useMutation} from "@tanstack/react-query";
 import {useContext} from "react";
 import {ImportContext} from "./ImportContext.tsx";
 
-export interface ImportRequest {
-    file: File,
-    accountId: number
-}
-
-export default function useImportTransactions() {
+export default function useImport() {
     const axios = useAxios();
     const [context, _] = useContext(ImportContext);
 
     return useMutation({
-        mutationFn: async () => await axios.post('/import', {file: context.file, accountId: context.accountId}, SubmitFormOptions)
+        mutationFn: async () => await axios.post('/import', {files: context.files, accountId: context.accountId}, SubmitFormOptions)
     })
 }
