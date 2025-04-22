@@ -118,7 +118,7 @@ export default function CashflowPage() {
                 </div>
             }
             {!(isLoading || isError) &&
-                <div className="grid grid-rows-auto grid-cols-[2fr,_repeat(13,_1fr)] text-right">
+                <div className="grid grid-rows-auto grid-cols-[4fr,_repeat(13,_1fr)] lg:grid-cols-[8fr,_repeat(13_1fr)] text-right">
                         <div className="pl-2 text-left border-b border-gray-300">Category</div>
                         <div className="border-b border-gray-300 px-2">Jan</div>
                         <div className="border-b border-gray-300 px-2">Feb</div>

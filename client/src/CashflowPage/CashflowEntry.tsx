@@ -1,6 +1,6 @@
-import { useState } from "react";
+import {useState} from "react";
 import Amount from "../Amount";
-import { CategoryCashFlowResponse } from "../Contracts/Responses";
+import {CategoryCashFlowResponse} from "../Contracts/Responses";
 
 export interface CashflowEntryProps {
     category: CategoryCashFlowResponse,
@@ -8,12 +8,12 @@ export interface CashflowEntryProps {
     hidden: boolean
 }
 
-export default function CashflowEntry({ category, level, hidden }: CashflowEntryProps) {
+export default function CashflowEntry({category, level, hidden}: CashflowEntryProps) {
     const [open, setOpen] = useState(true);
     return (
         <>
             <div className={`${hidden ? 'hidden' : 'contents'} [&_div]:even:bg-gray-100`}>
-                <div className="text-left bg-inherit" style={{ paddingLeft: `calc(.5rem + ${level * .5}rem)` }}>
+                <div className="text-left bg-inherit whitespace-nowrap overflow-hidden text-ellipsis" style={{paddingLeft: `calc(.5rem + ${level * .5}rem)`}}>
                     {category.subcategories.length > 0 &&
                         <button onClick={() => setOpen(!open)}>
                             <span>{category.name}</span>
