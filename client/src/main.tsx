@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import ReactDOM from 'react-dom/client'
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useNavigate} from 'react-router-dom';
 
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
@@ -27,7 +27,7 @@ root.render(
             <BrowserRouter>
                 <Routes>
                     <Route element={<Root/>}>
-                        <Route index/>
+                        <Route index element={<IndexRedirector/>}/>
                         <Route path="transactions" element={<TransactionsPage/>}/>
                         <Route path="categories" element={<CategoriesPage/>}/>
                         <Route path="cashflow" element={<CashflowPage/>}/>
@@ -39,3 +39,13 @@ root.render(
         </QueryClientProvider>
     </React.StrictMode>
 );
+
+function IndexRedirector() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        navigate('transactions');
+    }, []);
+
+    return <></>;
+}
