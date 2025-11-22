@@ -1,0 +1,21 @@
+services:
+    api:
+        image: sst
+        ports:
+          - "5000:5000"
+          - "5001:5001"
+        environment:
+          ASPNETCORE_URLS: "http://*:5000/;https://*:5001"
+          ASPNETCORE_Kestrel__Certificates__Default__Password: "RevealCorsetRacoonDrum"
+          ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+          ConnectionStrings__Database: "Host=192.168.1.100;Database=sst;Username=sst;Password={b/4m/hvhXLvx~-/l0hvr!.2-"
+        volumes:
+          - type: bind
+            source: /home/mark/.aspnet/https
+            target: /https
+
+secrets:
+  cert_pass:
+    file: ./cert_pass.txt
+  db_connection_string:
+    file: ./db_connection_string.txt
