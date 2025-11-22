@@ -39,10 +39,6 @@ const router = createBrowserRouter([
                 element: <CategoriesPage/>
             },
             {
-                path: '/targets',
-                element: <TransactionsPage/>
-            },
-            {
                 path: '/cashflow',
                 element: <CashflowPage/>
             },

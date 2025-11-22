@@ -10,9 +10,6 @@ export default function Nav() {
                 <SstNavLink to="/categories">
                     <i className="fa-solid fa-fw fa-list fa-lg"></i> Categories
                 </SstNavLink>
-                <SstNavLink to="/targets">
-                    <i className="fa-solid fa-fw fa-bullseye fa-lg"></i> Targets
-                </SstNavLink>
                 <SstNavLink to="/cashflow">
                     <i className="fa-solid fa-fw fa-dollar-sign fa-lg"></i> Cash Flow
                 </SstNavLink>
