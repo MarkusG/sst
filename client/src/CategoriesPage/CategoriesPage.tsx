@@ -94,10 +94,10 @@ export default function CategoriesPage() {
     }
 
     return (
-        <>
+        <div className="h-full grid grid-rows-[min-content_min-content_1fr]">
             <h1 className="text-3xl text-center mt-2">Categories</h1>
             <CategoryCreator/>
-            <Dropzone onDragLeave={clearDragOver}>
+            <Dropzone onDragLeave={clearDragOver} className="overflow-y-auto pb-4">
                 {data?.categories.map(c => <Category
                                       key={c.id}
                                       entry={c}
@@ -110,6 +110,6 @@ export default function CategoriesPage() {
                                       onDragEnd={dragEnd}
                                       onDragOver={categoryDraggedOver}/>)}
             </Dropzone>
-        </>
+        </div>
     );
 }
