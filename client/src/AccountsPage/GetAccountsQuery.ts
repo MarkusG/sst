@@ -1,18 +1,18 @@
 import useAxios from "../Hooks/Axios.ts";
-import {useQuery} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Account {
-   id: string,
-   name: string,
-   transactionCount: number,
-   isPlaid: boolean
+  id: string;
+  name: string;
+  transactionCount: number;
+  isPlaid: boolean;
 }
 
 export default function useGetAccounts() {
-   const axios = useAxios();
+  const axios = useAxios();
 
-   return useQuery<Account[]>({
-      queryKey: ['accounts'],
-      queryFn: async () => await axios.get('/accounts').then(r => r.data)
-   });
+  return useQuery<Account[]>({
+    queryKey: ["accounts"],
+    queryFn: async () => await axios.get("/accounts").then((r) => r.data),
+  });
 }

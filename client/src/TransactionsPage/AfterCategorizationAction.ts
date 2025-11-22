@@ -1,5 +1,5 @@
 export enum AfterCategorizationAction {
-    Deselect,
-    MoveNext,
-    CreateNew
+  Deselect,
+  MoveNext,
+  CreateNew,
 }
