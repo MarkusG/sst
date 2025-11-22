@@ -1,11 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 import Root from './Root.tsx';
-import HomePage from './HomePage.tsx';
 import TransactionsPage from './TransactionsPage/TransactionsPage.tsx';
 import CashflowPage from './CashflowPage/CashflowPage.tsx';
 import CategoriesPage from './CategoriesPage/CategoriesPage.tsx';
@@ -21,44 +20,22 @@ const queryClient = new QueryClient({
     }
 });
 
-const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Root/>,
-        children: [
-            {
-                path: '/',
-                element: <HomePage/>
-            },
-            {
-                path: '/transactions',
-                element: <TransactionsPage/>
-            },
-            {
-                path: '/categories',
-                element: <CategoriesPage/>
-            },
-            {
-                path: '/cashflow',
-                element: <CashflowPage/>
-            },
-            {
-                path: '/accounts',
-                element: <AccountsPage/>
-            },
-            {
-                path: '/import',
-                element: <ImportPage/>
-            }
-        ]
-    }
-]);
-
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router}/>
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<Root/>}>
+                        <Route index/>
+                        <Route path="transactions" element={<TransactionsPage/>}/>
+                        <Route path="categories" element={<CategoriesPage/>}/>
+                        <Route path="cashflow" element={<CashflowPage/>}/>
+                        <Route path="accounts" element={<AccountsPage/>}/>
+                        <Route path="import" element={<ImportPage/>}/>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
         </QueryClientProvider>
     </React.StrictMode>
 );
