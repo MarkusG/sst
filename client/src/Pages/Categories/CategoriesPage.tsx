@@ -2,12 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CategoryTreeEntryResponse,
   CategoryTreeResponse,
-} from "../Contracts/Responses";
-import Category, { DragOverEvent, DragOverPosition } from "./Category";
+} from "../../Contracts/Responses.ts";
+import Category, { DragOverEvent, DragOverPosition } from "./Category.tsx";
 import { useState } from "react";
-import Dropzone from "../Dropzone";
-import LoadingIcon from "../LoadingIcon/LoadingIcon";
-import CategoryCreator from "./CategoryCreator";
+import Dropzone from "../../Dropzone.tsx";
+import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
+import CategoryCreator from "./CategoryCreator.tsx";
 
 export default function CategoriesPage() {
   const [draggingCategory, setDraggingCategory] =

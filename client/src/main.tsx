@@ -5,11 +5,11 @@ import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Root from "./Root.tsx";
-import TransactionsPage from "./TransactionsPage/TransactionsPage.tsx";
-import CashflowPage from "./CashflowPage/CashflowPage.tsx";
-import CategoriesPage from "./CategoriesPage/CategoriesPage.tsx";
-import ImportPage from "./ImportPage/ImportPage.tsx";
-import AccountsPage from "./AccountsPage/AccountsPage.tsx";
+import TransactionsPage from "./Pages/Transactions/TransactionsPage.tsx";
+import CashflowPage from "./Pages/Cashflow/CashflowPage.tsx";
+import CategoriesPage from "./Pages/Categories/CategoriesPage.tsx";
+import ImportPage from "./Pages/Import/ImportPage.tsx";
+import AccountsPage from "./Pages/Accounts/AccountsPage.tsx";
 //import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 
 const queryClient = new QueryClient({

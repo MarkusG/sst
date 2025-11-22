@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { DefaultImportContext, ImportContext } from "./ImportContext.tsx";
 import usePreview from "./PreviewQuery.ts";
-import LoadingIcon from "../LoadingIcon/LoadingIcon.tsx";
-import Amount from "../Amount.tsx";
-import Timestamp from "../Timestamp.tsx";
+import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
+import Amount from "../../Amount.tsx";
+import Timestamp from "../../Timestamp.tsx";
 import useImport from "./ImportCommand.ts";
 
 export default function Preview() {

@@ -1,5 +1,5 @@
 import useGetAccounts from "./GetAccountsQuery.ts";
-import LoadingIcon from "../LoadingIcon/LoadingIcon.tsx";
+import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import AccountCard from "./AccountCard.tsx";
 import AccountForm from "./AccountForm.tsx";
 import useCreateAccount from "./CreateAccountCommand.ts";

@@ -1,8 +1,10 @@
-import SortableTable, { SortOptions } from "../SortableTable/SortableTable.tsx";
-import SortableHeaderCell from "../SortableTable/SortableHeaderCell.tsx";
+import SortableTable, {
+  SortOptions,
+} from "../../SortableTable/SortableTable.tsx";
+import SortableHeaderCell from "../../SortableTable/SortableHeaderCell.tsx";
 import { Focus, TransactionTableContext } from "./TransactionTableContext.tsx";
 import TransactionRow from "./TransactionRow.tsx";
-import { TransactionResponse } from "../Contracts/Responses.ts";
+import { TransactionResponse } from "../../Contracts/Responses.ts";
 import { useContext } from "react";
 
 export interface TransactionsTableProps {

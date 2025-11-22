@@ -1,4 +1,4 @@
-import { TransactionResponse } from "../Contracts/Responses.ts";
+import { TransactionResponse } from "../../Contracts/Responses.ts";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
 import { AfterAmountChangedAction } from "./AfterAmountChangedAction.ts";
 

@@ -2,7 +2,7 @@ import {
   CategoriesResponse,
   CategorizationResponse,
   TransactionResponse,
-} from "../Contracts/Responses.ts";
+} from "../../Contracts/Responses.ts";
 import React, { useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";

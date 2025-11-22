@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Amount from "../Amount";
-import { CategoryCashFlowResponse } from "../Contracts/Responses";
+import Amount from "../../Amount.tsx";
+import { CategoryCashFlowResponse } from "../../Contracts/Responses.ts";
 
 export interface CashflowEntryProps {
   category: CategoryCashFlowResponse;

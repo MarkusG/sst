@@ -1,11 +1,11 @@
-import { SortOptions } from "../SortableTable/SortableTable";
+import { SortOptions } from "../../SortableTable/SortableTable.tsx";
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
-import LoadingIcon from "../LoadingIcon/LoadingIcon";
-import { QueryParameters } from "../QueryParameters";
+import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
+import { QueryParameters } from "../../QueryParameters.ts";
 import { ChangeEvent, useState } from "react";
-import { TransactionsResponse } from "../Contracts/Responses";
-import QueryControls from "./QueryControls/QueryControls";
-import TransactionForm from "./TransactionForm";
+import { TransactionsResponse } from "../../Contracts/Responses.ts";
+import QueryControls from "./QueryControls/QueryControls.tsx";
+import TransactionForm from "./TransactionForm.tsx";
 import TransactionsTable from "./TransactionsTable.tsx";
 import TransactionTableContextProvider from "./TransactionTableContext.tsx";
 

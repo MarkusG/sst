@@ -1,6 +1,6 @@
 import Categorizer from "./Categorizer.tsx";
 import TransactionRowProps from "./TransactionRowProps.ts";
-import { CategorizationResponse } from "../Contracts/Responses.ts";
+import { CategorizationResponse } from "../../Contracts/Responses.ts";
 import Amounter from "./Amounter.tsx";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

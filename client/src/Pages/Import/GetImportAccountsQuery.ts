@@ -1,4 +1,4 @@
-import useAxios from "../Hooks/Axios.ts";
+import useAxios from "../../Hooks/Axios.ts";
 import { useQuery } from "@tanstack/react-query";
 
 export interface Account {

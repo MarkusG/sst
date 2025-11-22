@@ -1,14 +1,12 @@
-import useAxios from "../Hooks/Axios.ts";
+import useAxios from "../../Hooks/Axios.ts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AccountFormValues } from "./AccountForm.tsx";
 
-export default function useCreateAccount() {
+export default function useDeleteAccount(id: string) {
   const axios = useAxios();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (values: AccountFormValues) =>
-      await axios.post("/accounts", values),
+    mutationFn: async () => await axios.delete(`/accounts/${id}`),
     onSuccess: async () => await queryClient.invalidateQueries(["accounts"]),
   });
 }

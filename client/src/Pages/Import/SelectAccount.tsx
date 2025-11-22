@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { DefaultImportContext, ImportContext } from "./ImportContext.tsx";
 import useGetImportAccounts from "./GetImportAccountsQuery.ts";
-import LoadingIcon from "../LoadingIcon/LoadingIcon.tsx";
+import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 
 export default function SelectAccount() {
   const [context, setContext] = useContext(ImportContext);

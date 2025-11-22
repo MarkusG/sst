@@ -1,9 +1,9 @@
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
-import { CashFlowResponse } from "../Contracts/Responses";
-import LoadingIcon from "../LoadingIcon/LoadingIcon";
-import Amount from "../Amount";
+import { CashFlowResponse } from "../../Contracts/Responses.ts";
+import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
+import Amount from "../../Amount.tsx";
 import { useState } from "react";
-import CashflowEntry from "./CashflowEntry";
+import CashflowEntry from "./CashflowEntry.tsx";
 
 async function query({
   queryKey,

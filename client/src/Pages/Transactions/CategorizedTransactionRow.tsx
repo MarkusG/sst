@@ -1,8 +1,8 @@
-import Timestamp from "../Timestamp.tsx";
-import Amount from "../Amount.tsx";
+import Timestamp from "../../Timestamp.tsx";
+import Amount from "../../Amount.tsx";
 import Categorizer from "./Categorizer.tsx";
 import TransactionRowProps from "./TransactionRowProps.ts";
-import { CategorizationResponse } from "../Contracts/Responses.ts";
+import { CategorizationResponse } from "../../Contracts/Responses.ts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
 

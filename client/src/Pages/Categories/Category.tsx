@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { CategoryTreeEntryResponse } from "../Contracts/Responses";
-import Draggable from "../Draggable";
-import Dropzone from "../Dropzone";
+import { CategoryTreeEntryResponse } from "../../Contracts/Responses.ts";
+import Draggable from "../../Draggable.tsx";
+import Dropzone from "../../Dropzone.tsx";
 
 export type DragOverPosition = "top" | "mid" | "bot" | null;
 

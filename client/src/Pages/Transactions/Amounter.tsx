@@ -1,11 +1,11 @@
 import {
   CategorizationResponse,
   TransactionResponse,
-} from "../Contracts/Responses.ts";
+} from "../../Contracts/Responses.ts";
 import React, { useContext, useState } from "react";
 import { Focus, TransactionTableContext } from "./TransactionTableContext.tsx";
 import { AfterAmountChangedAction } from "./AfterAmountChangedAction.ts";
-import Amount from "../Amount.tsx";
+import Amount from "../../Amount.tsx";
 
 export interface AmounterProps {
   transaction: TransactionResponse;

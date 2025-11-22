@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from "react";
-import { TransactionResponse } from "../Contracts/Responses";
+import { TransactionResponse } from "../../Contracts/Responses.ts";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
 import UncategorizedTransactionRow from "./UncategorizedTransactionRow.tsx";
 import CategorizedTransactionRow from "./CategorizedTransactionRow.tsx";
