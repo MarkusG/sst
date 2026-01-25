@@ -1,10 +1,11 @@
+import TransactionRowProps from "./TransactionRowProps.ts";
+import { CategorizationResponse } from "../../Contracts/Responses.ts";
+import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
+import useRecategorize from "./RecategorizeCommand.ts";
+import useUncategorize from "./UncategorizeCommand.ts";
 import Timestamp from "../../Timestamp.tsx";
 import Amount from "../../Amount.tsx";
 import Categorizer from "./Categorizer.tsx";
-import TransactionRowProps from "./TransactionRowProps.ts";
-import { CategorizationResponse } from "../../Contracts/Responses.ts";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
 
 export interface CategorizedTransactionRowProps extends TransactionRowProps {
   categorization: CategorizationResponse;
@@ -17,37 +18,16 @@ export default function CategorizedTransactionRow({
   showDetails,
   onCategoryUpdated,
 }: CategorizedTransactionRowProps) {
-  const queryClient = useQueryClient();
-
-  const { mutateAsync: update } = useMutation({
-    mutationFn: async (category: string) => {
-      await fetch(`/api/categorizations/${categorization.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ category }),
-      });
-    },
-    onSuccess: () => queryClient.invalidateQueries(["transactions"]),
-  });
-
-  const { mutateAsync: uncategorize } = useMutation({
-    mutationFn: async () => {
-      await fetch(`/api/categorizations/${categorization.id}`, {
-        method: "DELETE",
-      });
-    },
-    onSuccess: () => queryClient.invalidateQueries(["transactions"]),
-  });
+  const { mutateAsync: recategorize } = useRecategorize();
+  const { mutateAsync: uncategorize } = useUncategorize();
 
   async function categorized(
     category: string | null,
     after: AfterCategorizationAction,
   ) {
     if (category && category !== categorization.category)
-      await update(category);
-    if (!category) await uncategorize();
+      await recategorize({ id: categorization.id, categoryName: category });
+    if (!category) await uncategorize({ id: categorization.id });
 
     onCategoryUpdated(after);
   }

@@ -1,6 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
+import useCreateTransaction from "./CreateTransactionCommand.ts";
 
 export interface TransactionFormValues {
   timestamp: Date;
@@ -43,14 +44,7 @@ export default function TransactionForm() {
     category: "",
   };
 
-  const { mutateAsync } = useMutation({
-    mutationFn: async (values: TransactionFormValues) =>
-      fetch("/api/transactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      }),
-  });
+  const { mutateAsync } = useCreateTransaction();
 
   async function submit(
     rawValues: TransactionRawFormValues,

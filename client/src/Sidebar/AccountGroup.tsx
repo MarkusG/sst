@@ -1,24 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AccountGroupResponse } from "../Contracts/Responses";
 import AccountListing from "./AccountListing";
 import SyncButton from "./SyncButton";
+import useSync from "./SyncCommand.ts";
 
 export interface AccountGroupProps {
   group: AccountGroupResponse;
 }
 
 export default function AccountGroup({ group }: AccountGroupProps) {
-  const queryClient = useQueryClient();
-  const syncMutation = useMutation({
-    mutationFn: async () =>
-      await fetch(`/api/items/${group.itemId}/sync`, {
-        method: "POST",
-      }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(["accounts"]);
-      await queryClient.invalidateQueries(["transactions"]);
-    },
-  });
+  const { mutateAsync } = useSync();
 
   return (
     <div>
@@ -27,7 +17,7 @@ export default function AccountGroup({ group }: AccountGroupProps) {
         textSize="sm"
         iconSize="sm"
         onClick={async () => {
-          await syncMutation.mutateAsync();
+          if (group.itemId) await mutateAsync({ itemId: group.itemId });
         }}
       />
       <ul className="flex flex-col gap-1">

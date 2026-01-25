@@ -2,36 +2,28 @@ import Timestamp from "../../Timestamp.tsx";
 import Amount from "../../Amount.tsx";
 import Categorizer from "./Categorizer.tsx";
 import TransactionRowProps from "./TransactionRowProps.ts";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
+import useCategorize from "./CategorizeCommand.ts";
 
 export default function UncategorizedTransactionRow({
   transaction,
   onCategoryUpdated,
 }: TransactionRowProps) {
-  const queryClient = useQueryClient();
+  useQueryClient();
 
-  const { mutateAsync: categorize } = useMutation({
-    mutationFn: async (category: string | null) => {
-      await fetch(
-        `/api/transactions/${transaction.id}/categorizations/${category}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ amount: transaction.amount, position: 0 }),
-        },
-      );
-    },
-    onSuccess: () => queryClient.invalidateQueries(["transactions"]),
-  });
+  const { mutateAsync: categorize } = useCategorize();
 
   async function categorized(
     category: string | null,
     after: AfterCategorizationAction,
   ) {
-    if (category) await categorize(category);
+    if (category)
+      await categorize({
+        transactionId: transaction.id,
+        categoryName: category,
+        amount: transaction.amount,
+      });
 
     onCategoryUpdated(after);
   }

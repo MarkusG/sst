@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoryTreeEntryResponse } from "../../Contracts/Responses.ts";
 import Category, { DragOverEvent, DragOverPosition } from "./Category.tsx";
 import React, { useState } from "react";
@@ -6,6 +5,7 @@ import Dropzone from "../../Dropzone.tsx";
 import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import CategoryCreator from "./CategoryCreator.tsx";
 import useGetCategoryTree from "./GetCategoryTreeQuery.ts";
+import useUpdateCategory from "./UpdateCategoryCommand.ts";
 
 export default function CategoriesPage() {
   const [draggingCategory, setDraggingCategory] =
@@ -15,26 +15,9 @@ export default function CategoriesPage() {
   const [dragOverCategory, setDragOverCategory] =
     useState<CategoryTreeEntryResponse | null>(null);
 
-  const queryClient = useQueryClient();
-
   const { data, isLoading, error } = useGetCategoryTree();
 
-  const mutation = useMutation({
-    mutationFn: async (c: CategoryTreeEntryResponse) =>
-      await fetch(`/api/categories/${c.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: c.id,
-          name: c.name,
-          position: c.position,
-          parentId: c.parentId,
-        }),
-      }),
-    onSuccess: () => queryClient.invalidateQueries(["categories", "tree"]),
-  });
+  const { mutateAsync } = useUpdateCategory();
 
   if (isLoading) {
     return (
@@ -91,7 +74,7 @@ export default function CategoriesPage() {
         c.position = dragOverCategory.position + 1;
     }
 
-    await mutation.mutateAsync(c);
+    await mutateAsync(c);
   }
 
   return (

@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
+import useCreateCategory from "./CreateCategoryCommand.ts";
 
 interface CategoryValues {
   name: string;
@@ -12,19 +12,7 @@ export default function CategoryCreator() {
     name: yup.string().required(),
   });
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async (values: CategoryValues) =>
-      await fetch("/api/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: values.name }),
-      }),
-    onSuccess: () => queryClient.invalidateQueries(["categories", "tree"]),
-  });
+  const mutation = useCreateCategory();
 
   async function submit(
     values: CategoryValues,

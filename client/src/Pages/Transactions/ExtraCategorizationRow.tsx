@@ -3,9 +3,10 @@ import TransactionRowProps from "./TransactionRowProps.ts";
 import { CategorizationResponse } from "../../Contracts/Responses.ts";
 import Amounter from "./Amounter.tsx";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AfterAmountChangedAction } from "./AfterAmountChangedAction.ts";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
+import useCategorize from "./CategorizeCommand.ts";
 
 export interface CategorizedTransactionRowProps extends TransactionRowProps {
   categorization: CategorizationResponse;
@@ -13,35 +14,15 @@ export interface CategorizedTransactionRowProps extends TransactionRowProps {
 }
 
 export default function ExtraCategorizationRow({
-  categorization,
   transaction,
   onCategoryUpdated,
   onAmountUpdated,
 }: CategorizedTransactionRowProps) {
   const [amount, setAmount] = useState<number>(0);
 
-  const queryClient = useQueryClient();
+  useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: async (body: any) => {
-      await fetch(
-        `/api/transactions/${transaction.id}/categorizations/${body.category}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: body.amount,
-            position: categorization.position + 1,
-          }),
-        },
-      );
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(["transactions"]);
-    },
-  });
+  const mutation = useCategorize();
 
   async function amountUpdated(
     newAmount: number,
@@ -58,7 +39,13 @@ export default function ExtraCategorizationRow({
     if (transaction.categorizations.some((cz) => cz.category === category))
       return;
 
-    await mutation.mutateAsync({ category, amount });
+    if (!category) return;
+
+    await mutation.mutateAsync({
+      transactionId: transaction.id,
+      categoryName: category,
+      amount,
+    });
     await onCategoryUpdated(after);
   }
 
