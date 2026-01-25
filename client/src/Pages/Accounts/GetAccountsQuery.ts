@@ -1,5 +1,5 @@
 import useAxios from "../../Hooks/Axios.ts";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 export interface Account {
   id: string;
@@ -8,11 +8,22 @@ export interface Account {
   isPlaid: boolean;
 }
 
+type Response = Account[];
+
 export default function useGetAccounts() {
   const axios = useAxios();
 
-  return useQuery<Account[]>({
-    queryKey: ["accounts"],
-    queryFn: async () => await axios.get("/accounts").then((r) => r.data),
+  const key = ["accounts"];
+
+  async function fn() {
+    return await axios.get("/accounts").then((r) => r.data);
+  }
+
+  const options: Omit<UseQueryOptions<Response>, "queryKey" | "queryFn"> = {};
+
+  return useQuery<Response>({
+    queryKey: key,
+    queryFn: fn,
+    ...options,
   });
 }

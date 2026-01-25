@@ -1,18 +1,8 @@
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
-import { CashFlowResponse } from "../../Contracts/Responses.ts";
 import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import Amount from "../../Amount.tsx";
 import { useState } from "react";
 import CashflowEntry from "./CashflowEntry.tsx";
-
-async function query({
-  queryKey,
-}: QueryFunctionContext): Promise<CashFlowResponse> {
-  const params = queryKey[1] as number;
-  return await fetch(`/api/cashflow?year=${params}`).then(
-    (res) => res.json(),
-  );
-}
+import useGetCashFlow from "./GetCashflowQuery.ts";
 
 export default function CashflowPage() {
   const [enableYearButtons, setEnableYearButtons] = useState(true);
@@ -20,10 +10,7 @@ export default function CashflowPage() {
   const [rawYear, setRawYear] = useState(year.toString());
   const [yearInputEnabled, setYearInputEnabled] = useState(false);
 
-  const { data, error, isError, isLoading } = useQuery<CashFlowResponse>({
-    queryKey: ["cashflow", year],
-    queryFn: query,
-  });
+  const { data, error, isError, isLoading } = useGetCashFlow(year);
 
   function onYearInputBlur() {
     const value = Number(rawYear);

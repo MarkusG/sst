@@ -1,17 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import AccountGroup from "./AccountGroup";
 import SyncButton from "./SyncButton";
-import { AccountsResponse } from "../Contracts/Responses";
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
+import useGetGroupedAccounts from "./GetGroupedAccountsQuery.ts";
 
 export default function SidebarAccounts() {
-  const { data, error, isLoading } = useQuery<AccountsResponse>({
-    queryKey: ["accounts-old"],
-    queryFn: async () =>
-      await fetch("/api/accounts/grouped").then((res) =>
-        res.json(),
-      ),
-  });
+  const { data, error, isLoading } = useGetGroupedAccounts();
 
   if (isLoading) {
     return (

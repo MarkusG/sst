@@ -1,13 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  CategoryTreeEntryResponse,
-  CategoryTreeResponse,
-} from "../../Contracts/Responses.ts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CategoryTreeEntryResponse } from "../../Contracts/Responses.ts";
 import Category, { DragOverEvent, DragOverPosition } from "./Category.tsx";
 import { useState } from "react";
 import Dropzone from "../../Dropzone.tsx";
 import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import CategoryCreator from "./CategoryCreator.tsx";
+import useGetCategoryTree from "./GetCategoryTreeQuery.ts";
 
 export default function CategoriesPage() {
   const [draggingCategory, setDraggingCategory] =
@@ -19,11 +17,7 @@ export default function CategoriesPage() {
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery<CategoryTreeResponse>({
-    queryKey: ["categories", "tree"],
-    queryFn: async () =>
-      fetch("/api/categories/tree").then((res) => res.json()),
-  });
+  const { data, isLoading, error } = useGetCategoryTree();
 
   const mutation = useMutation({
     mutationFn: async (c: CategoryTreeEntryResponse) =>

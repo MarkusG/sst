@@ -1,5 +1,5 @@
 import useAxios from "../../Hooks/Axios.ts";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 export interface Account {
   id: number;
@@ -7,12 +7,22 @@ export interface Account {
   transactionCount: number;
 }
 
+type Response = Account[];
+
 export default function useGetImportAccounts() {
   const axios = useAxios();
 
-  return useQuery<Account[]>({
-    queryKey: ["import", "accounts"],
-    queryFn: async () =>
-      await axios.get("/import/accounts").then((r) => r.data),
+  const key = ["import", "accounts"];
+
+  async function fn() {
+    return await axios.get("/import/accounts").then((r) => r.data);
+  }
+
+  const options: Omit<UseQueryOptions<Response>, "queryKey" | "queryFn"> = {};
+
+  return useQuery<Response>({
+    queryKey: key,
+    queryFn: fn,
+    ...options,
   });
 }

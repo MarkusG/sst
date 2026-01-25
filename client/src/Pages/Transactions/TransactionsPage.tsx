@@ -1,22 +1,12 @@
 import { SortOptions } from "../../SortableTable/SortableTable.tsx";
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import { QueryParameters } from "../../QueryParameters.ts";
 import { ChangeEvent, useState } from "react";
-import { TransactionsResponse } from "../../Contracts/Responses.ts";
 import QueryControls from "./QueryControls/QueryControls.tsx";
 import TransactionForm from "./TransactionForm.tsx";
 import TransactionsTable from "./TransactionsTable.tsx";
 import TransactionTableContextProvider from "./TransactionTableContext.tsx";
-
-async function query({
-  queryKey,
-}: QueryFunctionContext): Promise<TransactionsResponse> {
-  const params = queryKey[1] as QueryParameters;
-  return await fetch(
-    `/api/transactions${params.toString()}`,
-  ).then((res) => res.json());
-}
+import useGetTransactions from "./GetTransactionsQuery.ts";
 
 export default function TransactionsPage() {
   const [params, setParams] = useState(
@@ -26,16 +16,13 @@ export default function TransactionsPage() {
       sortDirection: "up",
     }),
   );
+
   const [categorizingTransactionIdx, setCategorizingTransactionIdx] = useState<
     number | null
   >(null);
 
   const { data, isLoading, isError, error, isFetching } =
-    useQuery<TransactionsResponse>({
-      queryKey: ["transactions", params],
-      keepPreviousData: true,
-      queryFn: query,
-    });
+    useGetTransactions(params);
 
   if (isLoading) {
     return (

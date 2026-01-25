@@ -1,12 +1,11 @@
 import {
-  CategoriesResponse,
   CategorizationResponse,
   TransactionResponse,
 } from "../../Contracts/Responses.ts";
 import React, { useContext, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { AfterCategorizationAction } from "./AfterCategorizationAction.ts";
 import { Focus, TransactionTableContext } from "./TransactionTableContext.tsx";
+import useGetCategories from "./GetCategoriesQuery.ts";
 
 export interface CategorizerProps {
   transaction: TransactionResponse;
@@ -27,13 +26,7 @@ export default function Categorizer({
   );
   const [context, setContext] = useContext(TransactionTableContext);
 
-  const { data } = useQuery<CategoriesResponse>({
-    queryKey: ["categories"],
-    queryFn: async () =>
-      await fetch("/api/categories").then((res) =>
-        res.json(),
-      ),
-  });
+  const { data } = useGetCategories();
 
   async function finishInput(after: AfterCategorizationAction) {
     if (!!category?.trim()) {
