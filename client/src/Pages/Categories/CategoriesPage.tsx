@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoryTreeEntryResponse } from "../../Contracts/Responses.ts";
 import Category, { DragOverEvent, DragOverPosition } from "./Category.tsx";
-import { useState } from "react";
+import React, { useState } from "react";
 import Dropzone from "../../Dropzone.tsx";
 import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import CategoryCreator from "./CategoryCreator.tsx";
@@ -70,7 +70,7 @@ export default function CategoriesPage() {
     _: React.DragEvent<HTMLDivElement>,
     c: CategoryTreeEntryResponse,
   ) {
-    clearDragOver();
+    await clearDragOver();
     setDraggingCategory(null);
 
     if (!dragOverCategory || !dragOverPosition) return;

@@ -71,7 +71,7 @@ export default function TransactionForm() {
       resetForm();
     }
     setSubmitting(false);
-    queryClient.invalidateQueries(["transactions"]);
+    await queryClient.invalidateQueries(["transactions"]);
   }
 
   return (

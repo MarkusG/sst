@@ -14,9 +14,9 @@ export default function AccountGroup({ group }: AccountGroupProps) {
       await fetch(`/api/items/${group.itemId}/sync`, {
         method: "POST",
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["accounts"]);
-      queryClient.invalidateQueries(["transactions"]);
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["accounts"]);
+      await queryClient.invalidateQueries(["transactions"]);
     },
   });
 

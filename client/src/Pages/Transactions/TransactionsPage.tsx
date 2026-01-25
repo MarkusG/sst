@@ -17,10 +17,6 @@ export default function TransactionsPage() {
     }),
   );
 
-  const [categorizingTransactionIdx, setCategorizingTransactionIdx] = useState<
-    number | null
-  >(null);
-
   const { data, isLoading, isError, error, isFetching } =
     useGetTransactions(params);
 
@@ -53,7 +49,7 @@ export default function TransactionsPage() {
   }
 
   function seekPage(e: ChangeEvent<HTMLInputElement>) {
-    var page = Number(e.target.value);
+    const page = Number(e.target.value);
     if (page > 0 && page <= data!.totalPages) {
       setParams(new QueryParameters({ ...params, page }));
     }

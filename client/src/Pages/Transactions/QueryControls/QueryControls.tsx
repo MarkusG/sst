@@ -1,5 +1,6 @@
 import { QueryParameters } from "../../../QueryParameters.ts";
 import DateRangeForm, { DateRangeValues } from "./DateRangeForm.tsx";
+import React from "react";
 
 export interface QueryControlsProps {
   params: QueryParameters;

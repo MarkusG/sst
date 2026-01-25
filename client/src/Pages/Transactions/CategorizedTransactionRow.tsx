@@ -21,28 +21,22 @@ export default function CategorizedTransactionRow({
 
   const { mutateAsync: update } = useMutation({
     mutationFn: async (category: string) => {
-      await fetch(
-        `/api/categorizations/${categorization.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ category }),
+      await fetch(`/api/categorizations/${categorization.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ category }),
+      });
     },
     onSuccess: () => queryClient.invalidateQueries(["transactions"]),
   });
 
   const { mutateAsync: uncategorize } = useMutation({
     mutationFn: async () => {
-      await fetch(
-        `/api/categorizations/${categorization.id}`,
-        {
-          method: "DELETE",
-        },
-      );
+      await fetch(`/api/categorizations/${categorization.id}`, {
+        method: "DELETE",
+      });
     },
     onSuccess: () => queryClient.invalidateQueries(["transactions"]),
   });

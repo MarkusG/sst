@@ -34,7 +34,7 @@ export default function SelectAccount() {
   }
 
   async function submit() {
-    await setContext({ ...context, accountId: id! });
+    setContext({ ...context, accountId: id! });
   }
 
   return (

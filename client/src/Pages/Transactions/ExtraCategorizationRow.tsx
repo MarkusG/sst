@@ -38,8 +38,8 @@ export default function ExtraCategorizationRow({
         },
       );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["transactions"]);
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["transactions"]);
     },
   });
 

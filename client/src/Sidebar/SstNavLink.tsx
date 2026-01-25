@@ -6,13 +6,7 @@ interface SstNavLinkProps {
 }
 
 export default function SstNavLink(props: PropsWithChildren<SstNavLinkProps>) {
-  function className({
-    isActive,
-    isPending,
-  }: {
-    isActive: boolean;
-    isPending: boolean;
-  }) {
+  function className({ isActive }: { isActive: boolean; isPending: boolean }) {
     return `p-1 py-1.5 rounded transition duration-300 ${isActive ? "bg-gray-600 text-gray-100" : "hover:bg-gray-100"}`;
   }
 

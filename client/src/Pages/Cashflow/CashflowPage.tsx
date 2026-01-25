@@ -1,6 +1,6 @@
 import LoadingIcon from "../../LoadingIcon/LoadingIcon.tsx";
 import Amount from "../../Amount.tsx";
-import { useState } from "react";
+import React, { useState } from "react";
 import CashflowEntry from "./CashflowEntry.tsx";
 import useGetCashFlow from "./GetCashflowQuery.ts";
 

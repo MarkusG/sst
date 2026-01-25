@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { CategoryTreeEntryResponse } from "../../Contracts/Responses.ts";
 import Draggable from "../../Draggable.tsx";
 import Dropzone from "../../Dropzone.tsx";
