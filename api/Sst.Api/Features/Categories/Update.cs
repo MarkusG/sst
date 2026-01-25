@@ -12,7 +12,7 @@ using ValidationException = Sst.Api.Exceptions.ValidationException;
 namespace Sst.Api.Features.Categories;
 
 [Handler]
-[MapPut("/categories/{id}")]
+[MapPut("/api/categories/{id}")]
 public static partial class Update
 {
     [Validate]

@@ -30,7 +30,7 @@ export default function Categorizer({
   const { data } = useQuery<CategoriesResponse>({
     queryKey: ["categories"],
     queryFn: async () =>
-      await fetch("https://localhost:5001/categories").then((res) =>
+      await fetch("/api/categories").then((res) =>
         res.json(),
       ),
   });

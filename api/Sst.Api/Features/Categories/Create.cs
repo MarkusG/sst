@@ -10,7 +10,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.Categories;
 
 [Handler]
-[MapPost("/categories")]
+[MapPost("/api/categories")]
 public static partial class Create
 {
     public sealed record Command

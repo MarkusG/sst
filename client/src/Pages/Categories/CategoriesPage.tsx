@@ -22,12 +22,12 @@ export default function CategoriesPage() {
   const { data, isLoading, error } = useQuery<CategoryTreeResponse>({
     queryKey: ["categories", "tree"],
     queryFn: async () =>
-      fetch("https://localhost:5001/categories/tree").then((res) => res.json()),
+      fetch("/api/categories/tree").then((res) => res.json()),
   });
 
   const mutation = useMutation({
     mutationFn: async (c: CategoryTreeEntryResponse) =>
-      await fetch(`https://localhost:5001/categories/${c.id}`, {
+      await fetch(`/api/categories/${c.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

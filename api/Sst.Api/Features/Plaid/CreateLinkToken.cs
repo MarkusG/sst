@@ -7,7 +7,7 @@ using Sst.Plaid.Endpoints.LinkTokenCreate;
 namespace Sst.Api.Features.Plaid;
 
 [Handler]
-[MapGet("/link")]
+[MapGet("/api/link")]
 public static partial class CreateLinkToken
 {
     public sealed record Response

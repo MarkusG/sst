@@ -9,7 +9,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Transactions.Import;
 
 [Handler]
-[MapPost("/import")]
+[MapPost("/api/import")]
 public static partial class Import
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint) => endpoint.DisableAntiforgery();

@@ -32,18 +32,10 @@ builder.Services.AddHttpClient<PlaidClient>((sp, c) => { c.BaseAddress = new Uri
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddSingleton<TransactionMapperProvider>();
 
+builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
+
 builder.Services.AddSstApiHandlers();
 builder.Services.AddSstApiBehaviors();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("localhost", policy =>
-    {
-        policy.WithOrigins("http://localhost:3000")
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
 
 builder.Services.AddProblemDetails(options =>
 {
@@ -102,8 +94,6 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseExceptionHandler();
 
-app.UseCors("localhost");
-
 // delay responses in development for a more realistic UX
 if (app.Environment.IsDevelopment())
 {
@@ -115,5 +105,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapSstApiEndpoints();
+
+if (!app.Environment.IsDevelopment())
+    app.UseSpaStaticFiles();
+
+app.UseWhen(
+    ctx => !ctx.Request.Path.StartsWithSegments("/api"),
+    then => then.UseSpa(spa =>
+    {
+        if (!builder.Environment.IsDevelopment())
+            return;
+
+        spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+    })
+);
 
 app.Run();

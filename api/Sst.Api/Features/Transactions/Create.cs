@@ -8,7 +8,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.Transactions;
 
 [Handler]
-[MapPost("/transactions")]
+[MapPost("/api/transactions")]
 public static partial class Create
 {
     public sealed record Command

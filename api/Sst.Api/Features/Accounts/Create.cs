@@ -8,7 +8,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.Accounts;
 
 [Handler]
-[MapPost("/accounts")]
+[MapPost("/api/accounts")]
 public static partial class Create
 {
     [Validate]

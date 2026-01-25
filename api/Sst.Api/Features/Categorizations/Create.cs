@@ -13,7 +13,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.Categorizations;
 
 [Handler]
-[MapPut("/transactions/{transactionId}/categorizations/{category}")]
+[MapPut("/api/transactions/{transactionId}/categorizations/{category}")]
 public static partial class Create
 {
     public sealed record Command

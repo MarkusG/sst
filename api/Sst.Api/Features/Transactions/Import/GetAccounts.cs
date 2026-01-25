@@ -6,7 +6,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Transactions.Import;
 
 [Handler]
-[MapGet("/import/accounts")]
+[MapGet("/api/import/accounts")]
 public static partial class GetAccounts
 {
     public sealed record Response

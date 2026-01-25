@@ -14,7 +14,7 @@ async function query({
 }: QueryFunctionContext): Promise<TransactionsResponse> {
   const params = queryKey[1] as QueryParameters;
   return await fetch(
-    `https://localhost:5001/transactions${params.toString()}`,
+    `/api/transactions${params.toString()}`,
   ).then((res) => res.json());
 }
 

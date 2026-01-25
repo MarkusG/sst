@@ -6,7 +6,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Accounts;
 
 [Handler]
-[MapGet("/accounts/grouped")]
+[MapGet("/api/accounts/grouped")]
 public static partial class GetGrouped
 {
     public sealed record Response

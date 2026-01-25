@@ -13,7 +13,7 @@ using Sst.Plaid.Endpoints.SyncTransactions;
 namespace Sst.Api.Features.Plaid;
 
 [Handler]
-[MapPost("/items/{itemId}/sync")]
+[MapPost("/api/items/{itemId}/sync")]
 public static partial class SyncItem
 {
     public sealed record Command

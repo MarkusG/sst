@@ -9,7 +9,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.GetTransactions;
 
 [Handler]
-[MapGet("/transactions")]
+[MapGet("/api/transactions")]
 public static partial class GetAll
 {
     [Validate]

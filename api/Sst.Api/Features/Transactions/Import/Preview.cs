@@ -8,7 +8,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Transactions.Import;
 
 [Handler]
-[MapPost("/import/preview")]
+[MapPost("/api/import/preview")]
 public static partial class Preview
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint) => endpoint.DisableAntiforgery();

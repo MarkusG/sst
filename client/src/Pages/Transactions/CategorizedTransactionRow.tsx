@@ -22,7 +22,7 @@ export default function CategorizedTransactionRow({
   const { mutateAsync: update } = useMutation({
     mutationFn: async (category: string) => {
       await fetch(
-        `https://localhost:5001/categorizations/${categorization.id}`,
+        `/api/categorizations/${categorization.id}`,
         {
           method: "PUT",
           headers: {
@@ -38,7 +38,7 @@ export default function CategorizedTransactionRow({
   const { mutateAsync: uncategorize } = useMutation({
     mutationFn: async () => {
       await fetch(
-        `https://localhost:5001/categorizations/${categorization.id}`,
+        `/api/categorizations/${categorization.id}`,
         {
           method: "DELETE",
         },

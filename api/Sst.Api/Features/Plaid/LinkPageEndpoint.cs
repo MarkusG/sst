@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Sst.Api.Features.Plaid;
 
 [Handler]
-[MapGet("/")]
+[MapGet("/api/")]
 public static partial class LinkPage
 {
     private static ValueTask<FileStreamHttpResult> HandleAsync(object _, CancellationToken token)

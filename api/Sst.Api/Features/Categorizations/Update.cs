@@ -10,7 +10,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Categorizations;
 
 [Handler]
-[MapPut("/categorizations/{id}")]
+[MapPut("/api/categorizations/{id}")]
 public static partial class Update
 {
     public sealed record Command

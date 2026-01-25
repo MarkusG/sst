@@ -11,7 +11,7 @@ using Sst.Plaid.Endpoints.ItemPublicTokenExchange;
 namespace Sst.Api.Features.ExchangePublicToken;
 
 [Handler]
-[MapPost("/exchange")]
+[MapPost("/api/exchange")]
 public partial class ExchangePublicToken
 {
     public record Command

@@ -25,7 +25,7 @@ export default function ExtraCategorizationRow({
   const mutation = useMutation({
     mutationFn: async (body: any) => {
       await fetch(
-        `https://localhost:5001/transactions/${transaction.id}/categorizations/${body.category}`,
+        `/api/transactions/${transaction.id}/categorizations/${body.category}`,
         {
           method: "PUT",
           headers: {

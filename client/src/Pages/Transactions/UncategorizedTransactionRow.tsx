@@ -14,7 +14,7 @@ export default function UncategorizedTransactionRow({
   const { mutateAsync: categorize } = useMutation({
     mutationFn: async (category: string | null) => {
       await fetch(
-        `https://localhost:5001/transactions/${transaction.id}/categorizations/${category}`,
+        `/api/transactions/${transaction.id}/categorizations/${category}`,
         {
           method: "PUT",
           headers: {

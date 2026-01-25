@@ -7,7 +7,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.Categories;
 
 [Handler]
-[MapGet("/categories/tree")]
+[MapGet("/api/categories/tree")]
 public partial class GetTree
 {
     public sealed record Response

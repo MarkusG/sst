@@ -7,7 +7,7 @@ using Sst.Database.Entities;
 namespace Sst.Api.Features.GetCashFlow;
 
 [Handler]
-[MapGet("/cashflow")]
+[MapGet("/api/cashflow")]
 public static partial class Get
 {
     public sealed record Query

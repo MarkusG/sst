@@ -9,7 +9,7 @@ async function query({
   queryKey,
 }: QueryFunctionContext): Promise<CashFlowResponse> {
   const params = queryKey[1] as number;
-  return await fetch(`https://localhost:5001/cashflow?year=${params}`).then(
+  return await fetch(`/api/cashflow?year=${params}`).then(
     (res) => res.json(),
   );
 }

@@ -11,7 +11,7 @@ export default function AccountGroup({ group }: AccountGroupProps) {
   const queryClient = useQueryClient();
   const syncMutation = useMutation({
     mutationFn: async () =>
-      await fetch(`https://localhost:5001/items/${group.itemId}/sync`, {
+      await fetch(`/api/items/${group.itemId}/sync`, {
         method: "POST",
       }),
     onSuccess: () => {

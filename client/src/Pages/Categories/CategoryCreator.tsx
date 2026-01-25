@@ -16,7 +16,7 @@ export default function CategoryCreator() {
 
   const mutation = useMutation({
     mutationFn: async (values: CategoryValues) =>
-      await fetch("https://localhost:5001/categories", {
+      await fetch("/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,7 +10,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Accounts;
 
 [Handler]
-[MapPut("/accounts/{id}")]
+[MapPut("/api/accounts/{id}")]
 public static partial class Update
 {
     [Validate]

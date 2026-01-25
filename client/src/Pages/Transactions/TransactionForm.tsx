@@ -45,7 +45,7 @@ export default function TransactionForm() {
 
   const { mutateAsync } = useMutation({
     mutationFn: async (values: TransactionFormValues) =>
-      fetch("https://localhost:5001/transactions", {
+      fetch("/api/transactions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),

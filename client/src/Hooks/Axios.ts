@@ -13,7 +13,7 @@ export default function useAxios() {
   if (client) return client;
 
   client = axios.create({
-    baseURL: "https://localhost:5001/",
+    baseURL: "/api",
   });
 
   return client;

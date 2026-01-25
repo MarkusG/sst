@@ -6,7 +6,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Accounts;
 
 [Handler]
-[MapGet("/accounts")]
+[MapGet("/api/accounts")]
 public static partial class GetAll
 {
     public sealed record Response

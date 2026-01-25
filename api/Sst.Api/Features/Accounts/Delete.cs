@@ -9,7 +9,7 @@ using Sst.Database;
 namespace Sst.Api.Features.Accounts;
 
 [Handler]
-[MapDelete("/accounts/{id}")]
+[MapDelete("/api/accounts/{id}")]
 public static partial class Delete
 {
     public sealed record Command
