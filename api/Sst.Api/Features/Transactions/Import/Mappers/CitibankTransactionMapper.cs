@@ -11,9 +11,9 @@ public class CitibankTransactionMapper : ITransactionMapper
 
         public required string Description { get; init; }
 
-        public required decimal? Debit { get; init; }
+        public required string? Debit { get; init; }
 
-        public required decimal? Credit { get; init; }
+        public required string? Credit { get; init; }
     }
 
     public bool CanMap(string csv)
@@ -39,14 +39,25 @@ public class CitibankTransactionMapper : ITransactionMapper
 
         var records = csvReader.GetRecords<Transaction>();
 
-        return records.Select(t => new Database.Entities.Transaction
+        return records.Select(t =>
         {
-            PlaidId = null,
-            AccountId = null,
-            Amount = -t.Debit ?? -t.Credit ?? 0,
-            Currency = "USD",
-            Description = t.Description,
-            Timestamp = t.Date.ToUniversalTime()
+            // "$ ##.##"
+            decimal? debit = string.IsNullOrEmpty(t.Debit)
+                ? null
+                : decimal.Parse(t.Debit.Replace(" ", "").Replace("$", ""));
+            // " -$ ##.##"
+            decimal? credit = string.IsNullOrEmpty(t.Credit)
+                ? null
+                : decimal.Parse(t.Credit.Replace(" ", "").Replace("$", ""));
+            return new Database.Entities.Transaction
+            {
+                PlaidId = null,
+                AccountId = null,
+                Amount = -debit ?? -credit ?? 0,
+                Currency = "USD",
+                Description = t.Description,
+                Timestamp = t.Date.ToUniversalTime()
+            };
         }).ToList();
     }
 }
